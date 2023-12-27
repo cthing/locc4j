@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * Classes for counting lines of source code.
+ */
 @PackageNonnullByDefault
 package org.cthing.locc4j;
 

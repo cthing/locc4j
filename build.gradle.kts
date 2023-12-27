@@ -93,7 +93,9 @@ tasks {
             breakIterator(false)
             encoding("UTF-8")
             bottom("Copyright &copy; $year C Thing Software")
+            addStringOption("Xdoclint:all,-missing", "-quiet")
             addStringOption("Werror", "-quiet")
+            exclude("**/Language.java")
             memberLevel = JavadocMemberLevel.PUBLIC
             outputLevel = JavadocOutputLevel.QUIET
         }

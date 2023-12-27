@@ -22,8 +22,8 @@ import java.io.Serializable;
 /**
  * Represents start and end delimiters (e.g. block comment delimiters).
  *
- * @param start Beginning delimiter
- * @param end Ending delimiter
+ * @param start Specifies the beginning delimiter
+ * @param end Specifies the ending delimiter
  */
 public record BlockDelimiter(String start, String end) implements Serializable {
 }

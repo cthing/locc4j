@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+<#-- The following comment does not apply to this template file -->
+// GENERATED FILE - DO NOT EDIT
+
 package org.cthing.locc4j;
 
 <#macro expand_params params>
