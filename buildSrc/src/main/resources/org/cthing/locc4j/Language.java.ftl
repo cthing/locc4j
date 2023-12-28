@@ -57,21 +57,13 @@ public enum Language {
         List.of(<@expand_block_params params=entry.quotes()/>),
         List.of(<@expand_block_params params=entry.verbatimQuotes()/>),
         List.of(<@expand_block_params params=entry.docQuotes()/>),
-        List.of(<@expand_params params=entry.shebangs()/>),
         ${entry.columnSignificant()?c},
         List.of(<@expand_params params=entry.importantSyntax()/>),
-        List.of(<@expand_params params=entry.extensions()/>),
-        List.of(<@expand_params params=entry.mime()/>),
-        List.of(<@expand_params params=entry.env()/>),
-        List.of(<@expand_params params=entry.filenames()/>)
+        List.of(<@expand_params params=entry.extensions()/>)
     )<#if id?is_last>;<#else>,</#if>
 </#list>
 
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
-    private static final Map<String, Language> MIME = new HashMap<>();
-    private static final Map<String, Language> SHEBANGS = new HashMap<>();
-    private static final Map<String, Language> ENV = new HashMap<>();
-    private static final Map<String, Language> FILENAMES = new HashMap<>();
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
 
@@ -84,21 +76,13 @@ public enum Language {
     private final List<BlockDelimiter> quotes;
     private final List<BlockDelimiter> verbatimQuotes;
     private final List<BlockDelimiter> docQuotes;
-    private final List<String> shebangs;
     private final boolean columnSignificant;
     private final List<String> importantSyntax;
     private final List<String> extensions;
-    private final List<String> mime;
-    private final List<String> env;
-    private final List<String> filenames;
 
     static {
         for (final Language language : values()) {
             language.extensions.forEach(ext -> EXTENSIONS.put(ext, language));
-            language.mime.forEach(mime -> MIME.put(mime, language));
-            language.env.forEach(env -> ENV.put(env, language));
-            language.shebangs.forEach(shebang -> SHEBANGS.put(shebang, language));
-            language.filenames.forEach(filename -> FILENAMES.put(filename, language));
         }
     }
 
@@ -106,10 +90,8 @@ public enum Language {
              final List<BlockDelimiter> multiLineComments, final boolean nestable,
              final List<BlockDelimiter> nestedComments, final List<BlockDelimiter> quotes,
              final List<BlockDelimiter> verbartimQuotes, final List<BlockDelimiter> docQuotes,
-             final List<String> shebangs, final boolean columnSignificant,
-             final List<String> importantSyntax, final List<String> extensions,
-             final List<String> mime, final List<String> env,
-             final List<String> filenames) {
+             final boolean columnSignificant, final List<String> importantSyntax,
+             final List<String> extensions) {
         this.name = name;
         this.literate = literate;
         this.lineComments = lineComments;
@@ -119,13 +101,9 @@ public enum Language {
         this.quotes = quotes;
         this.verbatimQuotes = verbartimQuotes;
         this.docQuotes = docQuotes;
-        this.shebangs = shebangs;
         this.columnSignificant = columnSignificant;
         this.importantSyntax = importantSyntax;
         this.extensions = extensions;
-        this.mime = mime;
-        this.env = env;
-        this.filenames = filenames;
     }
 
     public String getName() {
@@ -164,10 +142,6 @@ public enum Language {
         return this.docQuotes;
     }
 
-    public List<String> getShebangs() {
-        return this.shebangs;
-    }
-
     public boolean isColumnSignificant() {
         return this.columnSignificant;
     }
@@ -178,18 +152,6 @@ public enum Language {
 
     public List<String> getExtensions() {
         return this.extensions;
-    }
-
-    public List<String> getMime() {
-        return this.mime;
-    }
-
-    public List<String> getEnv() {
-        return this.env;
-    }
-
-    public List<String> getFilenames() {
-        return this.filenames;
     }
 
     /**
@@ -208,9 +170,12 @@ public enum Language {
     public static Optional<Language> fromFile(final File file) {
         final String filename = file.getName().toLowerCase(Locale.ROOT);
 
-        final Language language = FILENAMES.get(filename);
-        if (language != null) {
-            return Optional.of(language);
+        switch (filename) {
+<#list languages as id, entry><#list entry.filenames() as filename>
+<#if filename?is_first>            case "${filename}"<#else>, "${filename}"</#if><#if filename?is_last>: return Optional.of(${id});
+</#if>
+</#list></#list>
+            default: break;
         }
 
         final String extension = FilenameUtils.getExtension(filename);
@@ -225,7 +190,13 @@ public enum Language {
      *      {@link Optional} is returned.
      */
     public static Optional<Language> fromMime(final String mimeType) {
-        return Optional.ofNullable(MIME.get(mimeType));
+        return switch (mimeType) {
+<#list languages as id, entry><#list entry.mime() as mime>
+<#if mime?is_first>            case "${mime}"<#else>, "${mime}"</#if><#if mime?is_last> -> Optional.of(${id});
+</#if>
+</#list></#list>
+            default -> Optional.empty();
+        };
     }
 
     /**
@@ -267,9 +238,12 @@ public enum Language {
         }
 
         // First try looking for a shebang interpreter
-        final Language language = SHEBANGS.get(words[0]);
-        if (language != null) {
-            return Optional.of(language);
+        switch (words[0]) {
+<#list languages as id, entry><#list entry.shebangs() as shebang>
+<#if shebang?is_first>            case "${shebang}"<#else>, "${shebang}"</#if><#if shebang?is_last>: return Optional.of(${id});
+</#if>
+</#list></#list>
+            default: break;
         }
 
         // Next try looking for a shebang env program
@@ -277,6 +251,12 @@ public enum Language {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(ENV.get(words[1]));
+        return switch (words[1]) {
+<#list languages as id, entry><#list entry.env() as env>
+<#if env?is_first>            case "${env}"<#else>, "${env}"</#if><#if env?is_last> -> Optional.of(${id});
+</#if>
+</#list></#list>
+            default -> Optional.empty();
+        };
     }
 }

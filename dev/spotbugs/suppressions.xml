@@ -1,12 +1,15 @@
 <FindBugsFilter>
     <Match>
+        <Bug pattern="CC_CYCLOMATIC_COMPLEXITY"/>
+    </Match>
+    <Match>
+        <Bug pattern="CLI_CONSTANT_LIST_INDEX"/>
+    </Match>
+    <Match>
         <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
     <Match>
         <Bug pattern="EI_EXPOSE_REP2"/>
-    </Match>
-    <Match>
-        <Bug pattern="CLI_CONSTANT_LIST_INDEX"/>
     </Match>
     <Match>
         <Bug pattern="PMB_POSSIBLE_MEMORY_BLOAT"/>
