@@ -60,15 +60,7 @@
     "AspNet": {
       "name": "ASP.NET",
       "multi_line_comments": [["<!--", "-->"], ["<%--", "-->"]],
-      "extensions": [
-        "asax",
-        "ascx",
-        "asmx",
-        "aspx",
-        "master",
-        "sitemap",
-        "webinfo"
-      ]
+      "extensions": ["asax", "ascx", "asmx", "aspx", "master", "sitemap", "webinfo"]
     },
     "Assembly": {
       "line_comment": [";"],
@@ -92,12 +84,7 @@
       "line_comment": ["//"],
       "multi_line_comments": [["(*", "*)"], ["/*", "*/"]],
       "quotes": [["\\\"", "\\\""]],
-      "extensions": [
-        "dats",
-        "hats",
-        "sats",
-        "atxt"
-      ]
+      "extensions": ["dats", "hats", "sats", "atxt"]
     },
     "Autoconf": {
       "line_comment": ["#", "dnl"],
@@ -640,7 +627,7 @@
     "HiCad": {
       "name": "HICAD",
       "line_comment": ["REM", "rem"],
-      "extensions": ["MAC", "mac"]
+      "extensions": ["mac"]
     },
     "Hlsl": {
       "name": "HLSL",
@@ -653,7 +640,7 @@
       "line_comment": ["//"],
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\\\"", "\\\""]],
-      "extensions": ["HC", "hc","ZC","zc"]
+      "extensions": ["hc", "zc"]
     },
     "Html": {
       "name": "HTML",

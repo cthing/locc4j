@@ -32,7 +32,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param lineComments Character sequences that indicate a comment that spans a single line
  * @param multiLineComments Pairs of character sequences that indicate the start and end of comments that can span
  *      multiple lines
- * @param extensions Common file extensions for the language (without the leading period)
+ * @param extensions Common file extensions for the language (without the leading period). Extensions are specified
+ *      as lowercase, regardless of whether the it is typically written with capital letters. Extension matching is
+ *      case-insensitive.
  * @param quotes Pairs of character sequences that indicate the start and end of quoted text
  * @param verbatimQuotes Pairs of character sequences that indicate the start and end of a section of text that
  *      requires no escaping of special characters such as line feeds
@@ -52,9 +54,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *      large section of a file can be skipped while parsing. This parameter provides additional character sequences
  *      that indicate a section that can be skipped while parsing.
  * @param filenames Certain languages have one or more standard filenames that do not have a file extension
- *      (e.g. Makefile, Dockerfile). Filenames are specified in all-lowercase, regardless of whether the filename
- *      is typically written with capital letters. Filenames take precedence over extensions. For example, a file
- *      named {@code CMakeLists.txt} is detected as a CMake file, not a Text file.
+ *      (e.g. Makefile, Dockerfile). Filenames are specified in lowercase, regardless of whether the filename
+ *      is typically written with capital letters. Filename matching is case-insensitive. Filenames take precedence
+ *      over extensions. For example, a file named {@code CMakeLists.txt} is detected as a CMake file, not a Text file.
  */
 public record LanguageEntry(
         @JsonProperty("name") @Nullable String name,

@@ -7,6 +7,7 @@
     <suppress checks="JavadocPackage" files="generated-src/.+"/>
     <suppress checks="MissingJavadocMethod" files="generated-src/.+"/>
     <suppress checks="LineLength" files="generated-src/.+"/>
+    <suppress checks="MethodLength" files="generated-src/.+"/>
 
     <!-- Suppress Javadoc requirements for tests -->
     <suppress checks="JavadocType" files="src/(test|integTest)/.+"/>

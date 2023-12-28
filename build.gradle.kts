@@ -35,6 +35,7 @@ java {
 }
 
 dependencies {
+    implementation(libs.commonsIO)
     implementation(libs.cthingAnnots)
     implementation(libs.jsr305)
 

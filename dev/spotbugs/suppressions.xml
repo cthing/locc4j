@@ -6,6 +6,12 @@
         <Bug pattern="EI_EXPOSE_REP2"/>
     </Match>
     <Match>
+        <Bug pattern="CLI_CONSTANT_LIST_INDEX"/>
+    </Match>
+    <Match>
+        <Bug pattern="PMB_POSSIBLE_MEMORY_BLOAT"/>
+    </Match>
+    <Match>
         <Class name="~.*Test(\$.+)?"/>
     </Match>
 </FindBugsFilter>
