@@ -63,6 +63,7 @@ public enum Language {
     )<#if id?is_last>;<#else>,</#if>
 </#list>
 
+    private static final Map<String, Language> NAMES = new HashMap<>();
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
@@ -82,6 +83,7 @@ public enum Language {
 
     static {
         for (final Language language : values()) {
+            NAMES.put(language.getName().toLowerCase(Locale.ROOT), language);
             language.extensions.forEach(ext -> EXTENSIONS.put(ext, language));
         }
     }
@@ -203,11 +205,22 @@ public enum Language {
      * Attempts to obtain the language of a file based on its file extension.
      *
      * @param extension File extension to search (without the leading ".")
-     * @return Language corresponding to the specified file extension, if found.
+     * @return Language corresponding to the specified file extension. If the language cannot be determined, an
+     *      empty {@link Optional} is returned. The matching is case-insensitive.
      */
-    @AccessForTesting
-    static Optional<Language> fromFileExtension(final String extension) {
-        return Optional.ofNullable(EXTENSIONS.get(extension));
+    public static Optional<Language> fromFileExtension(final String extension) {
+        return Optional.ofNullable(EXTENSIONS.get(extension.toLowerCase(Locale.ROOT)));
+    }
+
+    /**
+     * Attempts to obtain the language corresponding to the specified language name.
+     *
+     * @param langName Name of the language to find
+     * @return Language corresponding to the specified name. Comparisons are case-insensitive. If the language
+     *      cannot be determined, an empty {@link Optional} is returned.
+     */
+    public static Optional<Language> fromName(final String langName) {
+        return Optional.ofNullable(NAMES.get(langName.toLowerCase(Locale.ROOT)));
     }
 
     /**
