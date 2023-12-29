@@ -76,10 +76,16 @@ fun isNonStable(version: String): Boolean {
     return isStable.not()
 }
 
+val generatedSrcDir = file("generated-src")
+
 tasks {
     withType<JavaCompile> {
         options.release = libs.versions.java.get().toInt()
         options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-options", "-Werror"))
+    }
+
+    named("clean", Delete::class).configure {
+        delete(generatedSrcDir)
     }
 
     withType<Jar> {
@@ -139,6 +145,10 @@ tasks {
         }
     }
 }
+
+val mainSourceSet: SourceSet = extensions.getByType<JavaPluginExtension>().sourceSets[SourceSet.MAIN_SOURCE_SET_NAME]
+val javaDirSet: SourceDirectorySet = mainSourceSet.java
+javaDirSet.setSrcDirs(javaDirSet.srcDirs.plus(generatedSrcDir))
 
 val sourceJar by tasks.registering(Jar::class) {
     from(project.sourceSets["main"].allSource)

@@ -18,10 +18,6 @@ package org.cthing.locc4j.plugins;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.SourceDirectorySet;
-import org.gradle.api.plugins.JavaPluginExtension;
-import org.gradle.api.tasks.Delete;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
 
 
@@ -40,18 +36,5 @@ public class LanguagePlugin implements Plugin<Project> {
 
         // Run the generate task before compilation.
         project.getTasks().named("compileJava").configure(compileTask -> compileTask.dependsOn(languageTaskProvider));
-
-        // Delete the generated file on clean.
-        project.getTasks().named("clean", Delete.class).configure(task -> project.delete(languageTaskProvider));
-
-        // Add the generated enum to the sources to be compiled.
-        project.afterEvaluate(proj -> {
-            final SourceSet mainSourceSet = project.getExtensions()
-                                                   .getByType(JavaPluginExtension.class)
-                                                   .getSourceSets()
-                                                   .getAt(SourceSet.MAIN_SOURCE_SET_NAME);
-            final SourceDirectorySet javaDirSet = mainSourceSet.getJava();
-            javaDirSet.srcDir(languageTaskProvider.map(task -> task.getLanguageFile().getParentFile()));
-        });
     }
 }
