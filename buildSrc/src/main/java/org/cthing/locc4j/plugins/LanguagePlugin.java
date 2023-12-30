@@ -26,12 +26,14 @@ import org.gradle.api.tasks.TaskProvider;
  */
 public class LanguagePlugin implements Plugin<Project> {
 
+    public static final String GENERATE_LANGUAGE_TASK = "generateLanguage";
+
     @Override
     public void apply(final Project project) {
         project.getPluginManager().apply("java");
 
         // Create the task to generate the Language enum from the languages.json file.
-        final TaskProvider<LanguageTask> languageTaskProvider = project.getTasks().register("generateLanguage",
+        final TaskProvider<LanguageTask> languageTaskProvider = project.getTasks().register(GENERATE_LANGUAGE_TASK,
                                                                                             LanguageTask.class);
 
         // Run the generate task before compilation.

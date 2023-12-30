@@ -1,5 +1,6 @@
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.Confidence
+import org.cthing.locc4j.plugins.LanguagePlugin
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -152,6 +153,7 @@ val javaDirSet: SourceDirectorySet = mainSourceSet.java
 javaDirSet.setSrcDirs(javaDirSet.srcDirs.plus(generatedSrcDir))
 
 val sourceJar by tasks.registering(Jar::class) {
+    dependsOn(LanguagePlugin.GENERATE_LANGUAGE_TASK)
     from(project.sourceSets["main"].allSource)
     archiveClassifier = "sources"
 }
