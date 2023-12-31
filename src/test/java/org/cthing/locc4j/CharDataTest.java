@@ -253,6 +253,109 @@ public class CharDataTest {
     }
 
     @Test
+    public void testIndexOfChar() {
+        final CharData buffer1 = new CharData("hello world".toCharArray());
+        assertThat(buffer1.indexOf('h')).isEqualTo(0);
+        assertThat(buffer1.indexOf('o')).isEqualTo(4);
+        assertThat(buffer1.indexOf('d')).isEqualTo(10);
+        assertThat(buffer1.indexOf('z')).isEqualTo(-1);
+        assertThat(buffer1.indexOf('o', 5)).isEqualTo(7);
+        assertThat(buffer1.indexOf('o', 7)).isEqualTo(7);
+        assertThat(buffer1.indexOf('o', 8)).isEqualTo(-1);
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.indexOf('o', -1));
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.indexOf('o', 11));
+
+        final CharData buffer2 = buffer1.subSequence(6, 10);
+        assertThat(buffer2.indexOf('w')).isEqualTo(0);
+        assertThat(buffer2.indexOf('l')).isEqualTo(3);
+        assertThat(buffer2.indexOf('r', 1)).isEqualTo(2);
+        assertThat(buffer2.indexOf('r', 2)).isEqualTo(2);
+        assertThat(buffer2.indexOf('r', 3)).isEqualTo(-1);
+    }
+
+    @Test
+    public void testIndexOfSequence() {
+        final CharData buffer1 = new CharData("hello world".toCharArray());
+        assertThat(buffer1.indexOf("")).isEqualTo(0);
+        assertThat(buffer1.indexOf("h")).isEqualTo(0);
+        assertThat(buffer1.indexOf("hello")).isEqualTo(0);
+        assertThat(buffer1.indexOf("llo")).isEqualTo(2);
+        assertThat(buffer1.indexOf("world")).isEqualTo(6);
+        assertThat(buffer1.indexOf("abcd")).isEqualTo(-1);
+        assertThat(buffer1.indexOf("abcdefghijklmnop")).isEqualTo(-1);
+        assertThat(buffer1.indexOf("", 2)).isEqualTo(2);
+        assertThat(buffer1.indexOf("o w", 2)).isEqualTo(4);
+        assertThat(buffer1.indexOf("or", 5)).isEqualTo(7);
+        assertThat(buffer1.indexOf("or", 7)).isEqualTo(7);
+        assertThat(buffer1.indexOf("or", 8)).isEqualTo(-1);
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.indexOf("o", -1));
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.indexOf("o", 11));
+
+        final CharData buffer2 = buffer1.subSequence(6, 10);
+        assertThat(buffer2.indexOf("wo")).isEqualTo(0);
+        assertThat(buffer2.indexOf("rl")).isEqualTo(2);
+        assertThat(buffer2.indexOf("or")).isEqualTo(1);
+        assertThat(buffer2.indexOf("abc")).isEqualTo(-1);
+        assertThat(buffer2.indexOf("abcedfghijk")).isEqualTo(-1);
+        assertThat(buffer2.indexOf("rl", 1)).isEqualTo(2);
+        assertThat(buffer2.indexOf("rl", 2)).isEqualTo(2);
+        assertThat(buffer2.indexOf("rl", 3)).isEqualTo(-1);
+    }
+
+    @Test
+    public void testLastIndexOfChar() {
+        final CharData buffer1 = new CharData("hello world".toCharArray());
+        assertThat(buffer1.lastIndexOf('h')).isEqualTo(0);
+        assertThat(buffer1.lastIndexOf('o')).isEqualTo(7);
+        assertThat(buffer1.lastIndexOf('d')).isEqualTo(10);
+        assertThat(buffer1.lastIndexOf('z')).isEqualTo(-1);
+        assertThat(buffer1.lastIndexOf('o', 3)).isEqualTo(-1);
+        assertThat(buffer1.lastIndexOf('o', 4)).isEqualTo(4);
+        assertThat(buffer1.lastIndexOf('o', 7)).isEqualTo(7);
+        assertThat(buffer1.lastIndexOf('o', 8)).isEqualTo(7);
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.lastIndexOf('o', -1));
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.lastIndexOf('o', 11));
+
+        final CharData buffer2 = buffer1.subSequence(4, 10);
+        assertThat(buffer2.lastIndexOf('w')).isEqualTo(2);
+        assertThat(buffer2.lastIndexOf('l')).isEqualTo(5);
+        assertThat(buffer2.lastIndexOf('o')).isEqualTo(3);
+        assertThat(buffer2.lastIndexOf('o', 1)).isEqualTo(0);
+        assertThat(buffer2.lastIndexOf('o', 2)).isEqualTo(0);
+        assertThat(buffer2.lastIndexOf('o', 4)).isEqualTo(3);
+        assertThat(buffer2.lastIndexOf('l', 4)).isEqualTo(-1);
+    }
+
+    @Test
+    public void testLastIndexOfSequence() {
+        final CharData buffer1 = new CharData("hello world".toCharArray());
+        assertThat(buffer1.lastIndexOf("")).isEqualTo(10);
+        assertThat(buffer1.lastIndexOf("h")).isEqualTo(0);
+        assertThat(buffer1.lastIndexOf("hello")).isEqualTo(0);
+        assertThat(buffer1.lastIndexOf("l")).isEqualTo(9);
+        assertThat(buffer1.lastIndexOf("world")).isEqualTo(6);
+        assertThat(buffer1.lastIndexOf("abcd")).isEqualTo(-1);
+        assertThat(buffer1.lastIndexOf("abcdefghijklmnop")).isEqualTo(-1);
+        assertThat(buffer1.lastIndexOf("", 2)).isEqualTo(2);
+        assertThat(buffer1.lastIndexOf("or", 4)).isEqualTo(-1);
+        assertThat(buffer1.lastIndexOf("or", 5)).isEqualTo(-1);
+        assertThat(buffer1.lastIndexOf("or", 8)).isEqualTo(7);
+        assertThat(buffer1.lastIndexOf("or", 9)).isEqualTo(7);
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.lastIndexOf("o", -1));
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> buffer1.lastIndexOf("o", 11));
+
+        final CharData buffer2 = buffer1.subSequence(6, 10);
+        assertThat(buffer2.lastIndexOf("wo")).isEqualTo(0);
+        assertThat(buffer2.lastIndexOf("rl")).isEqualTo(2);
+        assertThat(buffer2.lastIndexOf("or")).isEqualTo(1);
+        assertThat(buffer2.lastIndexOf("abc")).isEqualTo(-1);
+        assertThat(buffer2.lastIndexOf("abcedfghijk")).isEqualTo(-1);
+        assertThat(buffer2.lastIndexOf("rl", 1)).isEqualTo(-1);
+        assertThat(buffer2.lastIndexOf("rl", 2)).isEqualTo(-1);
+        assertThat(buffer2.lastIndexOf("rl", 3)).isEqualTo(2);
+    }
+
+    @Test
     public void testEquality() {
         EqualsVerifier.forClass(CharData.class)
                       .usingGetClass()

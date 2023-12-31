@@ -112,6 +112,152 @@ public class CharData implements CharSequence {
     }
 
     /**
+     * Finds the index of the first occurrence of the specified character in the data.
+     *
+     * @param ch Character to find
+     * @return Index of the character if found in the data. Returns -1 if the character is not found.
+     */
+    public int indexOf(final char ch) {
+        return indexOf(ch, 0);
+    }
+
+    /**
+     * Finds the index of the first occurrence of the specified character in the data starting at the specified index.
+     *
+     * @param ch Character to find
+     * @param fromIndex Index from which to start looking for the character (inclusive)
+     * @return Index of the character if found in the data. Returns -1 if the character is not found.
+     */
+    @SuppressWarnings("Convert2streamapi")
+    public int indexOf(final char ch, final int fromIndex) {
+        Objects.checkIndex(fromIndex, this.length);
+        for (int i = fromIndex; i < this.length; i++) {
+            if (this.buffer[this.offset + i] == ch) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Finds the index of the first occurrence of the specified character sequence in the data.
+     *
+     * @param sequence Character sequence to find
+     * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
+     */
+    public int indexOf(final CharSequence sequence) {
+        return indexOf(sequence, 0);
+    }
+
+    /**
+     * Finds the index of the first occurrence of the specified character sequence in the data starting at the
+     * specified index.
+     *
+     * @param sequence Character sequence to find
+     * @param fromIndex Index from which to start looking for the character sequence (inclusive)
+     * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
+     */
+    public int indexOf(final CharSequence sequence, final int fromIndex) {
+        Objects.checkIndex(fromIndex, this.length);
+
+        final int seqLen = sequence.length();
+        if (seqLen == 0) {
+            return fromIndex;
+        }
+
+        final int maxLen = this.length - seqLen;
+        for (int i = fromIndex; i <= maxLen; i++) {
+            boolean match = true;
+
+            for (int j = 0; j < seqLen; j++) {
+                if (this.buffer[this.offset + i + j] != sequence.charAt(j)) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the index of the last occurrence of the specified character in the data.
+     *
+     * @param ch Character to find
+     * @return Index of the character if found in the data. Returns -1 if the character is not found.
+     */
+    public int lastIndexOf(final char ch) {
+        return lastIndexOf(ch, this.length - 1);
+    }
+
+    /**
+     * Finds the index of the last occurrence of the specified character in the data starting at the specified index.
+     *
+     * @param ch Character to find
+     * @param fromIndex Index from which to start looking for the character (inclusive)
+     * @return Index of the character if found in the data. Returns -1 if the character is not found.
+     */
+    @SuppressWarnings("Convert2streamapi")
+    public int lastIndexOf(final char ch, final int fromIndex) {
+        Objects.checkIndex(fromIndex, this.length);
+        for (int i = fromIndex; i >= 0; i--) {
+            if (this.buffer[this.offset + i] == ch) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Finds the index of the last occurrence of the specified character sequence in the data.
+     *
+     * @param sequence Character sequence to find
+     * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
+     */
+    public int lastIndexOf(final CharSequence sequence) {
+        return lastIndexOf(sequence, this.length - 1);
+    }
+
+    /**
+     * Finds the index of the last occurrence of the specified character sequence in the data starting at the
+     * specified index.
+     *
+     * @param sequence Character sequence to find
+     * @param fromIndex Index from which to start looking for the character sequence (inclusive)
+     * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
+     */
+    public int lastIndexOf(final CharSequence sequence, final int fromIndex) {
+        Objects.checkIndex(fromIndex, this.length);
+
+        final int seqLen = sequence.length();
+        if (seqLen == 0) {
+            return fromIndex;
+        }
+
+        final int startIndex = fromIndex - seqLen + 1;
+        for (int i = startIndex; i >= 0; i--) {
+            boolean match = true;
+
+            for (int j = 0; j < seqLen; j++) {
+                if (this.buffer[this.offset + i + j] != sequence.charAt(j)) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Trims the leading and trailing whitespace from the data.
      *
      * @return New character data buffer with leading and trailing whitespace removed.
@@ -208,11 +354,11 @@ public class CharData implements CharSequence {
      * @return {@code true} if the character data contains the specified sequence.
      */
     public boolean contains(final CharSequence sequence) {
-        if (sequence.isEmpty()) {
+        final int seqLen = sequence.length();
+        if (seqLen == 0) {
             return true;
         }
 
-        final int seqLen = sequence.length();
         final int maxLen = this.length - seqLen;
         for (int i = 0; i <= maxLen; i++) {
             boolean match = true;
