@@ -18,6 +18,7 @@ package org.cthing.locc4j;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 
 /**
@@ -25,6 +26,7 @@ import java.util.Objects;
  * reading it or performing operations (e.g. trim). The {@link CharSequence} interface is implemented to allow
  * this class to be used with classes that implement or accept that interface.
  */
+@SuppressWarnings("Convert2streamapi")
 public class CharData implements CharSequence {
 
     private final char[] buffer;
@@ -56,10 +58,9 @@ public class CharData implements CharSequence {
      *
      * @return {@code true} if the data is all whitespace or empty.
      */
-    @SuppressWarnings("Convert2streamapi")
     public boolean isBlank() {
-        for (int i = 0; i < this.length; i++) {
-            if (!Character.isWhitespace(this.buffer[this.offset + i])) {
+        for (int i = 0, j = this.offset; i < this.length; i++, j++) {
+            if (!Character.isWhitespace(this.buffer[j])) {
                 return false;
             }
         }
@@ -92,18 +93,39 @@ public class CharData implements CharSequence {
      * Indicates whether the character data starts with the specified prefix.
      *
      * @param prefix Prefix to test
-     * @return {@code true} if the character data start with the specified prefix. {@code false} if it does not or
+     * @return {@code true} if the character data starts with the specified prefix. {@code false} if it does not or
      *      the prefix is longer than the character data.
      */
-    @SuppressWarnings("Convert2streamapi")
     public boolean startsWith(final CharSequence prefix) {
         final int prefixLen = prefix.length();
         if (prefixLen > this.length) {
             return false;
         }
 
-        for (int i = 0; i < prefixLen; i++) {
-            if (prefix.charAt(i) != this.buffer[this.offset + i]) {
+        for (int i = 0, j = this.offset; i < prefixLen; i++, j++) {
+            if (prefix.charAt(i) != this.buffer[j]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Indicates whether the character data ends with the specified suffix.
+     *
+     * @param suffix Suffix to test
+     * @return {@code true} if the character data ends with the specified suffix. {@code false} if it does not or
+     *      the suffix is longer than the character data.
+     */
+    public boolean endsWith(final CharSequence suffix) {
+        final int suffixLen = suffix.length();
+        if (suffixLen > this.length) {
+            return false;
+        }
+
+        for (int i = 0, j = this.offset + this.length - suffixLen; i < suffixLen; i++, j++) {
+            if (suffix.charAt(i) != this.buffer[j]) {
                 return false;
             }
         }
@@ -128,11 +150,10 @@ public class CharData implements CharSequence {
      * @param fromIndex Index from which to start looking for the character (inclusive)
      * @return Index of the character if found in the data. Returns -1 if the character is not found.
      */
-    @SuppressWarnings("Convert2streamapi")
     public int indexOf(final char ch, final int fromIndex) {
         Objects.checkIndex(fromIndex, this.length);
-        for (int i = fromIndex; i < this.length; i++) {
-            if (this.buffer[this.offset + i] == ch) {
+        for (int i = fromIndex, j = this.offset + fromIndex; i < this.length; i++, j++) {
+            if (this.buffer[j] == ch) {
                 return i;
             }
         }
@@ -169,8 +190,8 @@ public class CharData implements CharSequence {
         for (int i = fromIndex; i <= maxLen; i++) {
             boolean match = true;
 
-            for (int j = 0; j < seqLen; j++) {
-                if (this.buffer[this.offset + i + j] != sequence.charAt(j)) {
+            for (int j = 0, k = this.offset + i; j < seqLen; j++, k++) {
+                if (this.buffer[k] != sequence.charAt(j)) {
                     match = false;
                     break;
                 }
@@ -201,11 +222,10 @@ public class CharData implements CharSequence {
      * @param fromIndex Index from which to start looking for the character (inclusive)
      * @return Index of the character if found in the data. Returns -1 if the character is not found.
      */
-    @SuppressWarnings("Convert2streamapi")
     public int lastIndexOf(final char ch, final int fromIndex) {
         Objects.checkIndex(fromIndex, this.length);
-        for (int i = fromIndex; i >= 0; i--) {
-            if (this.buffer[this.offset + i] == ch) {
+        for (int i = fromIndex, j = this.offset + fromIndex; i >= 0; i--, j--) {
+            if (this.buffer[j] == ch) {
                 return i;
             }
         }
@@ -242,8 +262,8 @@ public class CharData implements CharSequence {
         for (int i = startIndex; i >= 0; i--) {
             boolean match = true;
 
-            for (int j = 0; j < seqLen; j++) {
-                if (this.buffer[this.offset + i + j] != sequence.charAt(j)) {
+            for (int j = 0, k = this.offset + i; j < seqLen; j++, k++) {
+                if (this.buffer[k] != sequence.charAt(j)) {
                     match = false;
                     break;
                 }
@@ -334,17 +354,26 @@ public class CharData implements CharSequence {
      * @param sequence Character sequence to test
      * @return {@code true} if the character data is equal to the specified sequence.
      */
-    @SuppressWarnings("Convert2streamapi")
     public boolean contentEquals(final CharSequence sequence) {
         if (this.length != sequence.length()) {
             return false;
         }
-        for (int i = 0; i < this.length; i++) {
-            if (this.buffer[this.offset + i] != sequence.charAt(i)) {
+        for (int i = 0, j = this.offset; i < this.length; i++, j++) {
+            if (this.buffer[j] != sequence.charAt(i)) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Indicates whether the character data matches the specified regular expression.
+     *
+     * @param regex Regular expression to match
+     * @return {@code true} if the character data matches the specified regular expression.
+     */
+    public boolean matches(final Pattern regex) {
+        return regex.matcher(this).matches();
     }
 
     /**
@@ -363,8 +392,8 @@ public class CharData implements CharSequence {
         for (int i = 0; i <= maxLen; i++) {
             boolean match = true;
 
-            for (int j = 0; j < seqLen; j++) {
-                if (this.buffer[this.offset + i + j] != sequence.charAt(j)) {
+            for (int j = 0, k = this.offset + i; j < seqLen; j++, k++) {
+                if (this.buffer[k] != sequence.charAt(j)) {
                     match = false;
                     break;
                 }

@@ -16,6 +16,8 @@
 
 package org.cthing.locc4j;
 
+import java.util.regex.Pattern;
+
 import org.junit.jupiter.api.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -161,6 +163,19 @@ public class CharDataTest {
     }
 
     @Test
+    public void testEndsWith() {
+        final CharData buffer = new CharData("Hello World".toCharArray());
+        assertThat(buffer.endsWith("rld")).isTrue();
+        assertThat(buffer.endsWith("word")).isFalse();
+        assertThat(buffer.endsWith("")).isTrue();
+        assertThat(buffer.endsWith("Hello World")).isTrue();
+        assertThat(buffer.endsWith("Hello World One")).isFalse();
+
+        final CharData buffer2 = buffer.subSequence(1, 4);
+        assertThat(buffer2.endsWith("ll")).isTrue();
+    }
+
+    @Test
     public void testTrim() {
         CharData buffer = new CharData("    ".toCharArray());
         assertThat(buffer.trim().toString()).isEmpty();
@@ -230,6 +245,19 @@ public class CharDataTest {
         assertThat(buffer3.contentEquals("w llo")).isFalse();
         assertThat(buffer3.contentEquals("hello world")).isFalse();
         assertThat(buffer3.contentEquals("")).isFalse();
+    }
+
+    @Test
+    public void testMatches() {
+        final CharData buffer1 = new CharData("hello world".toCharArray());
+        assertThat(buffer1.matches(Pattern.compile(".+"))).isTrue();
+        assertThat(buffer1.matches(Pattern.compile("hello\\s+w.+"))).isTrue();
+        assertThat(buffer1.matches(Pattern.compile("hello"))).isFalse();
+
+        final CharData buffer2 = buffer1.subSequence(1, 5);
+        assertThat(buffer2.matches(Pattern.compile(".+"))).isTrue();
+        assertThat(buffer2.matches(Pattern.compile("ell.+"))).isTrue();
+        assertThat(buffer2.matches(Pattern.compile("ello.+"))).isFalse();
     }
 
     @Test
