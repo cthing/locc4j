@@ -278,7 +278,7 @@ public class CharData implements CharSequence {
     }
 
     /**
-     * Trims the leading and trailing whitespace from the data.
+     * Trims any leading and trailing whitespace from the data.
      *
      * @return New character data buffer with leading and trailing whitespace removed.
      */
@@ -312,6 +312,59 @@ public class CharData implements CharSequence {
         }
 
         return new CharData(this.buffer, start, end - start + 1);
+    }
+
+    /**
+     * Trims any leading whitespace from the data.
+     *
+     * @return New character data buffer with leading whitespace removed.
+     */
+    public CharData trimLeading() {
+        int start = this.offset;
+        final int end = this.offset + this.length - 1;
+
+        // Trim from the start
+        while (start <= end) {
+            final char ch = this.buffer[start];
+            if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {
+                start++;
+            } else {
+                break;
+            }
+        }
+
+        // Check if the entire string is whitespace
+        if (start > end) {
+            return new CharData(this.buffer, (start == 0) ? 0 : start - 1, 0);
+        }
+
+        return new CharData(this.buffer, start, end - start + 1);
+    }
+
+    /**
+     * Trims any trailing whitespace from the data.
+     *
+     * @return New character data buffer with trailing whitespace removed.
+     */
+    public CharData trimTrailing() {
+        int end = this.offset + this.length - 1;
+
+        // Trim from the end
+        while (end >= this.offset) {
+            final char ch = this.buffer[end];
+            if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {
+                end--;
+            } else {
+                break;
+            }
+        }
+
+        // Check if the entire string is whitespace
+        if (this.offset > end) {
+            return new CharData(this.buffer, (this.offset == 0) ? 0 : this.offset - 1, 0);
+        }
+
+        return new CharData(this.buffer, this.offset, end - this.offset + 1);
     }
 
     /**

@@ -202,6 +202,58 @@ public class CharDataTest {
     }
 
     @Test
+    public void testTrimLeading() {
+        CharData buffer = new CharData("    ".toCharArray());
+        assertThat(buffer.trimLeading().toString()).isEmpty();
+
+        buffer = new CharData("".toCharArray());
+        assertThat(buffer.trimLeading().toString()).isEmpty();
+
+        buffer = new CharData("  hello\t".toCharArray());
+        assertThat(buffer.trimLeading()).hasToString("hello\t");
+
+        buffer = new CharData("  hello".toCharArray());
+        assertThat(buffer.trimLeading()).hasToString("hello");
+
+        buffer = new CharData("hello    ".toCharArray());
+        assertThat(buffer.trimLeading()).hasToString("hello    ");
+
+        buffer = new CharData("   hello    ".toCharArray());
+        CharData buffer2 = buffer.subSequence(1, 9);
+        assertThat(buffer2.trimLeading()).hasToString("hello ");
+        buffer2 = buffer.subSequence(11, 12);
+        assertThat(buffer2.trimLeading().toString()).isEmpty();
+        buffer2 = buffer.subSequence(0, 1);
+        assertThat(buffer2.trimLeading().toString()).isEmpty();
+    }
+
+    @Test
+    public void testTrimTrailing() {
+        CharData buffer = new CharData("    ".toCharArray());
+        assertThat(buffer.trimTrailing().toString()).isEmpty();
+
+        buffer = new CharData("".toCharArray());
+        assertThat(buffer.trimTrailing().toString()).isEmpty();
+
+        buffer = new CharData("  hello\t".toCharArray());
+        assertThat(buffer.trimTrailing()).hasToString("  hello");
+
+        buffer = new CharData("  hello".toCharArray());
+        assertThat(buffer.trimTrailing()).hasToString("  hello");
+
+        buffer = new CharData("hello    ".toCharArray());
+        assertThat(buffer.trimTrailing()).hasToString("hello");
+
+        buffer = new CharData("   hello    ".toCharArray());
+        CharData buffer2 = buffer.subSequence(1, 9);
+        assertThat(buffer2.trimTrailing()).hasToString("  hello");
+        buffer2 = buffer.subSequence(11, 12);
+        assertThat(buffer2.trimTrailing().toString()).isEmpty();
+        buffer2 = buffer.subSequence(0, 1);
+        assertThat(buffer2.trimTrailing().toString()).isEmpty();
+    }
+
+    @Test
     public void testSplitAt() {
         final CharData buffer1 = new CharData("abcdef".toCharArray());
         CharData[] result = buffer1.splitAt(0);
