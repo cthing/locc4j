@@ -176,6 +176,59 @@ public class CharDataTest {
     }
 
     @Test
+    public void testLineIterator() {
+        final CharData buffer1 = new CharData("This\nis a test\nof the line iterator".toCharArray());
+        final CharData.LineIterator iter1 = buffer1.lineIterator();
+
+        assertThat(iter1.hasNext()).isTrue();
+        assertThat(iter1.next()).hasToString("This\n");
+        assertThat(iter1.getStart()).isEqualTo(0);
+        assertThat(iter1.getEnd()).isEqualTo(5);
+
+        assertThat(iter1.hasNext()).isTrue();
+        assertThat(iter1.next()).hasToString("is a test\n");
+        assertThat(iter1.getStart()).isEqualTo(5);
+        assertThat(iter1.getEnd()).isEqualTo(15);
+
+        assertThat(iter1.hasNext()).isTrue();
+        assertThat(iter1.next()).hasToString("of the line iterator");
+        assertThat(iter1.getStart()).isEqualTo(15);
+        assertThat(iter1.getEnd()).isEqualTo(35);
+
+        assertThat(iter1.hasNext()).isFalse();
+
+        final CharData buffer2 = new CharData("Hello\n\nWorld\n".toCharArray());
+        final CharData.LineIterator iter2 = buffer2.lineIterator();
+
+        assertThat(iter2.hasNext()).isTrue();
+        assertThat(iter2.next()).hasToString("Hello\n");
+        assertThat(iter2.getStart()).isEqualTo(0);
+        assertThat(iter2.getEnd()).isEqualTo(6);
+
+        assertThat(iter2.hasNext()).isTrue();
+        assertThat(iter2.next()).hasToString("\n");
+        assertThat(iter2.getStart()).isEqualTo(6);
+        assertThat(iter2.getEnd()).isEqualTo(7);
+
+        assertThat(iter2.hasNext()).isTrue();
+        assertThat(iter2.next()).hasToString("World\n");
+        assertThat(iter2.getStart()).isEqualTo(7);
+        assertThat(iter2.getEnd()).isEqualTo(13);
+
+        assertThat(iter2.hasNext()).isFalse();
+
+        final CharData buffer3 = buffer1.subSequence(5, 15);
+        final CharData.LineIterator iter3 = buffer3.lineIterator();
+
+        assertThat(iter3.hasNext()).isTrue();
+        assertThat(iter3.next()).hasToString("is a test\n");
+        assertThat(iter3.getStart()).isEqualTo(0);
+        assertThat(iter3.getEnd()).isEqualTo(10);
+
+        assertThat(iter3.hasNext()).isFalse();
+    }
+
+    @Test
     public void testTrim() {
         CharData buffer = new CharData("    ".toCharArray());
         assertThat(buffer.trim().toString()).isEmpty();

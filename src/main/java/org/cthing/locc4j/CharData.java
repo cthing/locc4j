@@ -17,6 +17,7 @@
 package org.cthing.locc4j;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,60 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("Convert2streamapi")
 public class CharData implements CharSequence {
+
+    /**
+     * Provides iteration over the character data by line. In addition to the line character data, the start
+     * (inclusive) and end (exclusive) indices of the line are provided. The line character data includes the
+     * terminating newline, if present.
+     */
+    public final class LineIterator implements Iterator<CharData> {
+
+        private int start;
+        private int end;
+
+        private LineIterator() {
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.end < CharData.this.length;
+        }
+
+        @Override
+        public CharData next() {
+            this.start = this.end;
+            while (true) {
+                if (this.end >= CharData.this.length || CharData.this.charAt(this.end++) == '\n') {
+                    break;
+                }
+            }
+            return CharData.this.subSequence(this.start, this.end);
+        }
+
+        /**
+         * Obtains the index of the start of the line.
+         *
+         * @return Index of the start of the line, inclusive.
+         */
+        public int getStart() {
+            return this.start;
+        }
+
+        /**
+         * Obtains the index of the end of the line. The line includes the terminating newline.
+         *
+         * @return Index of the end of the line, exclusive.
+         */
+        public int getEnd() {
+            return this.end;
+        }
+
+        @Override
+        public String toString() {
+            return "Line(" + this.start + ", " + this.end + ")";
+        }
+    }
+
 
     private final char[] buffer;
     private final int offset;
@@ -131,6 +186,15 @@ public class CharData implements CharSequence {
         }
 
         return true;
+    }
+
+    /**
+     * Obtains an iterator for traversing the character data line by line.
+     *
+     * @return Iterator for traversing the character data by lines.
+     */
+    public LineIterator lineIterator() {
+        return new LineIterator();
     }
 
     /**
