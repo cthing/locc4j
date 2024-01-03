@@ -19,6 +19,7 @@ package org.cthing.locc4j;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -490,7 +491,17 @@ public class CharData implements CharSequence {
      * @return {@code true} if the character data matches the specified regular expression.
      */
     public boolean matches(final Pattern regex) {
-        return regex.matcher(this).matches();
+        return matcher(regex).matches();
+    }
+
+    /**
+     * Creates a matcher for the specified regular expression against the character data.
+     *
+     * @param regex Regular expression to create the matcher
+     * @return Matcher for the specified regular expression against the character data.
+     */
+    public Matcher matcher(final Pattern regex) {
+        return regex.matcher(this);
     }
 
     /**

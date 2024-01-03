@@ -353,6 +353,19 @@ public class CharDataTest {
     }
 
     @Test
+    public void testMatcher() {
+        final CharData buffer1 = new CharData("hello world".toCharArray());
+        assertThat(buffer1.matcher(Pattern.compile(".+")).matches()).isTrue();
+        assertThat(buffer1.matcher(Pattern.compile("hello\\s+w.+")).matches()).isTrue();
+        assertThat(buffer1.matcher(Pattern.compile("hello")).matches()).isFalse();
+
+        final CharData buffer2 = buffer1.subSequence(1, 5);
+        assertThat(buffer2.matcher(Pattern.compile(".+")).matches()).isTrue();
+        assertThat(buffer2.matcher(Pattern.compile("ell.+")).matches()).isTrue();
+        assertThat(buffer2.matcher(Pattern.compile("ello.+")).matches()).isFalse();
+    }
+
+    @Test
     public void testMatches() {
         final CharData buffer1 = new CharData("hello world".toCharArray());
         assertThat(buffer1.matches(Pattern.compile(".+"))).isTrue();
