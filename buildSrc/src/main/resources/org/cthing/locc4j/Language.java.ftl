@@ -41,6 +41,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 import org.cthing.annotations.AccessForTesting;
 
+import static java.util.regex.Pattern.compile;
+
+import static org.cthing.locc4j.RegexUtils.WHITESPACE_REGEX;
+import static org.cthing.locc4j.RegexUtils.NOTHING_REGEX;
 
 /**
  * Information about each language that can be counted.
@@ -58,14 +62,13 @@ public enum Language {
         List.of(<@expand_block_params params=entry.verbatimQuotes()/>),
         List.of(<@expand_block_params params=entry.docQuotes()/>),
         ${entry.columnSignificant()?c},
-        List.of(<@expand_params params=entry.importantSyntax()/>),
+        ${entry.importantSyntaxRegex()},
         List.of(<@expand_params params=entry.extensions()/>)
     )<#if id?is_last>;<#else>,</#if>
 </#list>
 
     private static final Map<String, Language> NAMES = new HashMap<>();
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
-    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
 
     private final String name;
@@ -78,7 +81,7 @@ public enum Language {
     private final List<BlockDelimiter> verbatimQuotes;
     private final List<BlockDelimiter> docQuotes;
     private final boolean columnSignificant;
-    private final List<String> importantSyntax;
+    private final Pattern importantSyntax;
     private final List<String> extensions;
 
     static {
@@ -92,7 +95,7 @@ public enum Language {
              final List<BlockDelimiter> multiLineComments, final boolean nestable,
              final List<BlockDelimiter> nestedComments, final List<BlockDelimiter> quotes,
              final List<BlockDelimiter> verbartimQuotes, final List<BlockDelimiter> docQuotes,
-             final boolean columnSignificant, final List<String> importantSyntax,
+             final boolean columnSignificant, final Pattern importantSyntax,
              final List<String> extensions) {
         this.name = name;
         this.literate = literate;
@@ -148,7 +151,7 @@ public enum Language {
         return this.columnSignificant;
     }
 
-    public List<String> getImportantSyntax() {
+    public Pattern getImportantSyntax() {
         return this.importantSyntax;
     }
 
@@ -245,7 +248,7 @@ public enum Language {
             return Optional.empty();
         }
 
-        final String[] words = WHITESPACE.split(firstLine);
+        final String[] words = WHITESPACE_REGEX.split(firstLine);
         if (words.length == 0) {
             return Optional.empty();
         }

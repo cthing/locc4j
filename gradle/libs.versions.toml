@@ -12,6 +12,7 @@ versions = { id = "com.github.ben-manes.versions", version = "0.50.0" }
 [libraries]
 assertJ = "org.assertj:assertj-core:3.24.2"
 commonsIO = "commons-io:commons-io:2.15.1"
+commonsText = "org.apache.commons:commons-text:1.11.0"
 cthingAnnots = "org.cthing:cthing-annotations:1.0.0"
 equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:3.15.4"
 freemarker = "org.freemarker:freemarker:2.3.32"

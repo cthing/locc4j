@@ -17,9 +17,12 @@
 package org.cthing.locc4j.plugins;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param multiLineComments Pairs of character sequences that indicate the start and end of comments that can span
  *      multiple lines
  * @param extensions Common file extensions for the language (without the leading period). Extensions are specified
- *      as lowercase, regardless of whether the it is typically written with capital letters. Extension matching is
+ *      as lowercase, regardless of whether it is typically written with capital letters. Extension matching is
  *      case-insensitive.
  * @param quotes Pairs of character sequences that indicate the start and end of quoted text
  * @param verbatimQuotes Pairs of character sequences that indicate the start and end of a section of text that
@@ -76,34 +79,36 @@ public record LanguageEntry(
         @JsonProperty("important_syntax") @Nullable List<String> importantSyntax,
         @JsonProperty("filenames") @Nullable List<String> filenames
 ) {
+    private static final Pattern REGEX_ESCAPE_PATTERN = Pattern.compile("([\\^$.|?*+()\\[\\]{}])");
+
     @Override
     public List<String> lineComments() {
-        return this.lineComments == null ? List.of() : this.lineComments;
+        return this.lineComments == null ? List.of() : escapeJavaList(this.lineComments);
     }
 
     @Override
     public List<List<String>> multiLineComments() {
-        return this.multiLineComments == null ? List.of() : this.multiLineComments;
+        return this.multiLineComments == null ? List.of() : escapeJavaListList(this.multiLineComments);
     }
 
     @Override
     public List<String> extensions() {
-        return this.extensions == null ? List.of() : this.extensions;
+        return this.extensions == null ? List.of() : escapeJavaList(this.extensions);
     }
 
     @Override
     public List<List<String>> quotes() {
-        return this.quotes == null ? List.of() : this.quotes;
+        return this.quotes == null ? List.of() : escapeJavaListList(this.quotes);
     }
 
     @Override
     public List<List<String>> verbatimQuotes() {
-        return this.verbatimQuotes == null ? List.of() : this.verbatimQuotes;
+        return this.verbatimQuotes == null ? List.of() : escapeJavaListList(this.verbatimQuotes);
     }
 
     @Override
     public List<List<String>> docQuotes() {
-        return this.docQuotes == null ? List.of() : this.docQuotes;
+        return this.docQuotes == null ? List.of() : escapeJavaListList(this.docQuotes);
     }
 
     @Override
@@ -118,7 +123,7 @@ public record LanguageEntry(
 
     @Override
     public List<List<String>> nestedComments() {
-        return this.nestedComments == null ? List.of() : this.nestedComments;
+        return this.nestedComments == null ? List.of() : escapeJavaListList(this.nestedComments);
     }
 
     @Override
@@ -126,8 +131,14 @@ public record LanguageEntry(
         return this.mime == null ? List.of() : this.mime;
     }
 
-    @Override
-    public List<String> importantSyntax() {
+    /**
+     * Creates a regular expression that combines the start delimiters of quotes, document quotes, multiline comments
+     * and nested comments, along with any additional important syntax. This regex is used to find these sequences
+     * in the text being counted.
+     *
+     * @return Regular expression representing important start delimiters and other syntax.
+     */
+    public String importantSyntaxRegex() {
         final List<String> important = quotes().stream().map(pair -> pair.get(0)).collect(Collectors.toList());
         docQuotes().stream().map(pair -> pair.get(0)).forEach(important::add);
         multiLineComments().stream().map(pair -> pair.get(0)).forEach(important::add);
@@ -137,11 +148,44 @@ public record LanguageEntry(
             important.addAll(this.importantSyntax);
         }
 
-        return important;
+        return important.isEmpty() ? "NOTHING_REGEX"
+                                   : "compile(\"" + String.join("|", escapeRegexList(important)) + "\")";
     }
 
     @Override
     public List<String> filenames() {
         return this.filenames == null ? List.of() : this.filenames;
+    }
+
+    /**
+     * Performs escaping of the specified list of lists of strings so that they can appear in Java source code.
+     *
+     * @param stringsList List of lists of strings to escape
+     * @return Escaped list of lists of strings
+     */
+    private static List<List<String>> escapeJavaListList(final List<List<String>> stringsList) {
+        return stringsList.stream().map(LanguageEntry::escapeJavaList).toList();
+    }
+
+    /**
+     * Performs escaping of the specified list of strings so that they can appear in Java source code.
+     *
+     * @param strings List of strings to escape
+     * @return Escaped list of strings
+     */
+    private static List<String> escapeJavaList(final List<String> strings) {
+        return strings.stream().map(StringEscapeUtils::escapeJava).toList();
+    }
+
+    /**
+     * Performs escaping on the specified list of regular expressions.
+     *
+     * @param regexes List of regular expressions to escape
+     * @return List of escaped regular expressions.
+     */
+    private static List<String> escapeRegexList(final List<String> regexes) {
+        return regexes.stream()
+                      .map(regex -> REGEX_ESCAPE_PATTERN.matcher(regex).replaceAll("\\\\\\\\$1"))
+                      .collect(Collectors.toList());
     }
 }

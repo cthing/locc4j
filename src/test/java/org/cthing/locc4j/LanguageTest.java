@@ -46,12 +46,28 @@ public class LanguageTest {
         assertThat(css.getVerbatimQuotes()).isEmpty();
         assertThat(css.getDocQuotes()).isEmpty();
         assertThat(css.isColumnSignificant()).isFalse();
-        assertThat(css.getImportantSyntax()).containsExactlyInAnyOrder("\"", "'", "/*");
+        assertThat(css.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
         assertThat(css.getExtensions()).containsExactly("css");
 
         assertThat(Language.Elm.isNestable()).isTrue();
         assertThat(Language.FortranLegacy.isColumnSignificant()).isTrue();
         assertThat(Language.Markdown.isLiterate()).isTrue();
+    }
+
+    @Test
+    public void testImportantSyntax() {
+        final Language abnf = Language.ABNF;
+        assertThat(abnf.getImportantSyntax().pattern()).isEqualTo(".^");
+        assertThat(abnf.getImportantSyntax().matcher("").find()).isFalse();
+        assertThat(abnf.getImportantSyntax().matcher("hello world").find()).isFalse();
+
+        final Language asn1 = Language.Asn1;
+        assertThat(asn1.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
+        assertThat(asn1.getImportantSyntax().matcher("").find()).isFalse();
+        assertThat(asn1.getImportantSyntax().matcher("hello world").find()).isFalse();
+        assertThat(asn1.getImportantSyntax().matcher("Hello \"World\"").find()).isTrue();
+        assertThat(asn1.getImportantSyntax().matcher("Hello 'World'").find()).isTrue();
+        assertThat(asn1.getImportantSyntax().matcher("Hello /* World */").find()).isTrue();
     }
 
     @Test
