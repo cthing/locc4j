@@ -53,7 +53,8 @@ public class CharData implements CharSequence {
         public CharData next() {
             this.start = this.end;
             while (true) {
-                if (this.end >= CharData.this.length || CharData.this.charAt(this.end++) == '\n') {
+                if (this.end >= CharData.this.length
+                        || CharData.this.buffer[CharData.this.offset + this.end++] == '\n') {
                     break;
                 }
             }
@@ -196,6 +197,22 @@ public class CharData implements CharSequence {
      */
     public LineIterator lineIterator() {
         return new LineIterator();
+    }
+
+    /**
+     * Finds the index of the start of the line containing the specified index. The start of a line is either the
+     * index immediately following a newline or zero.
+     *
+     * @param index Index in the character data from which to look for the start of the line containing that index
+     * @return Index of the start of the line containing the specified index.
+     */
+    public int findLineStart(final int index) {
+        for (int i = this.offset + Objects.checkIndex(index, this.length) - 1; i >= this.offset; i--) {
+            if (this.buffer[i] == '\n') {
+                return i - this.offset + 1;
+            }
+        }
+        return 0;
     }
 
     /**

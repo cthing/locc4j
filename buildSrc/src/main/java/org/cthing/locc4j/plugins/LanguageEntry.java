@@ -53,9 +53,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param columnSignificant Indicates whether the column position of a character sequence must be preserved because
  *      it is significant to the language. For example, in legacy FORTRAN a "C" in the first column indicates
  *      a line comment.
- * @param importantSyntax Opening quotes and the start of block comments are examples of syntax that indicates a
- *      large section of a file can be skipped while parsing. This parameter provides additional character sequences
- *      that indicate a section that can be skipped while parsing.
+ * @param importantSyntax Opening quotes and the start of block comments are examples of syntax that indicates the
+ *      portions of a file that can be trivially parsed and those sections that require more complex parsing (e.g.
+ *      within a block comment).
  * @param filenames Certain languages have one or more standard filenames that do not have a file extension
  *      (e.g. Makefile, Dockerfile). Filenames are specified in lowercase, regardless of whether the filename
  *      is typically written with capital letters. Filename matching is case-insensitive. Filenames take precedence
@@ -134,7 +134,8 @@ public record LanguageEntry(
     /**
      * Creates a regular expression that combines the start delimiters of quotes, document quotes, multiline comments
      * and nested comments, along with any additional important syntax. This regex is used to find these sequences
-     * in the text being counted.
+     * in the text being counted. These character sequences indicate the type of parsing required. For example,
+     * more complex parsing is required within a block comment than within a plain line of code.
      *
      * @return Regular expression representing important start delimiters and other syntax.
      */

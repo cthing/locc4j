@@ -229,6 +229,60 @@ public class CharDataTest {
     }
 
     @Test
+    public void testFindLineStart() {
+        CharData buffer = new CharData("hello world".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(3)).isEqualTo(0);
+        assertThat(buffer.findLineStart(10)).isEqualTo(0);
+
+        buffer = new CharData("hello world\n".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(3)).isEqualTo(0);
+        assertThat(buffer.findLineStart(11)).isEqualTo(0);
+
+        buffer = new CharData("hello\nworld".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(3)).isEqualTo(0);
+        assertThat(buffer.findLineStart(5)).isEqualTo(0);
+        assertThat(buffer.findLineStart(6)).isEqualTo(6);
+        assertThat(buffer.findLineStart(10)).isEqualTo(6);
+
+        buffer = new CharData("\nhello world".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(1)).isEqualTo(1);
+        assertThat(buffer.findLineStart(5)).isEqualTo(1);
+        assertThat(buffer.findLineStart(11)).isEqualTo(1);
+
+        buffer = new CharData("hello\nworld\n".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(3)).isEqualTo(0);
+        assertThat(buffer.findLineStart(5)).isEqualTo(0);
+        assertThat(buffer.findLineStart(6)).isEqualTo(6);
+        assertThat(buffer.findLineStart(10)).isEqualTo(6);
+        assertThat(buffer.findLineStart(11)).isEqualTo(6);
+
+        buffer = new CharData("\nworld\n".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(1)).isEqualTo(1);
+        assertThat(buffer.findLineStart(4)).isEqualTo(1);
+        assertThat(buffer.findLineStart(6)).isEqualTo(1);
+
+        buffer = new CharData("a".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+
+        buffer = new CharData("\n".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+
+        buffer = new CharData("\n\n".toCharArray());
+        assertThat(buffer.findLineStart(0)).isEqualTo(0);
+        assertThat(buffer.findLineStart(1)).isEqualTo(1);
+
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> new CharData(new char[0]).findLineStart(0));
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> new CharData("abc".toCharArray()).findLineStart(-1));
+        assertThatIndexOutOfBoundsException().isThrownBy(() -> new CharData("abc".toCharArray()).findLineStart(3));
+    }
+
+    @Test
     public void testTrim() {
         CharData buffer = new CharData("    ".toCharArray());
         assertThat(buffer.trim().toString()).isEmpty();
