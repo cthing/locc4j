@@ -38,6 +38,7 @@ java {
 dependencies {
     implementation(libs.commonsIO)
     implementation(libs.cthingAnnots)
+    implementation(libs.jacksonDatabind)
     implementation(libs.jsr305)
 
     testImplementation(libs.assertJ)

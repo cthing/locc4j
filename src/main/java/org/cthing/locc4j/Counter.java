@@ -16,13 +16,22 @@
 
 package org.cthing.locc4j;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+
+import org.apache.commons.io.input.CharSequenceReader;
+
+import com.fasterxml.jackson.core.JsonPointer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.lang.System.Logger.Level.TRACE;
 
@@ -65,6 +74,8 @@ class Counter {
     }
 
     private static final System.Logger LOGGER = System.getLogger(Counter.class.getName());
+    private static final JsonPointer JUPYTER_LANGUAGE_PTR = JsonPointer.compile("/metadata/kernelspec/language");
+    private static final JsonPointer JUPYTER_EXTENSION_PTR = JsonPointer.compile("/metadata/language_info/file_extension");
 
     private final Language language;
     private final Config config;
@@ -86,8 +97,9 @@ class Counter {
      *
      * @param characters Text to be counted
      * @param fileStats Object to collect the line count stats.
+     * @throws IOException if there was a problem counting the lines.
      */
-    void count(final char[] characters, final FileStats fileStats) {
+    void count(final char[] characters, final FileStats fileStats) throws IOException {
         count(new CharData(characters), fileStats);
     }
 
@@ -97,14 +109,15 @@ class Counter {
      *
      * @param data Text to be counted
      * @param fileStats Object to collect the line count stats.
+     * @throws IOException if there was a problem counting the lines.
      */
-    void count(final CharData data, final FileStats fileStats) {
+    void count(final CharData data, final FileStats fileStats) throws IOException {
         this.quote = null;
         this.quoteType = NORMAL;
         this.commentStack.clear();
 
         if (this.language == Language.Jupyter) {
-            // countJupyter(data, fileStats)
+            countJupyter(data, fileStats);
             return;
         }
 
@@ -152,7 +165,7 @@ class Counter {
         }
     }
 
-    private void countComplex(final CharData data, final FileStats fileStats) {
+    private void countComplex(final CharData data, final FileStats fileStats) throws IOException {
         final LanguageStats stats = fileStats.stats(this.language);
         CharData.LineIterator lineIter = data.lineIterator();
 
@@ -200,28 +213,62 @@ class Counter {
         }
     }
 
-    // private void countJupyter(final CharData data, final FileStats fileStats) {
-    //     enum CellType {
-    //         Markdown,
-    //         Code
-    //     }
-    //
-    //     class JupyterCell {
-    //         public CellType cellType;
-    //         public List<String> source;
-    //     }
-    //
-    //     class JupyterMetadata {
-    //     }
-    //
-    //     class Jupyter {
-    //         public List<JupyterCell> cells;
-    //         public JupyterMetadata metadata;
-    //     }
-    // }
+    private void countJupyter(final CharSequence data, final FileStats fileStats) throws IOException {
+        final ObjectMapper mapper = new ObjectMapper();
+        final JsonNode jupyterNode = mapper.readTree(new CharSequenceReader(data));
+
+        Optional<Language> languageOpt = Optional.empty();
+        final JsonNode languageNode = jupyterNode.at(JUPYTER_LANGUAGE_PTR);
+        if (!languageNode.isMissingNode()) {
+            final String languageName = languageNode.asText();
+            languageOpt = Language.fromName(languageName);
+        }
+        if (languageOpt.isEmpty()) {
+            final JsonNode extensionNode = jupyterNode.at(JUPYTER_EXTENSION_PTR);
+            if (!extensionNode.isMissingNode()) {
+                final String extension = extensionNode.asText();
+                languageOpt = Language.fromFileExtension(extension);
+            }
+        }
+        final Language lang = languageOpt.orElse(Language.Python);
+
+        final JsonNode cellsNode = jupyterNode.get("cells");
+        if (cellsNode != null) {
+            for (final JsonNode cellNode : cellsNode) {
+                final JsonNode cellTypeNode = cellNode.get("cell_type");
+                if (cellTypeNode != null) {
+                    final String cellType = cellTypeNode.asText();
+                    final JsonNode sourceNode = cellNode.get("source");
+                    if (sourceNode != null) {
+                        final List<String> sourceLines = new ArrayList<>();
+                        for (final JsonNode sourceLineNode : sourceNode) {
+                            final String sourceLine = sourceLineNode.asText();
+                            sourceLines.add(sourceLine);
+                        }
+                        final String source = String.join("", sourceLines);
+                        switch (cellType) {
+                            case "markdown": {
+                                final Counter counter = new Counter(Language.Markdown, this.config);
+                                counter.count(source.toCharArray(), fileStats);
+                                break;
+                            }
+                            case "code": {
+                                final Counter counter = new Counter(lang, this.config);
+                                counter.count(source.toCharArray(), fileStats);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private Optional<Embedding.Embedded> performMultiLineAnalysis(final CharData lines, final int start,
-                                                                  final int end, final FileStats fileStats) {
+                                                                  final int end, final FileStats fileStats)
+            throws IOException {
         int skip = 0;
 
         final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(this.language, lines, start, end);
