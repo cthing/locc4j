@@ -16,6 +16,7 @@
 
 package org.cthing.locc4j;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,18 @@ public class CharDataTest {
         assertThat(buffer.isBlank()).isFalse();
         assertThat(buffer.length()).isEqualTo(data.length());
         assertThat(buffer).hasToString(data);
+    }
+
+    @Test
+    public void testConstructFromChunks() {
+        final CharData chunk1 = new CharData("Hello ".toCharArray());
+        final CharData chunk2 = new CharData("World".toCharArray());
+        final CharData chunk3 = new CharData("!".toCharArray());
+        final CharData buffer = new CharData(List.of(chunk1, chunk2, chunk3));
+        assertThat(buffer.isEmpty()).isFalse();
+        assertThat(buffer.isBlank()).isFalse();
+        assertThat(buffer.length()).isEqualTo(12);
+        assertThat(buffer).hasToString("Hello World!");
     }
 
     @Test

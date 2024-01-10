@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 C Thing Software
+ * Copyright 2024 C Thing Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,11 +88,26 @@ class Counter {
      * @param fileStats Object to collect the line count stats.
      */
     void count(final char[] characters, final FileStats fileStats) {
+        count(new CharData(characters), fileStats);
+    }
+
+    /**
+     * Performs the counting of lines in the data specified in the constructor. Stats will be added to the specified
+     * stats object. Note that the counts are added to any existing counts in the specified stats object.
+     *
+     * @param data Text to be counted
+     * @param fileStats Object to collect the line count stats.
+     */
+    void count(final CharData data, final FileStats fileStats) {
         this.quote = null;
         this.quoteType = NORMAL;
         this.commentStack.clear();
 
-        final CharData data = new CharData(characters);
+        if (this.language == Language.Jupyter) {
+            // countJupyter(data, fileStats)
+            return;
+        }
+
         final Matcher matcher = data.matcher(this.language.getImportantSyntax());
         final boolean found = matcher.find();
         if (!found) {
@@ -139,7 +154,7 @@ class Counter {
 
     private void countComplex(final CharData data, final FileStats fileStats) {
         final LanguageStats stats = fileStats.stats(this.language);
-        final CharData.LineIterator lineIter = data.lineIterator();
+        CharData.LineIterator lineIter = data.lineIterator();
 
         while (lineIter.hasNext()) {
             CharData line = lineIter.next();
@@ -159,7 +174,107 @@ class Counter {
 
             final boolean startedInComments = !this.commentStack.isEmpty()
                     || (this.config.isCountDocStrings() && this.quote != null && this.quoteType == DOC);
+
+            final Optional<Embedding.Embedded> embeddedOpt = performMultiLineAnalysis(data, lineIter.getStart(),
+                                                                                      lineIter.getEnd(), fileStats);
+
+            if (embeddedOpt.isPresent()) {
+                final Embedding.Embedded embedded = embeddedOpt.get();
+                stats.addCommentLines(embedded.getCommentLines());
+                stats.addCodeLines(embedded.getAdditionalCodeLines());
+
+                lineIter = data.subSequence(embedded.getCodeEnd()).lineIterator();
+                continue;
+            }
+
+            LOGGER.log(TRACE, line);
+
+            if (this.language.isLiterate() || isCommentLine(line, startedInComments)) {
+                stats.incrementCommentLines();
+                LOGGER.log(TRACE, "Comment no. {0}", stats.getCommentLines());
+                LOGGER.log(TRACE, "Was the comment stack empty?: {0}", !startedInComments);
+            } else {
+                stats.incrementCodeLines();
+                LOGGER.log(TRACE, "Code no. {0}", stats.getCodeLines());
+            }
         }
+    }
+
+    // private void countJupyter(final CharData data, final FileStats fileStats) {
+    //     enum CellType {
+    //         Markdown,
+    //         Code
+    //     }
+    //
+    //     class JupyterCell {
+    //         public CellType cellType;
+    //         public List<String> source;
+    //     }
+    //
+    //     class JupyterMetadata {
+    //     }
+    //
+    //     class Jupyter {
+    //         public List<JupyterCell> cells;
+    //         public JupyterMetadata metadata;
+    //     }
+    // }
+
+    private Optional<Embedding.Embedded> performMultiLineAnalysis(final CharData lines, final int start,
+                                                                  final int end, final FileStats fileStats) {
+        int skip = 0;
+
+        final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(this.language, lines, start, end);
+
+        for (int i = start; i < end; i++) {
+            if (skip != 0) {
+                skip--;
+                continue;
+            }
+
+            final CharData window = lines.subSequence(i);
+            if (window.isBlank()) {
+                break;
+            }
+
+            Optional<Integer> endOfQuoteOpt = parseEndOfQuote(window);
+            if (endOfQuoteOpt.isEmpty()) {
+                endOfQuoteOpt = parseEndOfMultiLine(window);
+            }
+
+            if (endOfQuoteOpt.isPresent()) {
+                skip = endOfQuoteOpt.get() - 1;
+                continue;
+            } else if (this.quote != null) {
+                continue;
+            }
+
+            if (embeddedOpt.isPresent() && this.commentStack.isEmpty()) {
+                final Embedding.Embedded embedded = embeddedOpt.get();
+                final int embeddedStart = embedded.getEmbeddedStart();
+                if (i == embeddedStart) {
+                    final Counter counter = new Counter(embedded.getLanguage(), this.config);
+                    counter.count(embedded.getCode(), fileStats);
+                    return embeddedOpt;
+                }
+            }
+
+            Optional<Integer> quoteOrMultiLine = parseQuote(window);
+            if (quoteOrMultiLine.isEmpty()) {
+                quoteOrMultiLine = parseMultiLineComment(window);
+            }
+
+            if (quoteOrMultiLine.isPresent()) {
+                skip = quoteOrMultiLine.get() - 1;
+                continue;
+            }
+
+            if (parseLineComment(window)) {
+                break;
+            }
+        }
+
+        return Optional.empty();
     }
 
     private boolean tryCountSingleLine(final CharData line, final LanguageStats stats) {
@@ -188,6 +303,42 @@ class Counter {
         }
 
         return true;
+    }
+
+    private boolean isCommentLine(final CharData line, final boolean startedInComments) {
+        final CharData trimmed = line.trim();
+
+        if (this.quote != null) {
+            return this.quoteType == DOC && this.config.isCountDocStrings();
+        }
+
+        if (this.language.getDocQuotes()
+                                .stream()
+                                .anyMatch(bd -> line.contains(bd.end())) && startedInComments) {
+            return true;
+        }
+
+        if (this.language.getLineComments()
+                         .stream()
+                         .anyMatch(trimmed::startsWith)
+                || this.language.getAllMultiLineComments()
+                                .stream()
+                                .anyMatch(bd -> trimmed.startsWith(bd.start()) && trimmed.endsWith(bd.end()))) {
+            return true;
+        }
+
+        if (startedInComments) {
+            return true;
+        }
+
+        final CharSequence currentComment = this.commentStack.peek();
+        if (currentComment == null) {
+            return false;
+        }
+
+        return this.language.getAllMultiLineComments()
+                            .stream()
+                            .anyMatch(bd -> bd.end().contentEquals(currentComment) && trimmed.startsWith(bd.start()));
     }
 
     private boolean parseLineComment(final CharData window) {

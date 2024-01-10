@@ -18,6 +18,7 @@ package org.cthing.locc4j;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,6 +93,29 @@ public class CharData implements CharSequence {
 
     public CharData(final char[] buffer) {
         this(buffer, 0, buffer.length);
+    }
+
+    public CharData(final List<CharData> chunks) {
+        int totalLength = 0;
+        for (final CharData chunk : chunks) {
+            totalLength += chunk.length;
+        }
+
+        if (totalLength == 0) {
+            this.buffer = new char[0];
+            this.offset = 0;
+            this.length = 0;
+        } else {
+            this.buffer = new char[totalLength];
+            this.offset = 0;
+            this.length = totalLength;
+
+            int startPos = 0;
+            for (final CharData chunk : chunks) {
+                System.arraycopy(chunk.buffer, 0, this.buffer, startPos, chunk.length);
+                startPos += chunk.length;
+            }
+        }
     }
 
     private CharData(final char[] buffer, final int offset, final int length) {

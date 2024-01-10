@@ -648,7 +648,8 @@
       "quotes": [["\"", "\""], ["'", "'"]],
       "important_syntax": ["<script", "<style"],
       "mime": ["text/html"],
-      "extensions": ["html", "htm"]
+      "extensions": ["html", "htm"],
+      "embed_syntax": "html"
     },
     "Hy": {
       "line_comment": [";"],
@@ -886,7 +887,8 @@
     "Markdown": {
       "literate": true,
       "important_syntax": ["```"],
-      "extensions": ["md", "markdown"]
+      "extensions": ["md", "markdown"],
+      "embed_syntax": "markdown"
     },
     "Meson": {
       "line_comment": ["#"],
@@ -1258,7 +1260,8 @@
       "multi_line_comments": [["<!--", "-->"]],
       "important_syntax": ["<script", "<style"],
       "quotes": [["\"", "\""], ["'", "'"]],
-      "extensions": ["rhtml", "erb"]
+      "extensions": ["rhtml", "erb"],
+      "embed_syntax": "html"
     },
     "Rust": {
       "line_comment": ["//"],
@@ -1267,7 +1270,8 @@
       "important_syntax": ["///", "//!"],
       "extensions": ["rs"],
       "quotes": [["\"", "\""], ["#\"", "\"#"]],
-      "verbatim_quotes": [["r##\"", "\"##"], ["r#\"", "\"#"]]
+      "verbatim_quotes": [["r##\"", "\"##"], ["r#\"", "\"#"]],
+      "embed_syntax": "rust"
     },
     "Sass": {
       "line_comment": ["//"],
@@ -1384,7 +1388,8 @@
       "multi_line_comments": [["<!--", "-->"]],
       "important_syntax": ["<script", "<style"],
       "quotes": [["\"", "\""], ["'", "'"]],
-      "extensions": ["svelte"]
+      "extensions": ["svelte"],
+      "embed_syntax": "html"
     },
     "Svg": {
       "name": "SVG",
@@ -1494,7 +1499,8 @@
     "UnrealDeveloperMarkdown": {
       "name": "Unreal Markdown",
       "important_syntax": ["```"],
-      "extensions": ["udn"]
+      "extensions": ["udn"],
+      "embed_syntax": "markdown"
     },
     "UnrealPlugin": {
       "name": "Unreal Plugin",
@@ -1603,7 +1609,8 @@
       "multi_line_comments": [["<!--", "-->"], ["/*", "*/"]],
       "quotes": [["\"", "\""], ["'", "'"], ["`", "`"]],
       "important_syntax": ["<script", "<style", "<template"],
-      "extensions": ["vue"]
+      "extensions": ["vue"],
+      "embed_syntax": "html"
     },
     "WebAssembly": {
       "line_comment": [";;"],

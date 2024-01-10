@@ -49,6 +49,7 @@ import static org.cthing.locc4j.RegexUtils.NOTHING_REGEX;
 /**
  * Information about each language that can be counted.
  */
+@SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "MethodDoesntCallSuperMethod" })
 public enum Language {
 <#list languages as id, entry>
     ${id}(
@@ -63,13 +64,26 @@ public enum Language {
         List.of(<@expand_block_params params=entry.docQuotes()/>),
         ${entry.columnSignificant()?c},
         ${entry.importantSyntaxRegex()},
-        List.of(<@expand_params params=entry.extensions()/>)
-    )<#if id?is_last>;<#else>,</#if>
+        List.of(<@expand_params params=entry.extensions()/>),
+        List.of(<@expand_params params=entry.allComments()/>),
+        List.of(<@expand_block_params params=entry.allMultiLineComments()/>)
+    ) {
+        <#if entry.embedSyntax()?has_content>
+        @Override
+        public Optional<Embedding.Syntax> getEmbedSyntax() {
+            return ${entry.embedSyntax()?upper_case}_EMBEDDING;
+        }
+        </#if>
+    }<#if id?is_last>;<#else>,</#if>
 </#list>
 
     private static final Map<String, Language> NAMES = new HashMap<>();
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
+    private static final Optional<Embedding.Syntax> HTML_EMBEDDING = Optional.of(Embedding.Syntax.html);
+    private static final Optional<Embedding.Syntax> MARKDOWN_EMBEDDING = Optional.of(Embedding.Syntax.markdown);
+    private static final Optional<Embedding.Syntax> RUST_EMBEDDING = Optional.of(Embedding.Syntax.rust);
+    private static final Optional<Embedding.Syntax> NO_EMBEDDING = Optional.empty();
 
     private final String name;
     private final boolean literate;
@@ -83,6 +97,8 @@ public enum Language {
     private final boolean columnSignificant;
     private final Pattern importantSyntax;
     private final List<String> extensions;
+    private final List<String> allComments;
+    private final List<BlockDelimiter> allMultiLineComments;
 
     static {
         for (final Language language : values()) {
@@ -96,7 +112,8 @@ public enum Language {
              final List<BlockDelimiter> nestedComments, final List<BlockDelimiter> quotes,
              final List<BlockDelimiter> verbartimQuotes, final List<BlockDelimiter> docQuotes,
              final boolean columnSignificant, final Pattern importantSyntax,
-             final List<String> extensions) {
+             final List<String> extensions, final List<String> allComments,
+             final List<BlockDelimiter> allMultiLineComments) {
         this.name = name;
         this.literate = literate;
         this.lineComments = lineComments;
@@ -109,6 +126,8 @@ public enum Language {
         this.columnSignificant = columnSignificant;
         this.importantSyntax = importantSyntax;
         this.extensions = extensions;
+        this.allComments = allComments;
+        this.allMultiLineComments = allMultiLineComments;
     }
 
     public String getName() {
@@ -157,6 +176,18 @@ public enum Language {
 
     public List<String> getExtensions() {
         return this.extensions;
+    }
+
+    public Optional<Embedding.Syntax> getEmbedSyntax() {
+        return NO_EMBEDDING;
+    }
+
+    public List<String> getAllComments() {
+        return this.allComments;
+    }
+
+    public List<BlockDelimiter> getAllMultiLineComments() {
+        return this.allMultiLineComments;
     }
 
     /**
@@ -213,6 +244,23 @@ public enum Language {
      */
     public static Optional<Language> fromFileExtension(final String extension) {
         return Optional.ofNullable(EXTENSIONS.get(extension.toLowerCase(Locale.ROOT)));
+    }
+
+    /**
+    * Attempts to obtain the language corresponding to the specified language identifier.
+    *
+    * @param id Language identifier to find
+    * @return Language corresponding to the specified identifier. Comparisons are case-insensitive. If the language
+    *       cannot be determined, an empty {@link Optional} is returned.
+    */
+    public static Optional<Language> fromId(final String id) {
+        final String normalizedId = id.toLowerCase(Locale.ROOT);
+        for (final Language language : values()) {
+            if (language.toString().toLowerCase(Locale.ROOT).equals(normalizedId)) {
+                return Optional.of(language);
+            }
+        }
+        return Optional.empty();
     }
 
     /**

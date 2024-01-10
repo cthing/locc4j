@@ -48,7 +48,11 @@ public class LanguageTest {
         assertThat(css.isColumnSignificant()).isFalse();
         assertThat(css.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
         assertThat(css.getExtensions()).containsExactly("css");
+        assertThat(css.getAllComments()).containsExactlyInAnyOrder("/*", "*/", "//");
 
+        assertThat(Language.D.getAllComments()).containsExactlyInAnyOrder("/*", "*/", "/+", "+/", "//");
+        assertThat(Language.D.getAllMultiLineComments()).containsExactlyInAnyOrder(new BlockDelimiter("/*", "*/"),
+                                                                                   new BlockDelimiter("/+", "+/"));
         assertThat(Language.Elm.isNestable()).isTrue();
         assertThat(Language.FortranLegacy.isColumnSignificant()).isTrue();
         assertThat(Language.Markdown.isLiterate()).isTrue();
@@ -101,6 +105,12 @@ public class LanguageTest {
 
         final File missingFile = new File("/tmp/locc4j__NOT_FOUND_____");
         assertThat(Language.fromShebang(missingFile)).isEmpty();
+    }
+
+    @Test
+    public void testFromId() {
+        assertThat(Language.fromId("css")).contains(Language.Css);
+        assertThat(Language.fromId("__XXYYZZ")).isEmpty();
     }
 
     @Test

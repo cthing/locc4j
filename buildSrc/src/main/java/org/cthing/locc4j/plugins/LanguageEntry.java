@@ -16,9 +16,11 @@
 
 package org.cthing.locc4j.plugins;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -60,6 +62,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *      (e.g. Makefile, Dockerfile). Filenames are specified in lowercase, regardless of whether the filename
  *      is typically written with capital letters. Filename matching is case-insensitive. Filenames take precedence
  *      over extensions. For example, a file named {@code CMakeLists.txt} is detected as a CMake file, not a Text file.
+ * @param embedSyntax If the language allows embedding other languages within it, this field indicates the syntax
+ *      family it uses. Currently, the available syntax families are {@code html}, {@code markdown}, and {@code rust}.
+ *      For example, the {@code html} syntax family uses HTML embedding tags (e.g. {@literal <script>},
+ *      {@literal <style>}, and {@literal <template>}).
  */
 public record LanguageEntry(
         @JsonProperty("name") @Nullable String name,
@@ -77,9 +83,11 @@ public record LanguageEntry(
         @JsonProperty("mime") @Nullable List<String> mime,
         @JsonProperty("column_significant") boolean columnSignificant,
         @JsonProperty("important_syntax") @Nullable List<String> importantSyntax,
-        @JsonProperty("filenames") @Nullable List<String> filenames
+        @JsonProperty("filenames") @Nullable List<String> filenames,
+        @JsonProperty("embed_syntax") @Nullable String embedSyntax
 ) {
     private static final Pattern REGEX_ESCAPE_PATTERN = Pattern.compile("([\\^$.|?*+()\\[\\]{}])");
+    private static final Pattern REGEX_CHAR_CLASS_ESCAPE_PATTERN = Pattern.compile("([\\^\\[\\]])");
 
     @Override
     public List<String> lineComments() {
@@ -140,22 +148,64 @@ public record LanguageEntry(
      * @return Regular expression representing important start delimiters and other syntax.
      */
     public String importantSyntaxRegex() {
-        final List<String> important = quotes().stream().map(pair -> pair.get(0)).collect(Collectors.toList());
-        docQuotes().stream().map(pair -> pair.get(0)).forEach(important::add);
-        multiLineComments().stream().map(pair -> pair.get(0)).forEach(important::add);
-        nestedComments().stream().map(pair -> pair.get(0)).forEach(important::add);
-
+        Stream<String> syntaxStream = quotes().stream().map(pair -> pair.get(0));
+        syntaxStream = Stream.concat(syntaxStream, docQuotes().stream().map(pair -> pair.get(0)));
+        syntaxStream = Stream.concat(syntaxStream, multiLineComments().stream().map(pair -> pair.get(0)));
+        syntaxStream = Stream.concat(syntaxStream, nestedComments().stream().map(pair -> pair.get(0)));
         if (this.importantSyntax != null) {
-            important.addAll(this.importantSyntax);
+            syntaxStream = Stream.concat(syntaxStream, this.importantSyntax.stream());
         }
 
-        return important.isEmpty() ? "NOTHING_REGEX"
-                                   : "compile(\"" + String.join("|", escapeRegexList(important)) + "\")";
+        final List<String> important = syntaxStream.toList();
+        if (important.isEmpty()) {
+            return "NOTHING_REGEX";
+        }
+        if (isCharacterClass(important)) {
+            if (important.size() == 1) {
+                return "compile(\"" + escapeRegexChracterClass(important).get(0) + "\")";
+            }
+            return "compile(\"[" + String.join("", escapeRegexChracterClass(important)) + "]\")";
+        }
+        return "compile(\"" + String.join("|", escapeRegexList(important)) + "\")";
+    }
+
+    /**
+     * Creates a list of all comment character sequences (i.e. line, multiline, and nested).
+     *
+     * @return All comment character sequences.
+     */
+    public List<String> allComments() {
+        final Stream<String> multiLineStream = multiLineComments().stream().flatMap(Collection::stream);
+        final Stream<String> nestedStream = nestedComments().stream().flatMap(Collection::stream);
+        final Stream<String> lineStream = lineComments().stream();
+        return Stream.concat(Stream.concat(multiLineStream, nestedStream), lineStream).collect(Collectors.toList());
+    }
+
+    /**
+     * Creates a list of all multiline comment character sequences, both normal and nested.
+     *
+     * @return All multiline comment character sequences.
+     */
+    public List<List<String>> allMultiLineComments() {
+        final Stream<List<String>> multiLineStream = multiLineComments().stream();
+        final Stream<List<String>> nestedStream = nestedComments().stream();
+        return Stream.concat(multiLineStream, nestedStream).collect(Collectors.toList());
     }
 
     @Override
     public List<String> filenames() {
         return this.filenames == null ? List.of() : this.filenames;
+    }
+
+    /**
+     * Determines whether the specified list of regular expressions can be combined into a character class rather
+     * than alternations.
+     *
+     * @param regexes Regular expressions to test
+     * @return {@code true} if the specified regular expressions can be combined into a character class.
+     */
+    private static boolean isCharacterClass(final List<String> regexes) {
+        return regexes.stream().allMatch(regex -> regex.length() == 1 || "\\\"".equals(regex));
     }
 
     /**
@@ -187,6 +237,18 @@ public record LanguageEntry(
     private static List<String> escapeRegexList(final List<String> regexes) {
         return regexes.stream()
                       .map(regex -> REGEX_ESCAPE_PATTERN.matcher(regex).replaceAll("\\\\\\\\$1"))
+                      .collect(Collectors.toList());
+    }
+
+    /**
+     * Performs escaping on the specified list of regular expressions for use in a character class.
+     *
+     * @param regexes List of regular expressions to escape
+     * @return List of escaped regular expressions.
+     */
+    private static List<String> escapeRegexChracterClass(final List<String> regexes) {
+        return regexes.stream()
+                      .map(regex -> REGEX_CHAR_CLASS_ESCAPE_PATTERN.matcher(regex).replaceAll("\\\\\\\\$1"))
                       .collect(Collectors.toList());
     }
 }
