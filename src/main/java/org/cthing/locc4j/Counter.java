@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.commons.io.input.CharSequenceReader;
+import org.cthing.annotations.AccessForTesting;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -73,22 +74,30 @@ class Counter {
         VERBATIM,
     }
 
+    static class State {
+        @Nullable
+        CharSequence quote;
+        QuoteType quoteType = NORMAL;
+        final LinkedList<CharSequence> commentStack = new LinkedList<>();
+    }
+
     private static final System.Logger LOGGER = System.getLogger(Counter.class.getName());
     private static final JsonPointer JUPYTER_LANGUAGE_PTR = JsonPointer.compile("/metadata/kernelspec/language");
     private static final JsonPointer JUPYTER_EXTENSION_PTR = JsonPointer.compile("/metadata/language_info/file_extension");
 
     private final Language language;
     private final Config config;
-    @Nullable
-    private CharSequence quote;
-    private QuoteType quoteType;
-    private final LinkedList<CharSequence> commentStack;
+    private final State state;
 
     Counter(final Language language, final Config config) {
+        this(language, config, new State());
+    }
+
+    @AccessForTesting
+    Counter(final Language language, final Config config, final State state) {
         this.language = language;
         this.config = config;
-        this.quoteType = NORMAL;
-        this.commentStack = new LinkedList<>();
+        this.state = state;
     }
 
     /**
@@ -112,9 +121,9 @@ class Counter {
      * @throws IOException if there was a problem counting the lines.
      */
     void count(final CharData data, final FileStats fileStats) throws IOException {
-        this.quote = null;
-        this.quoteType = NORMAL;
-        this.commentStack.clear();
+        this.state.quote = null;
+        this.state.quoteType = NORMAL;
+        this.state.commentStack.clear();
 
         if (this.language == Language.Jupyter) {
             countJupyter(data, fileStats);
@@ -125,12 +134,14 @@ class Counter {
         final boolean found = matcher.find();
         if (!found) {
             countComplex(data, fileStats);
+            return;
         }
 
         final int syntaxStart = matcher.start();
         final int lineStart = data.findLineStart(syntaxStart);
         if (lineStart == 0) {
             countComplex(data, fileStats);
+            return;
         }
 
         final CharData[] sections = data.splitAt(lineStart);
@@ -185,8 +196,8 @@ class Counter {
                 continue;
             }
 
-            final boolean startedInComments = !this.commentStack.isEmpty()
-                    || (this.config.isCountDocStrings() && this.quote != null && this.quoteType == DOC);
+            final boolean startedInComments = !this.state.commentStack.isEmpty()
+                    || (this.config.isCountDocStrings() && this.state.quote != null && this.state.quoteType == DOC);
 
             final Optional<Embedding.Embedded> embeddedOpt = performMultiLineAnalysis(data, lineIter.getStart(),
                                                                                       lineIter.getEnd(), fileStats);
@@ -266,8 +277,19 @@ class Counter {
         }
     }
 
-    private Optional<Embedding.Embedded> performMultiLineAnalysis(final CharData lines, final int start,
-                                                                  final int end, final FileStats fileStats)
+    /**
+     * Processes the specified character data to handle multiline constructs and embedded languages.
+     *
+     * @param lines Character data to analyze
+     * @param start Location in the data to start analyzing (inclusive)
+     * @param end Location in the data to end analyzing (exclusive)
+     * @param fileStats Line counts
+     * @return Information about an embedded language, if found
+     * @throws IOException If there was a problem processing the character data.
+     */
+    @AccessForTesting
+    Optional<Embedding.Embedded> performMultiLineAnalysis(final CharData lines, final int start,
+                                                          final int end, final FileStats fileStats)
             throws IOException {
         int skip = 0;
 
@@ -279,11 +301,13 @@ class Counter {
                 continue;
             }
 
+            // 1) The data is empty or whitespace.
             final CharData window = lines.subSequence(i);
             if (window.isBlank()) {
                 break;
             }
 
+            // 2) Quote end delimiter
             Optional<Integer> endOfQuoteOpt = parseEndOfQuote(window);
             if (endOfQuoteOpt.isEmpty()) {
                 endOfQuoteOpt = parseEndOfMultiLine(window);
@@ -292,11 +316,12 @@ class Counter {
             if (endOfQuoteOpt.isPresent()) {
                 skip = endOfQuoteOpt.get() - 1;
                 continue;
-            } else if (this.quote != null) {
+            } else if (this.state.quote != null) {
                 continue;
             }
 
-            if (embeddedOpt.isPresent() && this.commentStack.isEmpty()) {
+            // 3) Embedded language
+            if (embeddedOpt.isPresent() && this.state.commentStack.isEmpty()) {
                 final Embedding.Embedded embedded = embeddedOpt.get();
                 final int embeddedStart = embedded.getEmbeddedStart();
                 if (i == embeddedStart) {
@@ -306,6 +331,7 @@ class Counter {
                 }
             }
 
+            // 4) Quote start delimiter
             Optional<Integer> quoteOrMultiLine = parseQuote(window);
             if (quoteOrMultiLine.isEmpty()) {
                 quoteOrMultiLine = parseMultiLineComment(window);
@@ -316,15 +342,26 @@ class Counter {
                 continue;
             }
 
+            // 5) Single line comment
             if (parseLineComment(window)) {
                 break;
             }
         }
 
+        // 6) Nothing of interest
         return Optional.empty();
     }
 
-    private boolean tryCountSingleLine(final CharData line, final LanguageStats stats) {
+    /**
+     * Attempts to count the specified character data as a line. If the line contains characters that introduce
+     * multiline constructs (e.g. strings, comments), it cannot be counted yet.
+     *
+     * @param line Character data to count
+     * @param stats Line counts to update
+     * @return {@code true} if the line could be counted.
+     */
+    @AccessForTesting
+    boolean tryCountSingleLine(final CharData line, final LanguageStats stats) {
         if (parsingMode() != CODE) {
             return false;
         }
@@ -352,19 +389,30 @@ class Counter {
         return true;
     }
 
-    private boolean isCommentLine(final CharData line, final boolean startedInComments) {
+    /**
+     * Determines whether the specified line is a comment.
+     *
+     * @param line Character data to test
+     * @param startedInComments Indicates whether already in a multiline comment
+     * @return {@code true} if the line is a comment.
+     */
+    @AccessForTesting
+    boolean isCommentLine(final CharData line, final boolean startedInComments) {
         final CharData trimmed = line.trim();
 
-        if (this.quote != null) {
-            return this.quoteType == DOC && this.config.isCountDocStrings();
+        // 1) If in a doc string, count it as a comment if configured to do so
+        if (this.state.quote != null) {
+            return this.state.quoteType == DOC && this.config.isCountDocStrings();
         }
 
+        // 2) If in a multiline comment and the line contains the doc string end delimiter
         if (this.language.getDocQuotes()
                                 .stream()
                                 .anyMatch(bd -> line.contains(bd.end())) && startedInComments) {
             return true;
         }
 
+        // 3) If this is a line comment or the line contains a single line comment using multiline syntax
         if (this.language.getLineComments()
                          .stream()
                          .anyMatch(trimmed::startsWith)
@@ -374,21 +422,31 @@ class Counter {
             return true;
         }
 
+        // 4) If in a multiline comment
         if (startedInComments) {
             return true;
         }
 
-        final CharSequence currentComment = this.commentStack.peek();
+        // 5) If there is an open multiline comment
+        final CharSequence currentComment = this.state.commentStack.peek();
         if (currentComment == null) {
             return false;
         }
 
+        // 6) If the line starts a multiline comment
         return this.language.getAllMultiLineComments()
                             .stream()
                             .anyMatch(bd -> bd.end().contentEquals(currentComment) && trimmed.startsWith(bd.start()));
     }
 
-    private boolean parseLineComment(final CharData window) {
+    /**
+     * Parses the specified character data to determine whether it represents a line comment.
+     *
+     * @param window Character data to parse
+     * @return {@code true} if the specified character data represents a line comment
+     */
+    @AccessForTesting
+    boolean parseLineComment(final CharData window) {
         final ParsingMode mode = parsingMode();
         if (mode != CODE) {
             return false;
@@ -405,8 +463,15 @@ class Counter {
         return false;
     }
 
-    private Optional<Integer> parseQuote(final CharData window) {
-        if (!this.commentStack.isEmpty()) {
+    /**
+     * Parses the specified character data for the start of a quote.
+     *
+     * @param window Character data to parse
+     * @return Length of the quote start delimiter if found.
+     */
+    @AccessForTesting
+    Optional<Integer> parseQuote(final CharData window) {
+        if (!this.state.commentStack.isEmpty()) {
             return Optional.empty();
         }
 
@@ -417,8 +482,8 @@ class Counter {
         if (docDelimOpt.isPresent()) {
             final BlockDelimiter delim = docDelimOpt.get();
             LOGGER.log(TRACE, "Start doc {0}", delim.start());
-            this.quote = delim.end();
-            this.quoteType = DOC;
+            this.state.quote = delim.end();
+            this.state.quoteType = DOC;
             return Optional.of(delim.start().length());
         }
 
@@ -429,8 +494,8 @@ class Counter {
         if (verbatimDelimOpt.isPresent()) {
             final BlockDelimiter delim = verbatimDelimOpt.get();
             LOGGER.log(TRACE, "Start verbatim {0}", delim.start());
-            this.quote = delim.end();
-            this.quoteType = VERBATIM;
+            this.state.quote = delim.end();
+            this.state.quoteType = VERBATIM;
             return Optional.of(delim.start().length());
         }
 
@@ -441,25 +506,34 @@ class Counter {
         if (quotesOpt.isPresent()) {
             final BlockDelimiter delim = quotesOpt.get();
             LOGGER.log(TRACE, "Start {0}", delim.start());
-            this.quote = delim.end();
-            this.quoteType = NORMAL;
+            this.state.quote = delim.end();
+            this.state.quoteType = NORMAL;
             return Optional.of(delim.start().length());
         }
 
         return Optional.empty();
     }
 
-    private Optional<Integer> parseEndOfQuote(final CharData window) {
-        if (parsingMode() == STRING && this.quote != null && window.startsWith(this.quote)) {
-            LOGGER.log(TRACE, "End {0}", this.quote);
-            return Optional.of(this.quote.length());
+    /**
+     * Parses the specified character data for the end of a quote.
+     *
+     * @param window Character data to parse
+     * @return The number of characters to advance if the end of a quote has been found or escaping is being used
+     *      outside a verbatim string.
+     */
+    @AccessForTesting
+    Optional<Integer> parseEndOfQuote(final CharData window) {
+        //noinspection DataFlowIssue
+        if (parsingMode() == STRING && window.startsWith(this.state.quote)) {
+            LOGGER.log(TRACE, "End {0}", this.state.quote);
+            return Optional.of(this.state.quote.length());
         }
 
-        if (this.quoteType != VERBATIM && window.startsWith("\\\\")) {
+        if (this.state.quoteType != VERBATIM && window.startsWith("\\\\")) {
             return Optional.of(2);
         }
 
-        if (this.quoteType != VERBATIM
+        if (this.state.quoteType != VERBATIM
                 && window.startsWith("\\")
                 && this.language.getQuotes()
                                 .stream()
@@ -473,8 +547,15 @@ class Counter {
         return Optional.empty();
     }
 
-    private Optional<Integer> parseMultiLineComment(final CharData window) {
-        if (this.quote != null) {
+    /**
+     * Parses the specified character data for the start of a multiline comment.
+     *
+     * @param window Character data to parse
+     * @return The length of the comment start delimiter if one is found.
+     */
+    @AccessForTesting
+    Optional<Integer> parseMultiLineComment(final CharData window) {
+        if (this.state.quote != null) {
             return Optional.empty();
         }
 
@@ -482,10 +563,10 @@ class Counter {
                                                                    this.language.getNestedComments().stream());
         return commentDelims.filter(delim -> window.startsWith(delim.start()))
                             .map(delim -> {
-                                if (this.commentStack.isEmpty()
+                                if (this.state.commentStack.isEmpty()
                                         || this.language.isNestable()
                                         || this.language.getNestedComments().contains(delim)) {
-                                    this.commentStack.push(delim.end());
+                                    this.state.commentStack.push(delim.end());
 
                                     if (LOGGER.isLoggable(TRACE) && this.language.isNestable()) {
                                         LOGGER.log(TRACE, "Start nested {0}", delim.start());
@@ -499,17 +580,24 @@ class Counter {
                             .findFirst();
     }
 
-    private Optional<Integer> parseEndOfMultiLine(final CharData window) {
-        final CharSequence endComment = this.commentStack.peek();
+    /**
+     * Parses the specified character data for the presence of a multiline comment end delimiter.
+     *
+     * @param window Character data to parse
+     * @return The length of the comment end delimiter if one is found.
+     */
+    @AccessForTesting
+    Optional<Integer> parseEndOfMultiLine(final CharData window) {
+        final CharSequence endComment = this.state.commentStack.peek();
         if (endComment == null) {
             return Optional.empty();
         }
 
         if (window.startsWith(endComment)) {
-            this.commentStack.pop();
+            this.state.commentStack.pop();
 
             if (LOGGER.isLoggable(TRACE)) {
-                if (this.commentStack.isEmpty()) {
+                if (this.state.commentStack.isEmpty()) {
                     LOGGER.log(TRACE, "End {0}", endComment);
                 } else {
                     LOGGER.log(TRACE, "Emd {0}. Still in comments.", endComment);
@@ -522,11 +610,18 @@ class Counter {
         return Optional.empty();
     }
 
-    private ParsingMode parsingMode() {
-        if (this.quote == null && this.commentStack.isEmpty()) {
+    /**
+     * Indicates the current state of parsing. The parser is within a string, comment or
+     * code.
+     *
+     * @return Current parsing state.
+     */
+    @AccessForTesting
+    ParsingMode parsingMode() {
+        if (this.state.quote == null && this.state.commentStack.isEmpty()) {
             return CODE;
         }
-        if (this.quote != null) {
+        if (this.state.quote != null) {
             return STRING;
         }
         return COMMENT;

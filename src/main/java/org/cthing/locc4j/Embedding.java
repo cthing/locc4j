@@ -241,7 +241,7 @@ final class Embedding {
             final CharData window2 = lines.subSequence(codeStart);
             final Matcher scriptEndMatcher = window2.matcher(HTML_SCRIPT_END_REGEX);
             if (scriptEndMatcher.find()) {
-                final int codeEnd = start + scriptEndMatcher.start();
+                final int codeEnd = codeStart + scriptEndMatcher.start();
                 final CharData code = lines.subSequence(codeStart, codeEnd);
                 if (!code.isBlank()) {
                     return Optional.of(new HtmlEmbedded(language, scriptStart, codeEnd, code));
@@ -271,7 +271,7 @@ final class Embedding {
             final CharData window2 = lines.subSequence(codeStart);
             final Matcher styleEndMatcher = window2.matcher(HTML_STYLE_END_REGEX);
             if (styleEndMatcher.find()) {
-                final int codeEnd = start + styleEndMatcher.start();
+                final int codeEnd = codeStart + styleEndMatcher.start();
                 final CharData code = lines.subSequence(codeStart, codeEnd);
                 if (!code.isBlank()) {
                     return Optional.of(new HtmlEmbedded(language, styleStart, codeEnd, code));
@@ -301,7 +301,7 @@ final class Embedding {
             final CharData window2 = lines.subSequence(codeStart);
             final Matcher templateEndMatcher = window2.matcher(HTML_TEMPLATE_END_REGEX);
             if (templateEndMatcher.find()) {
-                final int codeEnd = start + templateEndMatcher.start();
+                final int codeEnd = codeStart + templateEndMatcher.start();
                 final CharData code = lines.subSequence(codeStart, codeEnd);
                 if (!code.isBlank()) {
                     return Optional.of(new HtmlEmbedded(language, templateStart, codeEnd, code));
