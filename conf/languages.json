@@ -65,6 +65,7 @@
     "Assembly": {
       "line_comment": [";"],
       "quotes": [["\"", "\""], ["'", "'"]],
+      "mime": ["text/x-asm"],
       "extensions": ["asm"]
     },
     "AssemblyGAS": {
@@ -269,6 +270,7 @@
       "shebangs": ["#!/bin/csh"],
       "line_comment": ["#"],
       "env": ["csh"],
+      "mime": ["application/x-csh"],
       "extensions": ["csh"]
     },
     "Css": {
@@ -694,6 +696,7 @@
       "line_comment": ["//"],
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\"", "\""]],
+      "mime": ["text/x-java-source"],
       "extensions": ["java"]
     },
     "JavaScript": {
@@ -887,6 +890,7 @@
     "Markdown": {
       "literate": true,
       "important_syntax": ["```"],
+      "mime": ["text/markdown", "text/x-markdown"],
       "extensions": ["md", "markdown"],
       "embed_syntax": "markdown"
     },
@@ -1032,6 +1036,7 @@
       "line_comment": ["#"],
       "multi_line_comments": [["=pod", "=cut"]],
       "quotes": [["\"", "\""], ["'", "'"]],
+      "mime": ["application/x-perl"],
       "extensions": ["pl", "pm"]
     },
     "Pest": {
@@ -1654,6 +1659,7 @@
       "name": "XSL",
       "multi_line_comments": [["<!--", "-->"]],
       "quotes": [["\"", "\""], ["'", "'"]],
+      "mime": ["application/xslt+xml"],
       "extensions": ["xsl", "xslt"]
     },
     "Xtend": {
@@ -1666,6 +1672,7 @@
       "name": "YAML",
       "line_comment": ["#"],
       "quotes": [["\"", "\""], ["'", "'"]],
+      "mime": ["application/yaml"],
       "extensions": ["yaml", "yml"]
     },
     "ZenCode": {

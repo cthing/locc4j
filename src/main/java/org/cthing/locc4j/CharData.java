@@ -112,7 +112,7 @@ public class CharData implements CharSequence {
 
             int startPos = 0;
             for (final CharData chunk : chunks) {
-                System.arraycopy(chunk.buffer, 0, this.buffer, startPos, chunk.length);
+                System.arraycopy(chunk.buffer, chunk.offset, this.buffer, startPos, chunk.length);
                 startPos += chunk.length;
             }
         }

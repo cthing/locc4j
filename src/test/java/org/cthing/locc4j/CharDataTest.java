@@ -49,6 +49,15 @@ public class CharDataTest {
         assertThat(buffer.isBlank()).isFalse();
         assertThat(buffer.length()).isEqualTo(12);
         assertThat(buffer).hasToString("Hello World!");
+
+        final CharData chunk4 = new CharData("Hello World".toCharArray());
+        final CharData chunk5 = chunk4.subSequence(6);
+        final CharData chunk6 = chunk4.subSequence(0, 6);
+        final CharData buffer2 = new CharData(List.of(chunk5, chunk6));
+        assertThat(buffer2.isEmpty()).isFalse();
+        assertThat(buffer2.isBlank()).isFalse();
+        assertThat(buffer2.length()).isEqualTo(11);
+        assertThat(buffer2).hasToString("WorldHello ");
     }
 
     @Test

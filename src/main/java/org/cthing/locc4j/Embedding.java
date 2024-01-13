@@ -195,7 +195,8 @@ final class Embedding {
      * @param lines Character data
      * @param start Starting position in the character data in which to look for embedded content
      * @param end Ending position in the character data in which to look for embedded content
-     * @return Information about the embedded content, if found.
+     * @return Information about the embedded content, if found. The information returned is
+     *      relative to the start of the specified data.
      */
     static Optional<Embedded> find(final Language language, final CharData lines, final int start, final int end) {
         return language.getEmbedSyntax().flatMap(syntax -> switch (syntax) {
@@ -263,7 +264,10 @@ final class Embedding {
             if (styleType != null) {
                 styleType = styleType.trim();
                 if (!styleType.isEmpty()) {
-                    languageOpt = Language.fromName(styleType);
+                    languageOpt = Language.fromMime(styleType);
+                    if (languageOpt.isEmpty()) {
+                        languageOpt = Language.fromName(styleType);
+                    }
                 }
             }
             final Language language = languageOpt.orElse(Language.Css);
@@ -340,8 +344,8 @@ final class Embedding {
                                                             ? MARKDOWN_CODE_END_1_REGEX
                                                             : MARKDOWN_CODE_END_2_REGEX);
             if (blockEndMatcher.find()) {
-                final int codeEnd = start + blockEndMatcher.start();
-                final int blockEnd = start + blockEndMatcher.end();
+                final int codeEnd = codeStart + blockEndMatcher.start();
+                final int blockEnd = codeStart + blockEndMatcher.end();
                 final CharData code = lines.subSequence(codeStart, codeEnd);
                 if (!code.isBlank()) {
                     return Optional.of(new MarkdownCodeBlock(language, blockStart, blockEnd, 2, code));
