@@ -1,0 +1,18 @@
+= AsciiDoc title
+
+A simple paragraph.
+
+// single line comment
+
+That should end before a paragraph.
+
+////
+multi
+= Line
+
+comment
+////
+
+== Nested title
+
+Nested titles and paragraphs are fine, too.

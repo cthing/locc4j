@@ -1,0 +1,4 @@
+/* Testing */
+
+var N = 3;
+fun getoff = offset<uint<64>,B>: { return 2#B; }

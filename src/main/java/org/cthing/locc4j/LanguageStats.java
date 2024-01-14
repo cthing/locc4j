@@ -88,6 +88,15 @@ public class LanguageStats {
     }
 
     /**
+     * Obtains the total number of lines (code, comment and blank).
+     *
+     * @return Total number of lines.
+     */
+    public int getTotalLines() {
+        return this.codeLines.get() + this.commentLines.get() + this.blankLines.get();
+    }
+
+    /**
      * Increments the number of blank lines.
      *
      * @return Incremented number of blank lines.

@@ -251,6 +251,49 @@ public class CharDataTest {
     }
 
     @Test
+    public void testLineIteratorWithStart() {
+        final CharData buffer1 = new CharData("This\nis a test\nof the line iterator".toCharArray());
+        final CharData.LineIterator iter1 = buffer1.lineIterator(5);
+
+        assertThat(iter1.hasNext()).isTrue();
+        assertThat(iter1.next()).hasToString("is a test\n");
+        assertThat(iter1.getStart()).isEqualTo(5);
+        assertThat(iter1.getEnd()).isEqualTo(15);
+
+        assertThat(iter1.hasNext()).isTrue();
+        assertThat(iter1.next()).hasToString("of the line iterator");
+        assertThat(iter1.getStart()).isEqualTo(15);
+        assertThat(iter1.getEnd()).isEqualTo(35);
+
+        assertThat(iter1.hasNext()).isFalse();
+
+        final CharData buffer2 = new CharData("Hello\n\nWorld\n".toCharArray());
+        final CharData.LineIterator iter2 = buffer2.lineIterator(6);
+
+        assertThat(iter2.hasNext()).isTrue();
+        assertThat(iter2.next()).hasToString("\n");
+        assertThat(iter2.getStart()).isEqualTo(6);
+        assertThat(iter2.getEnd()).isEqualTo(7);
+
+        assertThat(iter2.hasNext()).isTrue();
+        assertThat(iter2.next()).hasToString("World\n");
+        assertThat(iter2.getStart()).isEqualTo(7);
+        assertThat(iter2.getEnd()).isEqualTo(13);
+
+        assertThat(iter2.hasNext()).isFalse();
+
+        final CharData buffer3 = buffer1.subSequence(5, 21);
+        final CharData.LineIterator iter3 = buffer3.lineIterator(10);
+
+        assertThat(iter3.hasNext()).isTrue();
+        assertThat(iter3.next()).hasToString("of the");
+        assertThat(iter3.getStart()).isEqualTo(10);
+        assertThat(iter3.getEnd()).isEqualTo(16);
+
+        assertThat(iter3.hasNext()).isFalse();
+    }
+
+    @Test
     public void testFindLineStart() {
         CharData buffer = new CharData("hello world".toCharArray());
         assertThat(buffer.findLineStart(0)).isEqualTo(0);
@@ -380,6 +423,66 @@ public class CharDataTest {
         assertThat(buffer2.trimTrailing().toString()).isEmpty();
         buffer2 = buffer.subSequence(0, 1);
         assertThat(buffer2.trimTrailing().toString()).isEmpty();
+    }
+
+    @Test
+    public void testTrimFirstLastLine() {
+        CharData buffer = new CharData("    ".toCharArray());
+        assertThat(buffer.trimFirstLastLine().toString()).isEmpty();
+
+        buffer = new CharData("".toCharArray());
+        assertThat(buffer.trimFirstLastLine().toString()).isEmpty();
+
+        buffer = new CharData("  hello\t".toCharArray());
+        assertThat(buffer.trimFirstLastLine()).hasToString("hello");
+
+        buffer = new CharData("  hello".toCharArray());
+        assertThat(buffer.trimFirstLastLine()).hasToString("hello");
+
+        buffer = new CharData("hello    ".toCharArray());
+        assertThat(buffer.trimFirstLastLine()).hasToString("hello");
+
+        buffer = new CharData("\nhello\nworld\n".toCharArray());
+        assertThat(buffer.trimFirstLastLine()).hasToString("hello\nworld");
+
+        buffer = new CharData("  \nhello\nworld\n  ".toCharArray());
+        assertThat(buffer.trimFirstLastLine()).hasToString("hello\nworld");
+
+        buffer = new CharData("\n    hello    \n    world    \n".toCharArray());
+        final CharData buffer2 = buffer.trimFirstLastLine();
+        assertThat(buffer2).hasToString("    hello    \n    world    ");
+        final CharData buffer3 = buffer2.subSequence(13);
+        assertThat(buffer3.trimFirstLastLine().toString()).isEqualTo("    world");
+    }
+
+    @Test
+    public void testTrimLastLine() {
+        CharData buffer = new CharData("    ".toCharArray());
+        assertThat(buffer.trimLastLine().toString()).isEmpty();
+
+        buffer = new CharData("".toCharArray());
+        assertThat(buffer.trimLastLine().toString()).isEmpty();
+
+        buffer = new CharData("  hello\t".toCharArray());
+        assertThat(buffer.trimLastLine()).hasToString("  hello");
+
+        buffer = new CharData("  hello".toCharArray());
+        assertThat(buffer.trimLastLine()).hasToString("  hello");
+
+        buffer = new CharData("hello    ".toCharArray());
+        assertThat(buffer.trimLastLine()).hasToString("hello");
+
+        buffer = new CharData("\nhello\nworld\n".toCharArray());
+        assertThat(buffer.trimLastLine()).hasToString("\nhello\nworld");
+
+        buffer = new CharData("  \nhello\nworld\n  ".toCharArray());
+        assertThat(buffer.trimLastLine()).hasToString("  \nhello\nworld");
+
+        buffer = new CharData("\n    hello    \n    world    \n".toCharArray());
+        final CharData buffer2 = buffer.trimLastLine();
+        assertThat(buffer2).hasToString("\n    hello    \n    world    ");
+        final CharData buffer3 = buffer2.subSequence(14);
+        assertThat(buffer3.trimLastLine().toString()).isEqualTo("\n    world");
     }
 
     @Test

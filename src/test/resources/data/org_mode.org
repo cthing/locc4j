@@ -1,0 +1,11 @@
+#+TITLE: This is the title, not a comment
+
+# This is comment
+
+Some text
+
+* Heading 1
+:PROPERTIES:
+:CUSTOM_ID: heading-1
+:END:
+Text under heading 1

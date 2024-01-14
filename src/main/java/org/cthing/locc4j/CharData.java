@@ -43,6 +43,12 @@ public class CharData implements CharSequence {
         private int end;
 
         private LineIterator() {
+            this(0);
+        }
+
+        private LineIterator(final int start) {
+            this.start = start;
+            this.end = start;
         }
 
         @Override
@@ -221,6 +227,17 @@ public class CharData implements CharSequence {
      */
     public LineIterator lineIterator() {
         return new LineIterator();
+    }
+
+    /**
+     * Obtains an iterator for traversing the character data line by line starting at the specified position
+     * in the data.
+     *
+     * @param start Starting position for the iterator
+     * @return Iterator for traversing the character data by lines.
+     */
+    public LineIterator lineIterator(final int start) {
+        return new LineIterator(start);
     }
 
     /**
@@ -458,6 +475,83 @@ public class CharData implements CharSequence {
         // Trim from the end
         while (end >= this.offset) {
             final char ch = this.buffer[end];
+            if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {
+                end--;
+            } else {
+                break;
+            }
+        }
+
+        // Check if the entire string is whitespace
+        if (this.offset > end) {
+            return new CharData(this.buffer, (this.offset == 0) ? 0 : this.offset - 1, 0);
+        }
+
+        return new CharData(this.buffer, this.offset, end - this.offset + 1);
+    }
+
+    /**
+     * Trims any leading whitespace on the first line of the data and any trailing whitespace on the last line of
+     * the data. For a single line, the results are identical to calling {@link #trim()}.
+     *
+     * @return New character data buffer with the whitespace trimmed off the first and last lines.
+     */
+    public CharData trimFirstLastLine() {
+        int start = this.offset;
+        int end = this.offset + this.length - 1;
+
+        // Trim from the start to the end of the line
+        while (start <= end) {
+            final char ch = this.buffer[start];
+            if (ch == '\n') {
+                start++;
+                break;
+            }
+            if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {
+                start++;
+            } else {
+                break;
+            }
+        }
+
+        // Trim from the end to the start of the last line
+        while (end >= start) {
+            final char ch = this.buffer[end];
+            if (ch == '\n') {
+                end--;
+                break;
+            }
+            if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {
+                end--;
+            } else {
+                break;
+            }
+        }
+
+        // Check if the entire string is whitespace
+        if (start > end) {
+            return new CharData(this.buffer, (start == 0) ? 0 : start - 1, 0);
+        }
+
+        return new CharData(this.buffer, start, end - start + 1);
+    }
+
+    /**
+     * Trims any trailing whitespace on the last line of the data. For a single line, the results are identical to
+     * calling {@link #trimTrailing()}.
+     *
+     * @return New character data buffer with the whitespace trimmed off the last line.
+     */
+    public CharData trimLastLine() {
+        int end = this.offset + this.length - 1;
+
+        // Trim from the end to the start of the last line
+        while (end >= this.offset) {
+            final char ch = this.buffer[end];
+            if (ch == '\n') {
+                end--;
+                break;
+            }
             if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {
                 end--;
             } else {

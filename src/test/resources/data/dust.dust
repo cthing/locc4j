@@ -1,0 +1,8 @@
+{! All Dust comments are multiline comments.  And there's no quoting
+   comment openers and closers.  Instead there are escape sequences
+   for producing literal brackets in template output: {~lb} outputs a
+   left-bracket.!} <h1>Hello
+
+world!</h1>{! More comments !}
+
+<h2>~{lb}Goodbye, world~{rb}</h2>

@@ -18,14 +18,21 @@ package org.cthing.locc4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Deque;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -137,6 +144,7 @@ public class CounterTest {
         public void testFoundInString() {
             quote("\"");
             assertThat(makeCounter().parseEndOfQuote(data("\""))).contains(1);
+            assertThat(quote()).isNull();
         }
 
         @Test
@@ -144,6 +152,7 @@ public class CounterTest {
         public void testFoundInStringDoubleBackslash() {
             quote("\"");
             assertThat(makeCounter().parseEndOfQuote(data("\\\\"))).contains(2);
+            assertThat(quote()).isNotNull();
         }
 
         @Test
@@ -152,6 +161,7 @@ public class CounterTest {
             quote("\"");
             quoteType(Counter.QuoteType.VERBATIM);
             assertThat(makeCounter().parseEndOfQuote(data("\\\\"))).isEmpty();
+            assertThat(quote()).isNotNull();
         }
 
         @Test
@@ -159,6 +169,7 @@ public class CounterTest {
         public void testFoundEscapedQuote() {
             quote("\"");
             assertThat(makeCounter().parseEndOfQuote(data("\\\""))).contains(2);
+            assertThat(quote()).isNotNull();
         }
 
         @Test
@@ -167,6 +178,7 @@ public class CounterTest {
             quote("\"");
             quoteType(Counter.QuoteType.VERBATIM);
             assertThat(makeCounter().parseEndOfQuote(data("\\\""))).isEmpty();
+            assertThat(quote()).isNotNull();
         }
 
         @Test
@@ -174,6 +186,7 @@ public class CounterTest {
         public void testNotFound() {
             quote("\"");
             assertThat(makeCounter().parseEndOfQuote(data("abcd"))).isEmpty();
+            assertThat(quote()).isNotNull();
         }
     }
 
@@ -420,7 +433,7 @@ public class CounterTest {
                 assertThat(embedded.getCodeEnd()).isEqualTo(20);
                 assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                assertThat(embedded.getCode().toString()).isEqualTo("\nvar i = 0;\n");
+                assertThat(embedded.getCode().toString()).isEqualTo("var i = 0;");
             });
         }
 
@@ -460,6 +473,40 @@ public class CounterTest {
                     makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(),
                                                                         CounterTest.this.fileStats);
             assertThat(embeddedOpt).isEmpty();
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(FileDataProvider.class)
+    public void testCount(final ArgumentsAccessor accessor) throws IOException {
+        final int numLanguageParams = accessor.size() - 2;
+        if (numLanguageParams % 4 != 0) {
+            throw new IllegalArgumentException("Incorrect number of arguments. Filename plus 4 parameters per language");
+        }
+
+        final String filename = accessor.getString(0);
+        final char[] data =
+                IOUtils.toCharArray(Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename)),
+                                    StandardCharsets.UTF_8);
+
+        final FileStats actualFileStats = new FileStats(new File(filename));
+        this.config.setCountDocStrings(accessor.getBoolean(1));
+        final Counter counter = makeCounter(accessor.get(2, Language.class));
+        counter.count(data, actualFileStats);
+
+        final Map<Language, LanguageStats> actualStatsMap = actualFileStats.getStats();
+        assertThat(actualStatsMap).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
+
+        for (int i = 0; i < numLanguageParams; i += 4) {
+            final Language language = accessor.get(i + 2, Language.class);
+            final int codeLines = accessor.getInteger(i + 3);
+            final int commentLines = accessor.getInteger(i + 4);
+            final int blankLines = accessor.getInteger(i + 5);
+            assertThat(actualStatsMap).hasEntrySatisfying(language, languageStats -> {
+                assertThat(languageStats.codeLines).hasValue(codeLines);
+                assertThat(languageStats.commentLines).hasValue(commentLines);
+                assertThat(languageStats.blankLines).hasValue(blankLines);
+            });
         }
     }
 

@@ -1,0 +1,10 @@
+REM A test
+START  59
+
+REM Comment on a line
+%XY:=42
+
+rem This is also a comment
+IF FOO= "foo" GOTO 10
+
+END

@@ -20,6 +20,8 @@
     <!-- Suppress method length check in tests -->
     <suppress checks="MethodLength" files="src/(test|integTest)/.+"/>
 
+    <suppress checks="AvoidStarImport" files="src/test/.+FileDataProvider.*"/>
+
     <!-- Suppress checking resources -->
     <suppress checks="." files="src/main/resources/.+"/>
 </suppressions>

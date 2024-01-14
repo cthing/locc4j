@@ -1,0 +1,5 @@
+type A -- uncounted comment
+
+-- comment
+
+type B

@@ -207,7 +207,7 @@ class Counter {
                 stats.addCommentLines(embedded.getCommentLines());
                 stats.addCodeLines(embedded.getAdditionalCodeLines());
 
-                lineIter = data.subSequence(embedded.getCodeEnd()).lineIterator();
+                lineIter = data.lineIterator(embedded.getCodeEnd());
                 continue;
             }
 
@@ -224,7 +224,7 @@ class Counter {
         }
     }
 
-    private void countJupyter(final CharSequence data, final FileStats fileStats) throws IOException {
+    private void countJupyter(final CharData data, final FileStats fileStats) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode jupyterNode = mapper.readTree(new CharSequenceReader(data));
 
@@ -275,6 +275,12 @@ class Counter {
                 }
             }
         }
+
+        countSimple(data, fileStats);
+        final LanguageStats jupyterStats = fileStats.stats(Language.Jupyter);
+        final LanguageStats markdownStats = fileStats.stats(Language.Markdown);
+        final LanguageStats langStats = fileStats.stats(lang);
+        jupyterStats.addCodeLines(-(markdownStats.getTotalLines() + langStats.getTotalLines()));
     }
 
     /**
@@ -525,8 +531,10 @@ class Counter {
     Optional<Integer> parseEndOfQuote(final CharData window) {
         //noinspection DataFlowIssue
         if (parsingMode() == STRING && window.startsWith(this.state.quote)) {
-            LOGGER.log(TRACE, "End {0}", this.state.quote);
-            return Optional.of(this.state.quote.length());
+            final CharSequence quote = this.state.quote;
+            this.state.quote = null;
+            LOGGER.log(TRACE, "End {0}", quote);
+            return Optional.of(quote.length());
         }
 
         if (this.state.quoteType != VERBATIM && window.startsWith("\\\\")) {

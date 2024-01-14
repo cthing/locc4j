@@ -31,6 +31,7 @@ public class LanguageStatsTest {
         assertThat(this.stats.getBlankLines()).isZero();
         assertThat(this.stats.getCodeLines()).isZero();
         assertThat(this.stats.getCommentLines()).isZero();
+        assertThat(this.stats.getTotalLines()).isZero();
     }
 
     @Test
@@ -47,6 +48,7 @@ public class LanguageStatsTest {
         assertThat(this.stats.getBlankLines()).isEqualTo(1);
         assertThat(this.stats.getCodeLines()).isEqualTo(2);
         assertThat(this.stats.getCommentLines()).isEqualTo(3);
+        assertThat(this.stats.getTotalLines()).isEqualTo(6);
     }
 
     @Test

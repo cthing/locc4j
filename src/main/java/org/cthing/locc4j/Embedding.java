@@ -243,7 +243,7 @@ final class Embedding {
             final Matcher scriptEndMatcher = window2.matcher(HTML_SCRIPT_END_REGEX);
             if (scriptEndMatcher.find()) {
                 final int codeEnd = codeStart + scriptEndMatcher.start();
-                final CharData code = lines.subSequence(codeStart, codeEnd);
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
                     return Optional.of(new HtmlEmbedded(language, scriptStart, codeEnd, code));
                 }
@@ -276,7 +276,7 @@ final class Embedding {
             final Matcher styleEndMatcher = window2.matcher(HTML_STYLE_END_REGEX);
             if (styleEndMatcher.find()) {
                 final int codeEnd = codeStart + styleEndMatcher.start();
-                final CharData code = lines.subSequence(codeStart, codeEnd);
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
                     return Optional.of(new HtmlEmbedded(language, styleStart, codeEnd, code));
                 }
@@ -306,7 +306,7 @@ final class Embedding {
             final Matcher templateEndMatcher = window2.matcher(HTML_TEMPLATE_END_REGEX);
             if (templateEndMatcher.find()) {
                 final int codeEnd = codeStart + templateEndMatcher.start();
-                final CharData code = lines.subSequence(codeStart, codeEnd);
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
                     return Optional.of(new HtmlEmbedded(language, templateStart, codeEnd, code));
                 }
@@ -346,13 +346,13 @@ final class Embedding {
             if (blockEndMatcher.find()) {
                 final int codeEnd = codeStart + blockEndMatcher.start();
                 final int blockEnd = codeStart + blockEndMatcher.end();
-                final CharData code = lines.subSequence(codeStart, codeEnd);
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimLastLine();
                 if (!code.isBlank()) {
                     return Optional.of(new MarkdownCodeBlock(language, blockStart, blockEnd, 2, code));
                 }
             } else {
                 final int codeEnd = lines.length();
-                final CharData code = lines.subSequence(codeStart, codeEnd);
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimLastLine();
                 if (!code.isBlank()) {
                     return Optional.of(new MarkdownCodeBlock(language, blockStart, codeEnd, 1, code));
                 }
@@ -392,6 +392,8 @@ final class Embedding {
         }
 
         if (!mdLines.isEmpty()) {
+            final int lastIndex = mdLines.size() - 1;
+            mdLines.set(lastIndex, mdLines.get(lastIndex).trimTrailing());
             return Optional.of(new RustLineDoc(Language.Markdown, start, blockEnd, mdLines));
         }
 
