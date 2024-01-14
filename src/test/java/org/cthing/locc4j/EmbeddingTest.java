@@ -494,7 +494,7 @@ public class EmbeddingTest {
         public void testWithBlanks() {
             final String content = """
                                    //! # Hello World
-
+                                   //!
                                    //! This is a test
                                    """;
             final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Rust, data(content), 0,
@@ -502,10 +502,10 @@ public class EmbeddingTest {
             assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
-                assertThat(embedded.getCodeEnd()).isEqualTo(38);
+                assertThat(embedded.getCodeEnd()).isEqualTo(41);
                 assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
+                assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n\n This is a test");
             });
         }
 

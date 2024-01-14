@@ -1,4 +1,3 @@
-' 22 lines 17 code 3 comments 2 blanks
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True

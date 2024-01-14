@@ -518,7 +518,10 @@ public class CharData implements CharSequence {
         while (end >= start) {
             final char ch = this.buffer[end];
             if (ch == '\n') {
-                end--;
+                // Do not remove blank lines.
+                if (end - 1 >= start && this.buffer[end - 1] != '\n') {
+                    end--;
+                }
                 break;
             }
             if (ch == ' ' || ch == '\t' || Character.isWhitespace(ch)) {

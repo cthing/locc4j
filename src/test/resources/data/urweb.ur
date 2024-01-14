@@ -1,4 +1,4 @@
-(* 14 lines 8 code 4 comments 2 blanks *)
+(* Testing *)
 fun main () = return <xml>
   <head>
     <title>Hello world!</title>

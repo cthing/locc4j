@@ -1,5 +1,3 @@
-// 24 lines 6 code 14 comments 4 blanks
-
 // Single-line comment
 /* multi-line comment */
 /* /* nested */ */

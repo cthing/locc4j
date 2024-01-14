@@ -1,4 +1,4 @@
-;; 37 lines 23 code 2 comments 12 blanks
+;; Testing
 
 set escape_start "$"
 set escape_end "$"

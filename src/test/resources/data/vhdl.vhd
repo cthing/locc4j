@@ -1,5 +1,3 @@
--- 34 lines 20 code 7 comments 7 blanks
-
 /*
   Since VHDL 2008 C-Style delimited comment are allowed.
 */

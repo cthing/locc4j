@@ -503,9 +503,9 @@ public class CounterTest {
             final int commentLines = accessor.getInteger(i + 4);
             final int blankLines = accessor.getInteger(i + 5);
             assertThat(actualStatsMap).hasEntrySatisfying(language, languageStats -> {
-                assertThat(languageStats.codeLines).hasValue(codeLines);
-                assertThat(languageStats.commentLines).hasValue(commentLines);
-                assertThat(languageStats.blankLines).hasValue(blankLines);
+                assertThat(languageStats.codeLines).as(language + ": Code lines").hasValue(codeLines);
+                assertThat(languageStats.commentLines).as(language + ": Comment lines").hasValue(commentLines);
+                assertThat(languageStats.blankLines).as(language + ": Blank lines").hasValue(blankLines);
             });
         }
     }

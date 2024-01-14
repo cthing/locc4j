@@ -1,5 +1,3 @@
-// 157 lines 137 code 7 comments 13 blanks
-
 #![enable(implicit_some)]
 Container(
     transform: (

@@ -1,4 +1,4 @@
-// 38 lines 29 code 2 comments 7 blanks
+// Testing
 
 namespace java test
 namespace py test

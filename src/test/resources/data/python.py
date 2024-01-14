@@ -1,6 +1,3 @@
-# 15 lines, 10 code, 2 comments, 3 blanks
-
-
 def add(x, y):
     """
     Hello World

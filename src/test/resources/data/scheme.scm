@@ -1,4 +1,4 @@
-;;; 26 lines 14 code 4 comments 8 blanks
+;;; Testing
 
 (import (srfi srfi-1)) ; for reduce
 

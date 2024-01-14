@@ -388,6 +388,7 @@ final class Embedding {
                 blockEnd = start + iterator.getEnd();
             } else {
                 blockEnd = start + iterator.getStart();
+                break;
             }
         }
 

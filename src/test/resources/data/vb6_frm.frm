@@ -1,6 +1,5 @@
-' 34 lines 29 code 3 comments 2 blanks
 VERSION 5.00
-Begin VB.Form Form1 
+Begin VB.Form Form1
    Caption         =   "Form1"
    ClientHeight    =   3015
    ClientLeft      =   120
@@ -10,7 +9,7 @@ Begin VB.Form Form1
    ScaleHeight     =   3015
    ScaleWidth      =   4560
    StartUpPosition =   3  'Windows Default
-   Begin VB.CommandButton btnTest 
+   Begin VB.CommandButton btnTest
       Caption         =   "Test"
       Height          =   495
       Left            =   720

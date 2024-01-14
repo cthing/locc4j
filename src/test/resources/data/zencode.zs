@@ -1,4 +1,3 @@
-// 21 lines 9 code 7 comments 5 blanks
 
 // This is a single line comment.
 /* This is a multiline comment on a single line. */

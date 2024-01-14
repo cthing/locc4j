@@ -1,4 +1,3 @@
-;;; 40 lines 15 code 14 comments 11 blanks
 #lang racket ; defines the language we are using
 
 ;;; Comments

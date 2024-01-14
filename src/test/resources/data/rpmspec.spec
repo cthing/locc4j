@@ -1,17 +1,15 @@
-# 42 lines 22 code 4 comments 16 blanks
-
 Name:           example
 Version:        0.0.1
 Release:        1%{?dist}
 Summary:        an example specfile
 
-Group:          
-URL:            
-Source0:        
+Group:
+URL:
+Source0:
 
 # test comments for requirements
-BuildRequires:  
-Requires:       
+BuildRequires:
+Requires:
 
 %description
 
