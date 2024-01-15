@@ -27,6 +27,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,9 +41,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("MethodOnlyUsedFromInnerClass")
 public class CounterTest {
 
+    private static long countingTime;
+
     private final Config config = new Config();
     private final Counter.State state = new Counter.State();
     private final FileStats fileStats = new FileStats(new File("/tmp/testing.txt"));
+
+    @AfterAll
+    public static void allDone() {
+        System.out.println("Counting time: " + countingTime + " ms");
+    }
 
     @Nested
     @DisplayName("parsingMode method")
@@ -236,31 +244,31 @@ public class CounterTest {
     }
 
     @Nested
-    @DisplayName("parseLineComment method")
-    class ParseLineCommentTest {
+    @DisplayName("isLineComment method")
+    class IsLineCommentTest {
         @Test
         @DisplayName("Not in code mode - comments ignored")
         public void testNotCode() {
             quote("\"");
-            assertThat(makeCounter().parseLineComment(data("// Hello world"))).isFalse();
+            assertThat(makeCounter().isLineComment(data("// Hello world"))).isFalse();
         }
 
         @Test
         @DisplayName("No line comment in code")
         public void testNotComment() {
-            assertThat(makeCounter().parseLineComment(data("Hello world"))).isFalse();
+            assertThat(makeCounter().isLineComment(data("Hello world"))).isFalse();
         }
 
         @Test
         @DisplayName("Code starts with line comment")
         public void testFound() {
-            assertThat(makeCounter().parseLineComment(data("// Hello world"))).isTrue();
+            assertThat(makeCounter().isLineComment(data("// Hello world"))).isTrue();
         }
     }
 
     @Nested
-    @DisplayName("isCommentLine method")
-    class IsCommentLineTest {
+    @DisplayName("isComment method")
+    class IsCommentTest {
         // Test case numbers refer to numbered comments in the body of the method. Letters
         // refer to the logical combinations of the parameters in those test cases.
 
@@ -270,7 +278,7 @@ public class CounterTest {
             quote("*/");
             quoteType(Counter.QuoteType.DOC);
             CounterTest.this.config.setCountDocStrings(true);
-            assertThat(makeCounter(Language.Python).isCommentLine(data("hello"), true)).isTrue();
+            assertThat(makeCounter(Language.Python).isComment(data("hello"), true)).isTrue();
         }
 
         @Test
@@ -279,7 +287,7 @@ public class CounterTest {
             quote("*/");
             quoteType(Counter.QuoteType.DOC);
             CounterTest.this.config.setCountDocStrings(false);
-            assertThat(makeCounter(Language.Python).isCommentLine(data("hello"), true)).isFalse();
+            assertThat(makeCounter(Language.Python).isComment(data("hello"), true)).isFalse();
         }
 
         @Test
@@ -288,53 +296,53 @@ public class CounterTest {
             quote("*/");
             quoteType(Counter.QuoteType.NORMAL);
             CounterTest.this.config.setCountDocStrings(false);
-            assertThat(makeCounter(Language.Python).isCommentLine(data("hello"), true)).isFalse();
+            assertThat(makeCounter(Language.Python).isComment(data("hello"), true)).isFalse();
         }
 
         @Test
         @DisplayName("Last line of doc comments")
         public void testCase2() {
-            assertThat(makeCounter(Language.Python).isCommentLine(data("hello\"\"\""), true)).isTrue();
+            assertThat(makeCounter(Language.Python).isComment(data("hello\"\"\""), true)).isTrue();
 
         }
 
         @Test
         @DisplayName("Line comment")
         public void testCase3A() {
-            assertThat(makeCounter().isCommentLine(data("// hello"), false)).isTrue();
+            assertThat(makeCounter().isComment(data("// hello"), false)).isTrue();
 
         }
 
         @Test
         @DisplayName("Multiline comment on a single line")
         public void testCase3B() {
-            assertThat(makeCounter().isCommentLine(data("/* hello */"), false)).isTrue();
+            assertThat(makeCounter().isComment(data("/* hello */"), false)).isTrue();
         }
 
         @Test
         @DisplayName("In a multiline comment")
         public void testCase4() {
-            assertThat(makeCounter().isCommentLine(data("hello"), true)).isTrue();
+            assertThat(makeCounter().isComment(data("hello"), true)).isTrue();
         }
 
         @Test
         @DisplayName("Not in comment and nothing on the comment stack")
         public void testCase5() {
-            assertThat(makeCounter().isCommentLine(data("hello"), false)).isFalse();
+            assertThat(makeCounter().isComment(data("hello"), false)).isFalse();
         }
 
         @Test
         @DisplayName("Start of multiline comment")
         public void testCase6A() {
             stack("*/");
-            assertThat(makeCounter().isCommentLine(data("/* hello"), false)).isTrue();
+            assertThat(makeCounter().isComment(data("/* hello"), false)).isTrue();
         }
 
         @Test
         @DisplayName("Start of multiline comment")
         public void testCase6B() {
             stack("*/");
-            assertThat(makeCounter().isCommentLine(data("hello"), false)).isFalse();
+            assertThat(makeCounter().isComment(data("hello"), false)).isFalse();
         }
     }
 
@@ -478,6 +486,7 @@ public class CounterTest {
 
     @ParameterizedTest
     @ArgumentsSource(FileDataProvider.class)
+    @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
     public void testCount(final ArgumentsAccessor accessor) throws IOException {
         final int numLanguageParams = accessor.size() - 2;
         if (numLanguageParams % 4 != 0) {
@@ -491,8 +500,11 @@ public class CounterTest {
 
         final FileStats actualFileStats = new FileStats(new File(filename));
         this.config.setCountDocStrings(accessor.getBoolean(1));
+
+        final long startMillis = System.currentTimeMillis();
         final Counter counter = makeCounter(accessor.get(2, Language.class));
         counter.count(data, actualFileStats);
+        countingTime += System.currentTimeMillis() - startMillis;
 
         final Map<Language, LanguageStats> actualStatsMap = actualFileStats.getStats();
         assertThat(actualStatsMap).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);

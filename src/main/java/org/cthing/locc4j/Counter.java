@@ -34,8 +34,6 @@ import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static java.lang.System.Logger.Level.TRACE;
-
 import static org.cthing.locc4j.Counter.ParsingMode.CODE;
 import static org.cthing.locc4j.Counter.ParsingMode.COMMENT;
 import static org.cthing.locc4j.Counter.ParsingMode.STRING;
@@ -81,7 +79,6 @@ class Counter {
         final LinkedList<CharSequence> commentStack = new LinkedList<>();
     }
 
-    private static final System.Logger LOGGER = System.getLogger(Counter.class.getName());
     private static final JsonPointer JUPYTER_LANGUAGE_PTR = JsonPointer.compile("/metadata/kernelspec/language");
     private static final JsonPointer JUPYTER_EXTENSION_PTR = JsonPointer.compile("/metadata/language_info/file_extension");
 
@@ -150,8 +147,6 @@ class Counter {
     }
 
     private void countSimple(final CharData data, final FileStats fileStats) {
-        LOGGER.log(TRACE, "Simple Count on: {0}", data);
-
         final LanguageStats stats = fileStats.stats(this.language);
         final CharData.LineIterator lineIter = data.lineIterator();
 
@@ -190,8 +185,6 @@ class Counter {
                 line = line.trim();
             }
 
-            LOGGER.log(TRACE, line);
-
             if (tryCountSingleLine(line, stats)) {
                 continue;
             }
@@ -211,15 +204,10 @@ class Counter {
                 continue;
             }
 
-            LOGGER.log(TRACE, line);
-
-            if (this.language.isLiterate() || isCommentLine(line, startedInComments)) {
+            if (this.language.isLiterate() || isComment(line, startedInComments)) {
                 stats.incrementCommentLines();
-                LOGGER.log(TRACE, "Comment no. {0}", stats.getCommentLines());
-                LOGGER.log(TRACE, "Was the comment stack empty?: {0}", !startedInComments);
             } else {
                 stats.incrementCodeLines();
-                LOGGER.log(TRACE, "Code no. {0}", stats.getCodeLines());
             }
         }
     }
@@ -349,7 +337,7 @@ class Counter {
             }
 
             // 5) Single line comment
-            if (parseLineComment(window)) {
+            if (isLineComment(window)) {
                 break;
             }
         }
@@ -374,7 +362,6 @@ class Counter {
 
         if (line.isBlank()) {
             stats.incrementBlankLines();
-            LOGGER.log(TRACE, "Blank count: {0}", stats.getBlankLines());
             return true;
         }
 
@@ -382,14 +369,10 @@ class Counter {
             return false;
         }
 
-        LOGGER.log(TRACE, "^ Simple parseable");
-
         if (this.language.isLiterate() || this.language.getLineComments().stream().anyMatch(line::startsWith)) {
             stats.incrementCommentLines();
-            LOGGER.log(TRACE, "Comment count: {0}", stats.getCommentLines());
         } else {
             stats.incrementCodeLines();
-            LOGGER.log(TRACE, "Code count: {0}", stats.getCommentLines());
         }
 
         return true;
@@ -403,7 +386,7 @@ class Counter {
      * @return {@code true} if the line is a comment.
      */
     @AccessForTesting
-    boolean isCommentLine(final CharData line, final boolean startedInComments) {
+    boolean isComment(final CharData line, final boolean startedInComments) {
         final CharData trimmed = line.trim();
 
         // 1) If in a doc string, count it as a comment if configured to do so
@@ -452,21 +435,10 @@ class Counter {
      * @return {@code true} if the specified character data represents a line comment
      */
     @AccessForTesting
-    boolean parseLineComment(final CharData window) {
-        final ParsingMode mode = parsingMode();
-        if (mode != CODE) {
-            return false;
-        }
-
-        final Optional<String> commentOpt = this.language.getLineComments()
-                                                         .stream()
-                                                         .filter(window::startsWith)
-                                                         .findFirst();
-        if (commentOpt.isPresent()) {
-            LOGGER.log(TRACE, "Start {0}", commentOpt.get());
-            return true;
-        }
-        return false;
+    boolean isLineComment(final CharData window) {
+        return parsingMode() == CODE && this.language.getLineComments()
+                                                     .stream()
+                                                     .anyMatch(window::startsWith);
     }
 
     /**
@@ -487,7 +459,6 @@ class Counter {
                                                                   .findFirst();
         if (docDelimOpt.isPresent()) {
             final BlockDelimiter delim = docDelimOpt.get();
-            LOGGER.log(TRACE, "Start doc {0}", delim.start());
             this.state.quote = delim.end();
             this.state.quoteType = DOC;
             return Optional.of(delim.start().length());
@@ -499,7 +470,6 @@ class Counter {
                                                                        .findFirst();
         if (verbatimDelimOpt.isPresent()) {
             final BlockDelimiter delim = verbatimDelimOpt.get();
-            LOGGER.log(TRACE, "Start verbatim {0}", delim.start());
             this.state.quote = delim.end();
             this.state.quoteType = VERBATIM;
             return Optional.of(delim.start().length());
@@ -511,7 +481,6 @@ class Counter {
                                                                 .findFirst();
         if (quotesOpt.isPresent()) {
             final BlockDelimiter delim = quotesOpt.get();
-            LOGGER.log(TRACE, "Start {0}", delim.start());
             this.state.quote = delim.end();
             this.state.quoteType = NORMAL;
             return Optional.of(delim.start().length());
@@ -533,7 +502,6 @@ class Counter {
         if (parsingMode() == STRING && window.startsWith(this.state.quote)) {
             final CharSequence quote = this.state.quote;
             this.state.quote = null;
-            LOGGER.log(TRACE, "End {0}", quote);
             return Optional.of(quote.length());
         }
 
@@ -575,12 +543,6 @@ class Counter {
                                         || this.language.isNestable()
                                         || this.language.getNestedComments().contains(delim)) {
                                     this.state.commentStack.push(delim.end());
-
-                                    if (LOGGER.isLoggable(TRACE) && this.language.isNestable()) {
-                                        LOGGER.log(TRACE, "Start nested {0}", delim.start());
-                                    } else {
-                                        LOGGER.log(TRACE, "Start {0}", delim.start());
-                                    }
                                 }
 
                                 return delim.start().length();
@@ -603,15 +565,6 @@ class Counter {
 
         if (window.startsWith(endComment)) {
             this.state.commentStack.pop();
-
-            if (LOGGER.isLoggable(TRACE)) {
-                if (this.state.commentStack.isEmpty()) {
-                    LOGGER.log(TRACE, "End {0}", endComment);
-                } else {
-                    LOGGER.log(TRACE, "Emd {0}. Still in comments.", endComment);
-                }
-            }
-
             return Optional.of(endComment.length());
         }
 
