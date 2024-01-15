@@ -27,46 +27,18 @@ public class LanguageStatsTest {
 
     @Test
     public void testConstruct() {
-        assertThat(this.stats.getLanguage()).isEqualTo(Language.Css);
-        assertThat(this.stats.getBlankLines()).isZero();
-        assertThat(this.stats.getCodeLines()).isZero();
-        assertThat(this.stats.getCommentLines()).isZero();
+        assertThat(this.stats.language).isEqualTo(Language.Css);
+        assertThat(this.stats.blankLines).isZero();
+        assertThat(this.stats.codeLines).isZero();
+        assertThat(this.stats.commentLines).isZero();
         assertThat(this.stats.getTotalLines()).isZero();
     }
 
     @Test
-    public void testIncrement() {
-        assertThat(this.stats.incrementBlankLines()).isEqualTo(1);
-
-        assertThat(this.stats.incrementCodeLines()).isEqualTo(1);
-        assertThat(this.stats.incrementCodeLines()).isEqualTo(2);
-
-        assertThat(this.stats.incrementCommentLines()).isEqualTo(1);
-        assertThat(this.stats.incrementCommentLines()).isEqualTo(2);
-        assertThat(this.stats.incrementCommentLines()).isEqualTo(3);
-
-        assertThat(this.stats.getBlankLines()).isEqualTo(1);
-        assertThat(this.stats.getCodeLines()).isEqualTo(2);
-        assertThat(this.stats.getCommentLines()).isEqualTo(3);
-        assertThat(this.stats.getTotalLines()).isEqualTo(6);
-    }
-
-    @Test
-    public void testAdd() {
-        assertThat(this.stats.addBlankLines(2)).isEqualTo(2);
-        assertThat(this.stats.addCodeLines(3)).isEqualTo(3);
-        assertThat(this.stats.addCommentLines(4)).isEqualTo(4);
-
-        assertThat(this.stats.getBlankLines()).isEqualTo(2);
-        assertThat(this.stats.getCodeLines()).isEqualTo(3);
-        assertThat(this.stats.getCommentLines()).isEqualTo(4);
-    }
-
-    @Test
     public void testToString() {
-        this.stats.addBlankLines(2);
-        this.stats.addCodeLines(3);
-        this.stats.addCommentLines(4);
+        this.stats.blankLines = 2;
+        this.stats.codeLines = 3;
+        this.stats.commentLines = 4;
         assertThat(this.stats).hasToString("CSS: code=3, comments=4, blanks=2");
     }
 }

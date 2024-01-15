@@ -362,7 +362,7 @@ public class CounterTest {
         @DisplayName("Blank line")
         public void testBlankLine() {
             verifyStats(0, 0, 0);
-            assertThat(stats().getBlankLines()).isZero();
+            assertThat(stats().blankLines).isZero();
             assertThat(makeCounter().tryCountSingleLine(data("  "), stats())).isTrue();
             verifyStats(0, 0, 1);
         }
@@ -515,9 +515,9 @@ public class CounterTest {
             final int commentLines = accessor.getInteger(i + 4);
             final int blankLines = accessor.getInteger(i + 5);
             assertThat(actualStatsMap).hasEntrySatisfying(language, languageStats -> {
-                assertThat(languageStats.codeLines).as(language + ": Code lines").hasValue(codeLines);
-                assertThat(languageStats.commentLines).as(language + ": Comment lines").hasValue(commentLines);
-                assertThat(languageStats.blankLines).as(language + ": Blank lines").hasValue(blankLines);
+                assertThat(languageStats.codeLines).as(language + ": Code lines").isEqualTo(codeLines);
+                assertThat(languageStats.commentLines).as(language + ": Comment lines").isEqualTo(commentLines);
+                assertThat(languageStats.blankLines).as(language + ": Blank lines").isEqualTo(blankLines);
             });
         }
     }
@@ -574,8 +574,8 @@ public class CounterTest {
     private void verifyStats(final Language language, final int codeLines, final int commentLines,
                              final int blankLines) {
         final LanguageStats stats = stats(language);
-        assertThat(stats.getCodeLines()).isEqualTo(codeLines);
-        assertThat(stats.getCommentLines()).isEqualTo(commentLines);
-        assertThat(stats.getBlankLines()).isEqualTo(blankLines);
+        assertThat(stats.codeLines).isEqualTo(codeLines);
+        assertThat(stats.commentLines).isEqualTo(commentLines);
+        assertThat(stats.blankLines).isEqualTo(blankLines);
     }
 }

@@ -161,12 +161,12 @@ class Counter {
             }
 
             if (line.isBlank()) {
-                stats.incrementBlankLines();
+                stats.blankLines++;
             } else if (this.language.isLiterate()
                     || this.language.getLineComments().stream().anyMatch(line::startsWith)) {
-                stats.incrementCommentLines();
+                stats.commentLines++;
             } else {
-                stats.incrementCodeLines();
+                stats.codeLines++;
             }
         }
     }
@@ -197,17 +197,17 @@ class Counter {
 
             if (embeddedOpt.isPresent()) {
                 final Embedding.Embedded embedded = embeddedOpt.get();
-                stats.addCommentLines(embedded.getCommentLines());
-                stats.addCodeLines(embedded.getAdditionalCodeLines());
+                stats.commentLines += embedded.getCommentLines();
+                stats.codeLines += embedded.getAdditionalCodeLines();
 
                 lineIter = data.lineIterator(embedded.getCodeEnd());
                 continue;
             }
 
             if (this.language.isLiterate() || isComment(line, startedInComments)) {
-                stats.incrementCommentLines();
+                stats.commentLines++;
             } else {
-                stats.incrementCodeLines();
+                stats.codeLines++;
             }
         }
     }
@@ -268,7 +268,7 @@ class Counter {
         final LanguageStats jupyterStats = fileStats.stats(Language.Jupyter);
         final LanguageStats markdownStats = fileStats.stats(Language.Markdown);
         final LanguageStats langStats = fileStats.stats(lang);
-        jupyterStats.addCodeLines(-(markdownStats.getTotalLines() + langStats.getTotalLines()));
+        jupyterStats.codeLines -= (markdownStats.getTotalLines() + langStats.getTotalLines());
     }
 
     /**
@@ -361,7 +361,7 @@ class Counter {
         }
 
         if (line.isBlank()) {
-            stats.incrementBlankLines();
+            stats.blankLines++;
             return true;
         }
 
@@ -370,9 +370,9 @@ class Counter {
         }
 
         if (this.language.isLiterate() || this.language.getLineComments().stream().anyMatch(line::startsWith)) {
-            stats.incrementCommentLines();
+            stats.commentLines++;
         } else {
-            stats.incrementCodeLines();
+            stats.codeLines++;
         }
 
         return true;

@@ -36,7 +36,7 @@ public class FileStats {
 
     public FileStats(final File file) {
         this.file = file;
-        this.languages = Collections.synchronizedMap(new EnumMap<>(Language.class));
+        this.languages = new EnumMap<>(Language.class);
     }
 
     /**

@@ -38,19 +38,19 @@ public class FileStatsTest {
     @Test
     public void testStats() {
         LanguageStats counts = this.stats.stats(Language.Css);
-        counts.addBlankLines(3);
+        counts.blankLines = 3;
 
         counts = this.stats.stats(Language.Java);
-        counts.addCodeLines(5);
+        counts.codeLines = 5;
 
         final Map<Language, LanguageStats> countsMap = this.stats.getStats();
         assertThat(countsMap).containsOnlyKeys(Language.Css, Language.Java);
-        assertThat(countsMap.get(Language.Css).getBlankLines()).isEqualTo(3);
-        assertThat(countsMap.get(Language.Css).getCodeLines()).isZero();
-        assertThat(countsMap.get(Language.Css).getCommentLines()).isZero();
-        assertThat(countsMap.get(Language.Java).getBlankLines()).isZero();
-        assertThat(countsMap.get(Language.Java).getCodeLines()).isEqualTo(5);
-        assertThat(countsMap.get(Language.Java).getCommentLines()).isZero();
+        assertThat(countsMap.get(Language.Css).blankLines).isEqualTo(3);
+        assertThat(countsMap.get(Language.Css).codeLines).isZero();
+        assertThat(countsMap.get(Language.Css).commentLines).isZero();
+        assertThat(countsMap.get(Language.Java).blankLines).isZero();
+        assertThat(countsMap.get(Language.Java).codeLines).isEqualTo(5);
+        assertThat(countsMap.get(Language.Java).commentLines).isZero();
 
         assertThat(this.stats).hasToString("""
                                            /tmp/foobar:
