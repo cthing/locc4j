@@ -16,7 +16,6 @@
 
 package org.cthing.locc4j.plugins;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -167,18 +166,6 @@ public record LanguageEntry(
             return "compile(\"[" + String.join("", escapeRegexChracterClass(important)) + "]\")";
         }
         return "compile(\"" + String.join("|", escapeRegexList(important)) + "\")";
-    }
-
-    /**
-     * Creates a list of all comment character sequences (i.e. line, multiline, and nested).
-     *
-     * @return All comment character sequences.
-     */
-    public List<String> allComments() {
-        final Stream<String> multiLineStream = multiLineComments().stream().flatMap(Collection::stream);
-        final Stream<String> nestedStream = nestedComments().stream().flatMap(Collection::stream);
-        final Stream<String> lineStream = lineComments().stream();
-        return Stream.concat(Stream.concat(multiLineStream, nestedStream), lineStream).collect(Collectors.toList());
     }
 
     /**

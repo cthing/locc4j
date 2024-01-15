@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -162,8 +161,7 @@ class Counter {
 
             if (line.isBlank()) {
                 stats.blankLines++;
-            } else if (this.language.isLiterate()
-                    || this.language.getLineComments().stream().anyMatch(line::startsWith)) {
+            } else if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
                 stats.commentLines++;
             } else {
                 stats.codeLines++;
@@ -363,7 +361,7 @@ class Counter {
             return false;
         }
 
-        if (this.language.isLiterate() || this.language.getLineComments().stream().anyMatch(line::startsWith)) {
+        if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
             stats.commentLines++;
         } else {
             stats.codeLines++;
@@ -389,19 +387,13 @@ class Counter {
         }
 
         // 2) If in a multiline comment and the line contains the doc string end delimiter
-        if (this.language.getDocQuotes()
-                                .stream()
-                                .anyMatch(bd -> line.contains(bd.end())) && startedInComments) {
+        if (this.language.isDocQuote(bd -> line.contains(bd.end())) && startedInComments) {
             return true;
         }
 
         // 3) If this is a line comment or the line contains a single line comment using multiline syntax
-        if (this.language.getLineComments()
-                         .stream()
-                         .anyMatch(trimmed::startsWith)
-                || this.language.getAllMultiLineComments()
-                                .stream()
-                                .anyMatch(bd -> trimmed.startsWith(bd.start()) && trimmed.endsWith(bd.end()))) {
+        if (this.language.isLineComment(trimmed::startsWith)
+                || this.language.isAnyMultiLineComment(bd -> trimmed.startsWith(bd.start()) && trimmed.endsWith(bd.end()))) {
             return true;
         }
 
@@ -417,9 +409,7 @@ class Counter {
         }
 
         // 6) If the line starts a multiline comment
-        return this.language.getAllMultiLineComments()
-                            .stream()
-                            .anyMatch(bd -> bd.end().contentEquals(currentComment) && trimmed.startsWith(bd.start()));
+        return this.language.isAnyMultiLineComment(bd -> bd.end().contentEquals(currentComment) && trimmed.startsWith(bd.start()));
     }
 
     /**
@@ -430,9 +420,7 @@ class Counter {
      */
     @AccessForTesting
     boolean isLineComment(final CharData window) {
-        return parsingMode() == CODE && this.language.getLineComments()
-                                                     .stream()
-                                                     .anyMatch(window::startsWith);
+        return parsingMode() == CODE && this.language.isLineComment(window::startsWith);
     }
 
     /**
@@ -447,37 +435,25 @@ class Counter {
             return 0;
         }
 
-        final Optional<BlockDelimiter> docDelimOpt = this.language.getDocQuotes()
-                                                                  .stream()
-                                                                  .filter(delim -> window.startsWith(delim.start()))
-                                                                  .findFirst();
-        if (docDelimOpt.isPresent()) {
-            final BlockDelimiter delim = docDelimOpt.get();
-            this.state.quote = delim.end();
+        final BlockDelimiter docDelim = this.language.findDocQuote(delim -> window.startsWith(delim.start()));
+        if (docDelim != null) {
+            this.state.quote = docDelim.end();
             this.state.quoteType = DOC;
-            return delim.start().length();
+            return docDelim.start().length();
         }
 
-        final Optional<BlockDelimiter> verbatimDelimOpt = this.language.getVerbatimQuotes()
-                                                                       .stream()
-                                                                       .filter(delim -> window.startsWith(delim.start()))
-                                                                       .findFirst();
-        if (verbatimDelimOpt.isPresent()) {
-            final BlockDelimiter delim = verbatimDelimOpt.get();
-            this.state.quote = delim.end();
+        final BlockDelimiter verbatimDelim = this.language.findVerbatimQuote(delim -> window.startsWith(delim.start()));
+        if (verbatimDelim != null) {
+            this.state.quote = verbatimDelim.end();
             this.state.quoteType = VERBATIM;
-            return delim.start().length();
+            return verbatimDelim.start().length();
         }
 
-        final Optional<BlockDelimiter> quotesOpt = this.language.getQuotes()
-                                                                .stream()
-                                                                .filter(delim -> window.startsWith(delim.start()))
-                                                                .findFirst();
-        if (quotesOpt.isPresent()) {
-            final BlockDelimiter delim = quotesOpt.get();
-            this.state.quote = delim.end();
+        final BlockDelimiter quoteDelim = this.language.findQuote(delim -> window.startsWith(delim.start()));
+        if (quoteDelim != null) {
+            this.state.quote = quoteDelim.end();
             this.state.quoteType = NORMAL;
-            return delim.start().length();
+            return quoteDelim.start().length();
         }
 
         return 0;
@@ -505,10 +481,7 @@ class Counter {
 
         if (this.state.quoteType != VERBATIM
                 && window.startsWith("\\")
-                && this.language.getQuotes()
-                                .stream()
-                                .anyMatch(delim -> window.subSequence(1)
-                                                         .startsWith(delim.start()))) {
+                && this.language.isQuote(delim -> window.subSequence(1).startsWith(delim.start()))) {
             // Tell the state machine to skip the next character because it has been escaped if the
             // string is not a verbatim string.
             return 2;
@@ -529,19 +502,17 @@ class Counter {
             return 0;
         }
 
-        final Stream<BlockDelimiter> commentDelims = Stream.concat(this.language.getMultiLineComments().stream(),
-                                                                   this.language.getNestedComments().stream());
-        return commentDelims.filter(delim -> window.startsWith(delim.start()))
-                            .map(delim -> {
-                                if (this.state.commentStack.isEmpty()
-                                        || this.language.isNestable()
-                                        || this.language.getNestedComments().contains(delim)) {
-                                    this.state.commentStack.push(delim.end());
-                                }
+        final BlockDelimiter commentDelim = this.language.findAnyMultiLineComment(delim -> window.startsWith(delim.start()));
+        if (commentDelim == null) {
+            return 0;
+        }
+        if (this.state.commentStack.isEmpty()
+                || this.language.isNestable()
+                || this.language.isNestedComment(delim -> delim.equals(commentDelim))) {
+            this.state.commentStack.push(commentDelim.end());
+        }
 
-                                return delim.start().length();
-                            })
-                            .findFirst().orElse(0);
+        return commentDelim.start().length();
     }
 
     /**

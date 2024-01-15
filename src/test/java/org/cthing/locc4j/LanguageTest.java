@@ -37,22 +37,20 @@ public class LanguageTest {
         final Language css = Language.Css;
         assertThat(css.getName()).isEqualTo("CSS");
         assertThat(css.isLiterate()).isFalse();
-        assertThat(css.getLineComments()).containsExactly("//");
-        assertThat(css.getMultiLineComments()).containsExactly(new BlockDelimiter("/*", "*/"));
+        assertThat(css.isLineComment("//"::contentEquals)).isTrue();
         assertThat(css.isNestable()).isFalse();
-        assertThat(css.getNestedComments()).isEmpty();
-        assertThat(css.getQuotes()).containsExactlyInAnyOrder(new BlockDelimiter("\"", "\""),
-                                                              new BlockDelimiter("'", "'"));
-        assertThat(css.getVerbatimQuotes()).isEmpty();
-        assertThat(css.getDocQuotes()).isEmpty();
+        assertThat(css.isNestedComment(delim -> "\"".contentEquals(delim.start()))).isFalse();
+        assertThat(css.isQuote(delim -> "\"".contentEquals(delim.start()) && "\"".contentEquals(delim.end()))).isTrue();
+        assertThat(css.isVerbatimQuote(delim -> "'".contentEquals(delim.start()))).isFalse();
+        assertThat(css.isDocQuote(delim -> "'".contentEquals(delim.start()))).isFalse();
         assertThat(css.isColumnSignificant()).isFalse();
         assertThat(css.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
-        assertThat(css.getExtensions()).containsExactly("css");
-        assertThat(css.getAllComments()).containsExactlyInAnyOrder("/*", "*/", "//");
 
-        assertThat(Language.D.getAllComments()).containsExactlyInAnyOrder("/*", "*/", "/+", "+/", "//");
-        assertThat(Language.D.getAllMultiLineComments()).containsExactlyInAnyOrder(new BlockDelimiter("/*", "*/"),
-                                                                                   new BlockDelimiter("/+", "+/"));
+        assertThat(Language.Python.isDocQuote(delim -> "\"\"\"".contentEquals(delim.start()))).isTrue();
+        assertThat(Language.CSharp.isVerbatimQuote(delim -> "@\"".contentEquals(delim.start()))).isTrue();
+        assertThat(Language.D.isAnyMultiLineComment(delim -> "/*".contentEquals(delim.start())
+                && "*/".contentEquals(delim.end()))).isTrue();
+        assertThat(Language.D.isNestedComment(delim -> "/+".contentEquals(delim.start()))).isTrue();
         assertThat(Language.Elm.isNestable()).isTrue();
         assertThat(Language.FortranLegacy.isColumnSignificant()).isTrue();
         assertThat(Language.Markdown.isLiterate()).isTrue();

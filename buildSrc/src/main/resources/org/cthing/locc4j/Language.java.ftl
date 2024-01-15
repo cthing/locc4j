@@ -32,10 +32,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -51,25 +51,29 @@ import static org.cthing.locc4j.RegexUtils.NOTHING_REGEX;
 /**
  * Information about each language that can be counted.
  */
-@SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "MethodDoesntCallSuperMethod" })
+@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "MethodDoesntCallSuperMethod", "Convert2streamapi", "ForLoopReplaceableByForEach"})
 public enum Language {
 <#list languages as id, entry>
     ${id}(
         "<#if entry.name()?has_content>${entry.name()}<#else>${id}</#if>",
         ${entry.literate()?c},
-        List.of(<@expand_params params=entry.lineComments()/>),
-        List.of(<@expand_block_params params=entry.multiLineComments()/>),
         ${entry.nested()?c},
-        List.of(<@expand_block_params params=entry.nestedComments()/>),
-        List.of(<@expand_block_params params=entry.quotes()/>),
-        List.of(<@expand_block_params params=entry.verbatimQuotes()/>),
-        List.of(<@expand_block_params params=entry.docQuotes()/>),
+        new BlockDelimiter[] {<@expand_block_params params=entry.nestedComments()/>},
+        new BlockDelimiter[] {<@expand_block_params params=entry.quotes()/>},
+        new BlockDelimiter[] {<@expand_block_params params=entry.verbatimQuotes()/>},
+        new BlockDelimiter[] {<@expand_block_params params=entry.docQuotes()/>},
         ${entry.columnSignificant()?c},
         ${entry.importantSyntaxRegex()},
-        List.of(<@expand_params params=entry.extensions()/>),
-        List.of(<@expand_params params=entry.allComments()/>),
-        List.of(<@expand_block_params params=entry.allMultiLineComments()/>)
+        new String[] {<@expand_params params=entry.extensions()/>},
+        new BlockDelimiter[] {<@expand_block_params params=entry.allMultiLineComments()/>}
     ) {
+        <#if entry.lineComments()?has_content>
+        @Override
+        public boolean isLineComment(final Predicate<CharSequence> predicate) {
+            return <#list entry.lineComments() as comment>predicate.test("${comment}")<#if comment?has_next> || </#if></#list>;
+        }
+        </#if>
+
         <#if entry.embedSyntax()?has_content>
         @Override
         @Nullable
@@ -86,37 +90,32 @@ public enum Language {
 
     private final String name;
     private final boolean literate;
-    private final List<String> lineComments;
-    private final List<BlockDelimiter> multiLineComments;
     private final boolean nestable;
-    private final List<BlockDelimiter> nestedComments;
-    private final List<BlockDelimiter> quotes;
-    private final List<BlockDelimiter> verbatimQuotes;
-    private final List<BlockDelimiter> docQuotes;
+    private final BlockDelimiter[] nestedComments;
+    private final BlockDelimiter[] quotes;
+    private final BlockDelimiter[] verbatimQuotes;
+    private final BlockDelimiter[] docQuotes;
     private final boolean columnSignificant;
     private final Pattern importantSyntax;
-    private final List<String> extensions;
-    private final List<String> allComments;
-    private final List<BlockDelimiter> allMultiLineComments;
+    private final String[] extensions;
+    private final BlockDelimiter[] allMultiLineComments;
 
     static {
         for (final Language language : values()) {
             NAMES.put(language.getName().toLowerCase(Locale.ROOT), language);
-            language.extensions.forEach(ext -> EXTENSIONS.put(ext, language));
+            for (int i = 0; i < language.extensions.length; i++) {
+                EXTENSIONS.put(language.extensions[i], language);
+            }
         }
     }
 
-    Language(final String name, final boolean literate, final List<String> lineComments,
-             final List<BlockDelimiter> multiLineComments, final boolean nestable,
-             final List<BlockDelimiter> nestedComments, final List<BlockDelimiter> quotes,
-             final List<BlockDelimiter> verbartimQuotes, final List<BlockDelimiter> docQuotes,
+    Language(final String name, final boolean literate, final boolean nestable,
+             final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
+             final BlockDelimiter[] verbartimQuotes, final BlockDelimiter[] docQuotes,
              final boolean columnSignificant, final Pattern importantSyntax,
-             final List<String> extensions, final List<String> allComments,
-             final List<BlockDelimiter> allMultiLineComments) {
+             final String[] extensions, final BlockDelimiter[] allMultiLineComments) {
         this.name = name;
         this.literate = literate;
-        this.lineComments = lineComments;
-        this.multiLineComments = multiLineComments;
         this.nestable = nestable;
         this.nestedComments = nestedComments;
         this.quotes = quotes;
@@ -125,7 +124,6 @@ public enum Language {
         this.columnSignificant = columnSignificant;
         this.importantSyntax = importantSyntax;
         this.extensions = extensions;
-        this.allComments = allComments;
         this.allMultiLineComments = allMultiLineComments;
     }
 
@@ -137,32 +135,81 @@ public enum Language {
         return this.literate;
     }
 
-    public List<String> getLineComments() {
-        return this.lineComments;
-    }
-
-    public List<BlockDelimiter> getMultiLineComments() {
-        return this.multiLineComments;
+    public boolean isLineComment(final Predicate<CharSequence> predicate) {
+        return false;
     }
 
     public boolean isNestable() {
         return this.nestable;
     }
 
-    public List<BlockDelimiter> getNestedComments() {
-        return this.nestedComments;
+    public boolean isNestedComment(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.nestedComments.length; i++) {
+            if (predicate.test(this.nestedComments[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public List<BlockDelimiter> getQuotes() {
-        return this.quotes;
+    public boolean isQuote(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.quotes.length; i++) {
+            if (predicate.test(this.quotes[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public List<BlockDelimiter> getVerbatimQuotes() {
-        return this.verbatimQuotes;
+    @Nullable
+    public BlockDelimiter findQuote(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.quotes.length; i++) {
+            final BlockDelimiter delim = this.quotes[i];
+            if (predicate.test(delim)) {
+                return delim;
+            }
+        }
+        return null;
     }
 
-    public List<BlockDelimiter> getDocQuotes() {
-        return this.docQuotes;
+    public boolean isVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.verbatimQuotes.length; i++) {
+            if (predicate.test(this.verbatimQuotes[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    public BlockDelimiter findVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.verbatimQuotes.length; i++) {
+            final BlockDelimiter delim = this.verbatimQuotes[i];
+            if (predicate.test(delim)) {
+                return delim;
+            }
+        }
+        return null;
+    }
+
+    public boolean isDocQuote(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.docQuotes.length; i++) {
+            if (predicate.test(this.docQuotes[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    public BlockDelimiter findDocQuote(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.docQuotes.length; i++) {
+            final BlockDelimiter delim = this.docQuotes[i];
+            if (predicate.test(delim)) {
+                return delim;
+            }
+        }
+        return null;
     }
 
     public boolean isColumnSignificant() {
@@ -173,21 +220,29 @@ public enum Language {
         return this.importantSyntax;
     }
 
-    public List<String> getExtensions() {
-        return this.extensions;
-    }
-
     @Nullable
     public Embedding.Syntax getEmbedSyntax() {
         return null;
     }
 
-    public List<String> getAllComments() {
-        return this.allComments;
+    public boolean isAnyMultiLineComment(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.allMultiLineComments.length; i++) {
+            if (predicate.test(this.allMultiLineComments[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public List<BlockDelimiter> getAllMultiLineComments() {
-        return this.allMultiLineComments;
+    @Nullable
+    public BlockDelimiter findAnyMultiLineComment(final Predicate<BlockDelimiter> predicate) {
+        for (int i = 0; i < this.allMultiLineComments.length; i++) {
+            final BlockDelimiter delim = this.allMultiLineComments[i];
+            if (predicate.test(delim)) {
+                return delim;
+            }
+        }
+        return null;
     }
 
     /**
