@@ -27,10 +27,10 @@ public class LanguageStatsTest {
 
     @Test
     public void testConstruct() {
-        assertThat(this.stats.language).isEqualTo(Language.Css);
-        assertThat(this.stats.blankLines).isZero();
-        assertThat(this.stats.codeLines).isZero();
-        assertThat(this.stats.commentLines).isZero();
+        assertThat(this.stats.getLanguage()).isEqualTo(Language.Css);
+        assertThat(this.stats.getBlankLines()).isZero();
+        assertThat(this.stats.getCodeLines()).isZero();
+        assertThat(this.stats.getCommentLines()).isZero();
         assertThat(this.stats.getTotalLines()).isZero();
     }
 
