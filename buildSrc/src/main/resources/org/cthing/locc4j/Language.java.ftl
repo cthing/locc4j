@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FilenameUtils;
 import org.cthing.annotations.AccessForTesting;
 
@@ -70,8 +72,9 @@ public enum Language {
     ) {
         <#if entry.embedSyntax()?has_content>
         @Override
-        public Optional<Embedding.Syntax> getEmbedSyntax() {
-            return ${entry.embedSyntax()?upper_case}_EMBEDDING;
+        @Nullable
+        public Embedding.Syntax getEmbedSyntax() {
+            return Embedding.Syntax.${entry.embedSyntax()?lower_case};
         }
         </#if>
     }<#if id?is_last>;<#else>,</#if>
@@ -80,10 +83,6 @@ public enum Language {
     private static final Map<String, Language> NAMES = new HashMap<>();
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
-    private static final Optional<Embedding.Syntax> HTML_EMBEDDING = Optional.of(Embedding.Syntax.html);
-    private static final Optional<Embedding.Syntax> MARKDOWN_EMBEDDING = Optional.of(Embedding.Syntax.markdown);
-    private static final Optional<Embedding.Syntax> RUST_EMBEDDING = Optional.of(Embedding.Syntax.rust);
-    private static final Optional<Embedding.Syntax> NO_EMBEDDING = Optional.empty();
 
     private final String name;
     private final boolean literate;
@@ -178,8 +177,9 @@ public enum Language {
         return this.extensions;
     }
 
-    public Optional<Embedding.Syntax> getEmbedSyntax() {
-        return NO_EMBEDDING;
+    @Nullable
+    public Embedding.Syntax getEmbedSyntax() {
+        return null;
     }
 
     public List<String> getAllComments() {

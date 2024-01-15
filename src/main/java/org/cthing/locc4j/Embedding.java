@@ -202,15 +202,13 @@ final class Embedding {
      */
     @Nullable
     static Embedded find(final Language language, final CharData lines, final int start, final int end) {
-        if (language.getEmbedSyntax().isEmpty()) {
-            return null;
-        }
-        return switch (language.getEmbedSyntax().get()) {
+        return (language.getEmbedSyntax() == null)
+               ? null
+               : switch (language.getEmbedSyntax()) {
             case html -> findHtml(lines, start, end);
             case markdown -> findMarkdown(lines, start, end);
             case rust -> findRust(lines, start);
         };
-
     }
 
     @Nullable
@@ -226,7 +224,6 @@ final class Embedding {
         }
 
         return findHtmlTemplate(lines, start, end);
-
     }
 
     @Nullable
