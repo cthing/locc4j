@@ -285,15 +285,10 @@ class Counter {
     Optional<Embedding.Embedded> performMultiLineAnalysis(final CharData lines, final int start,
                                                           final int end, final FileStats fileStats)
             throws IOException {
-        int skip = 0;
-
         final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(this.language, lines, start, end);
 
-        for (int i = start; i < end; i++) {
-            if (skip != 0) {
-                skip--;
-                continue;
-            }
+        int skip = 0;
+        for (int i = start; i < end; i += skip + 1, skip = 0) {
 
             // 1) The data is empty or whitespace.
             final CharData window = lines.subSequence(i);
@@ -310,7 +305,8 @@ class Counter {
             if (endOfQuoteOpt.isPresent()) {
                 skip = endOfQuoteOpt.get() - 1;
                 continue;
-            } else if (this.state.quote != null) {
+            }
+            if (this.state.quote != null) {
                 continue;
             }
 
