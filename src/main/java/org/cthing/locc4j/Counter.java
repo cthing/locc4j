@@ -297,13 +297,12 @@ class Counter {
             }
 
             // 2) Quote end delimiter
-            Optional<Integer> endOfQuoteOpt = parseEndOfQuote(window);
-            if (endOfQuoteOpt.isEmpty()) {
-                endOfQuoteOpt = parseEndOfMultiLine(window);
+            int endOfQuote = parseEndOfQuote(window);
+            if (endOfQuote == 0) {
+                endOfQuote = parseEndOfMultiLine(window);
             }
-
-            if (endOfQuoteOpt.isPresent()) {
-                skip = endOfQuoteOpt.get() - 1;
+            if (endOfQuote > 0) {
+                skip = endOfQuote - 1;
                 continue;
             }
             if (this.state.quote != null) {
@@ -322,13 +321,13 @@ class Counter {
             }
 
             // 4) Quote start delimiter
-            Optional<Integer> quoteOrMultiLine = parseQuote(window);
-            if (quoteOrMultiLine.isEmpty()) {
+            int quoteOrMultiLine = parseQuote(window);
+            if (quoteOrMultiLine == 0) {
                 quoteOrMultiLine = parseMultiLineComment(window);
             }
 
-            if (quoteOrMultiLine.isPresent()) {
-                skip = quoteOrMultiLine.get() - 1;
+            if (quoteOrMultiLine > 0) {
+                skip = quoteOrMultiLine - 1;
                 continue;
             }
 
@@ -441,12 +440,12 @@ class Counter {
      * Parses the specified character data for the start of a quote.
      *
      * @param window Character data to parse
-     * @return Length of the quote start delimiter if found.
+     * @return Length of the quote start delimiter if found or 0 if not found.
      */
     @AccessForTesting
-    Optional<Integer> parseQuote(final CharData window) {
+    int parseQuote(final CharData window) {
         if (!this.state.commentStack.isEmpty()) {
-            return Optional.empty();
+            return 0;
         }
 
         final Optional<BlockDelimiter> docDelimOpt = this.language.getDocQuotes()
@@ -457,7 +456,7 @@ class Counter {
             final BlockDelimiter delim = docDelimOpt.get();
             this.state.quote = delim.end();
             this.state.quoteType = DOC;
-            return Optional.of(delim.start().length());
+            return delim.start().length();
         }
 
         final Optional<BlockDelimiter> verbatimDelimOpt = this.language.getVerbatimQuotes()
@@ -468,7 +467,7 @@ class Counter {
             final BlockDelimiter delim = verbatimDelimOpt.get();
             this.state.quote = delim.end();
             this.state.quoteType = VERBATIM;
-            return Optional.of(delim.start().length());
+            return delim.start().length();
         }
 
         final Optional<BlockDelimiter> quotesOpt = this.language.getQuotes()
@@ -479,10 +478,10 @@ class Counter {
             final BlockDelimiter delim = quotesOpt.get();
             this.state.quote = delim.end();
             this.state.quoteType = NORMAL;
-            return Optional.of(delim.start().length());
+            return delim.start().length();
         }
 
-        return Optional.empty();
+        return 0;
     }
 
     /**
@@ -493,16 +492,16 @@ class Counter {
      *      outside a verbatim string.
      */
     @AccessForTesting
-    Optional<Integer> parseEndOfQuote(final CharData window) {
+    int parseEndOfQuote(final CharData window) {
         //noinspection DataFlowIssue
         if (parsingMode() == STRING && window.startsWith(this.state.quote)) {
             final CharSequence quote = this.state.quote;
             this.state.quote = null;
-            return Optional.of(quote.length());
+            return quote.length();
         }
 
         if (this.state.quoteType != VERBATIM && window.startsWith("\\\\")) {
-            return Optional.of(2);
+            return 2;
         }
 
         if (this.state.quoteType != VERBATIM
@@ -513,22 +512,22 @@ class Counter {
                                                          .startsWith(delim.start()))) {
             // Tell the state machine to skip the next character because it has been escaped if the
             // string is not a verbatim string.
-            return Optional.of(2);
+            return 2;
         }
 
-        return Optional.empty();
+        return 0;
     }
 
     /**
      * Parses the specified character data for the start of a multiline comment.
      *
      * @param window Character data to parse
-     * @return The length of the comment start delimiter if one is found.
+     * @return The length of the comment start delimiter if one is found or 0 if not found
      */
     @AccessForTesting
-    Optional<Integer> parseMultiLineComment(final CharData window) {
+    int parseMultiLineComment(final CharData window) {
         if (this.state.quote != null) {
-            return Optional.empty();
+            return 0;
         }
 
         final Stream<BlockDelimiter> commentDelims = Stream.concat(this.language.getMultiLineComments().stream(),
@@ -543,7 +542,7 @@ class Counter {
 
                                 return delim.start().length();
                             })
-                            .findFirst();
+                            .findFirst().orElse(0);
     }
 
     /**
@@ -553,18 +552,18 @@ class Counter {
      * @return The length of the comment end delimiter if one is found.
      */
     @AccessForTesting
-    Optional<Integer> parseEndOfMultiLine(final CharData window) {
+    int parseEndOfMultiLine(final CharData window) {
         final CharSequence endComment = this.state.commentStack.peek();
         if (endComment == null) {
-            return Optional.empty();
+            return 0;
         }
 
         if (window.startsWith(endComment)) {
             this.state.commentStack.pop();
-            return Optional.of(endComment.length());
+            return endComment.length();
         }
 
-        return Optional.empty();
+        return 0;
     }
 
     /**

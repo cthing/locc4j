@@ -83,21 +83,21 @@ public class CounterTest {
         @Test
         @DisplayName("Ignore comment end when not in multiline comment")
         public void testNoComment() {
-            assertThat(makeCounter().parseEndOfMultiLine(data("*/"))).isEmpty();
+            assertThat(makeCounter().parseEndOfMultiLine(data("*/"))).isZero();
         }
 
         @Test
         @DisplayName("Ignore comment end when mismatched delimiters")
         public void testWrongDelimiter() {
             stack("a");
-            assertThat(makeCounter().parseEndOfMultiLine(data("*/"))).isEmpty();
+            assertThat(makeCounter().parseEndOfMultiLine(data("*/"))).isZero();
         }
 
         @Test
         @DisplayName("Found comment end delimiter")
         public void testFoundEndDelimiter() {
             stack("*/");
-            assertThat(makeCounter().parseEndOfMultiLine(data("*/"))).contains(2);
+            assertThat(makeCounter().parseEndOfMultiLine(data("*/"))).isEqualTo(2);
             assertThat(stack()).isEmpty();
         }
     }
@@ -109,13 +109,13 @@ public class CounterTest {
         @DisplayName("Ignore start of a multiline comment occurring within a string")
         public void testInString() {
             quote("\"");
-            assertThat(makeCounter().parseMultiLineComment(data("/*"))).isEmpty();
+            assertThat(makeCounter().parseMultiLineComment(data("/*"))).isZero();
         }
 
         @Test
         @DisplayName("Found the start of a multiline comment")
         public void testFound() {
-            assertThat(makeCounter().parseMultiLineComment(data("/* This is a test"))).contains(2);
+            assertThat(makeCounter().parseMultiLineComment(data("/* This is a test"))).isEqualTo(2);
             assertThat(stack()).containsExactly("*/");
         }
 
@@ -123,7 +123,7 @@ public class CounterTest {
         @DisplayName("Found nested comment in language that ignores nested comments")
         public void testIgnoreNested() {
             stack("*/");
-            assertThat(makeCounter().parseMultiLineComment(data("/*"))).contains(2);
+            assertThat(makeCounter().parseMultiLineComment(data("/*"))).isEqualTo(2);
             assertThat(stack()).containsExactly("*/");
         }
 
@@ -131,7 +131,7 @@ public class CounterTest {
         @DisplayName("Found nested comment in language allowing nested comments")
         public void testFoundNestedNestable() {
             stack("*/");
-            assertThat(makeCounter(Language.Kotlin).parseMultiLineComment(data("/*"))).contains(2);
+            assertThat(makeCounter(Language.Kotlin).parseMultiLineComment(data("/*"))).isEqualTo(2);
             assertThat(stack()).containsExactly("*/", "*/");
         }
 
@@ -139,7 +139,7 @@ public class CounterTest {
         @DisplayName("Found nested comment using dedicated nested comment syntax")
         public void testFoundNestedSyntaxNestable() {
             stack("*/");
-            assertThat(makeCounter(Language.D).parseMultiLineComment(data("/+"))).contains(2);
+            assertThat(makeCounter(Language.D).parseMultiLineComment(data("/+"))).isEqualTo(2);
             assertThat(stack()).containsExactly("+/", "*/");
         }
     }
@@ -151,7 +151,7 @@ public class CounterTest {
         @DisplayName("Found end of string")
         public void testFoundInString() {
             quote("\"");
-            assertThat(makeCounter().parseEndOfQuote(data("\""))).contains(1);
+            assertThat(makeCounter().parseEndOfQuote(data("\""))).isEqualTo(1);
             assertThat(quote()).isNull();
         }
 
@@ -159,7 +159,7 @@ public class CounterTest {
         @DisplayName("Found a double backslash")
         public void testFoundInStringDoubleBackslash() {
             quote("\"");
-            assertThat(makeCounter().parseEndOfQuote(data("\\\\"))).contains(2);
+            assertThat(makeCounter().parseEndOfQuote(data("\\\\"))).isEqualTo(2);
             assertThat(quote()).isNotNull();
         }
 
@@ -168,7 +168,7 @@ public class CounterTest {
         public void testIgnoreInVerbatimDoubleBackslash() {
             quote("\"");
             quoteType(Counter.QuoteType.VERBATIM);
-            assertThat(makeCounter().parseEndOfQuote(data("\\\\"))).isEmpty();
+            assertThat(makeCounter().parseEndOfQuote(data("\\\\"))).isZero();
             assertThat(quote()).isNotNull();
         }
 
@@ -176,7 +176,7 @@ public class CounterTest {
         @DisplayName("Found escaped quote")
         public void testFoundEscapedQuote() {
             quote("\"");
-            assertThat(makeCounter().parseEndOfQuote(data("\\\""))).contains(2);
+            assertThat(makeCounter().parseEndOfQuote(data("\\\""))).isEqualTo(2);
             assertThat(quote()).isNotNull();
         }
 
@@ -185,7 +185,7 @@ public class CounterTest {
         public void testIgnoreInVerbatimEscapedQuote() {
             quote("\"");
             quoteType(Counter.QuoteType.VERBATIM);
-            assertThat(makeCounter().parseEndOfQuote(data("\\\""))).isEmpty();
+            assertThat(makeCounter().parseEndOfQuote(data("\\\""))).isZero();
             assertThat(quote()).isNotNull();
         }
 
@@ -193,7 +193,7 @@ public class CounterTest {
         @DisplayName("Not found")
         public void testNotFound() {
             quote("\"");
-            assertThat(makeCounter().parseEndOfQuote(data("abcd"))).isEmpty();
+            assertThat(makeCounter().parseEndOfQuote(data("abcd"))).isZero();
             assertThat(quote()).isNotNull();
         }
     }
@@ -205,7 +205,7 @@ public class CounterTest {
         @DisplayName("Ignore quotes in multiline comment")
         public void testIgnoreInComment() {
             stack("*/");
-            assertThat(makeCounter().parseQuote(data("\"Hello"))).isEmpty();
+            assertThat(makeCounter().parseQuote(data("\"Hello"))).isZero();
             assertThat(quote()).isNull();
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.NORMAL);
         }
@@ -213,7 +213,7 @@ public class CounterTest {
         @Test
         @DisplayName("Found document string")
         public void testFoundDocString() {
-            assertThat(makeCounter(Language.Python).parseQuote(data("\"\"\"\nHello world"))).contains(3);
+            assertThat(makeCounter(Language.Python).parseQuote(data("\"\"\"\nHello world"))).isEqualTo(3);
             assertThat(quote()).isEqualTo("\"\"\"");
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.DOC);
         }
@@ -221,7 +221,7 @@ public class CounterTest {
         @Test
         @DisplayName("Found verbatim string")
         public void testFoundVerbatimString() {
-            assertThat(makeCounter(Language.Rust).parseQuote(data("r##\"\nHello world"))).contains(4);
+            assertThat(makeCounter(Language.Rust).parseQuote(data("r##\"\nHello world"))).isEqualTo(4);
             assertThat(quote()).isEqualTo("\"##");
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.VERBATIM);
         }
@@ -229,7 +229,7 @@ public class CounterTest {
         @Test
         @DisplayName("Found normal string")
         public void testFoundNormalString() {
-            assertThat(makeCounter().parseQuote(data("\"Hello world"))).contains(1);
+            assertThat(makeCounter().parseQuote(data("\"Hello world"))).isEqualTo(1);
             assertThat(quote()).isEqualTo("\"");
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.NORMAL);
         }
@@ -237,7 +237,7 @@ public class CounterTest {
         @Test
         @DisplayName("Not found")
         public void testNotFound() {
-            assertThat(makeCounter().parseQuote(data("Hello world"))).isEmpty();
+            assertThat(makeCounter().parseQuote(data("Hello world"))).isZero();
             assertThat(quote()).isNull();
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.NORMAL);
         }
