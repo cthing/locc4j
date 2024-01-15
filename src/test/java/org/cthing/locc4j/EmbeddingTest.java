@@ -16,8 +16,6 @@
 
 package org.cthing.locc4j;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -39,16 +37,15 @@ public class EmbeddingTest {
                         </script>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 4,
-                                                                                content.length() - 2);
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(43);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("var i = 21;");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 4,
+                                                                   content.length() - 2);
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(43);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("var i = 21;");
             }
 
             @Test
@@ -60,16 +57,14 @@ public class EmbeddingTest {
                         </script>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Text);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(61);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Text);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(61);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -81,16 +76,14 @@ public class EmbeddingTest {
                         </script>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(66);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(66);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -101,9 +94,8 @@ public class EmbeddingTest {
                         Hello world
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).isEmpty();
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
             }
 
             @Test
@@ -113,9 +105,8 @@ public class EmbeddingTest {
                         <script>      </script>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).isEmpty();
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
             }
         }
 
@@ -130,16 +121,15 @@ public class EmbeddingTest {
                     </style>
                     <h1>Heading</h1>
                     """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 4,
-                                                                                content.length() - 2);
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(42);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("color: red;");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 4,
+                                                                   content.length() - 2);
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(42);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("color: red;");
             }
 
             @Test
@@ -151,16 +141,14 @@ public class EmbeddingTest {
                         </style>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Text);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(60);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Text);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(60);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -172,16 +160,14 @@ public class EmbeddingTest {
                         </style>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Yaml);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(54);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Yaml);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(54);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -193,16 +179,14 @@ public class EmbeddingTest {
                         </style>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(65);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(65);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -213,9 +197,8 @@ public class EmbeddingTest {
                         Hello world
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).isEmpty();
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
             }
 
             @Test
@@ -225,9 +208,8 @@ public class EmbeddingTest {
                         <style>      </style>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).isEmpty();
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
             }
         }
 
@@ -242,16 +224,15 @@ public class EmbeddingTest {
                     </template>
                     <h1>Heading</h1>
                     """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 4,
-                                                                                content.length() - 2);
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Html);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(59);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("<p>Footer</p>");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 4,
+                                                                   content.length() - 2);
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Html);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(59);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("<p>Footer</p>");
             }
 
             @Test
@@ -263,16 +244,14 @@ public class EmbeddingTest {
                         </template>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Yaml);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(69);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Yaml);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(69);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -284,16 +263,14 @@ public class EmbeddingTest {
                         </template>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                    assertThat(embedded.getLanguage()).isEqualTo(Language.Html);
-                    assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
-                    assertThat(embedded.getCodeEnd()).isEqualTo(61);
-                    assertThat(embedded.getCommentLines()).isEqualTo(0);
-                    assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                    assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
-                });
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Html);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(61);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
 
             @Test
@@ -304,9 +281,8 @@ public class EmbeddingTest {
                         Hello world
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).isEmpty();
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
             }
 
             @Test
@@ -316,18 +292,16 @@ public class EmbeddingTest {
                         <template>      </template>
                         <h1>Heading</h1>
                         """;
-                final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                                content.length());
-                assertThat(embeddedOpt).isEmpty();
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
             }
         }
 
         @Test
         public void testFindNothing() {
             final String content = "<p>This is a test</p>";
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Html, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).isEmpty();
+            final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+            assertThat(embedded).isNull();
         }
     }
 
@@ -342,9 +316,8 @@ public class EmbeddingTest {
                         ```
                         # Heading
                         """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).isEmpty();
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNull();
         }
 
         @Test
@@ -356,9 +329,8 @@ public class EmbeddingTest {
                         ```
                         # Heading
                         """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).isEmpty();
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNull();
         }
 
         @Test
@@ -370,16 +342,14 @@ public class EmbeddingTest {
                         ```
                         # Heading
                         """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
-                assertThat(embedded.getCodeEnd()).isEqualTo(39);
-                assertThat(embedded.getCommentLines()).isEqualTo(2);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
+            assertThat(embedded.getCodeEnd()).isEqualTo(39);
+            assertThat(embedded.getCommentLines()).isEqualTo(2);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
         @Test
@@ -391,16 +361,14 @@ public class EmbeddingTest {
                         ```
                         # Heading
                         """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
-                assertThat(embedded.getCodeEnd()).isEqualTo(46);
-                assertThat(embedded.getCommentLines()).isEqualTo(2);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
+            assertThat(embedded.getCodeEnd()).isEqualTo(46);
+            assertThat(embedded.getCommentLines()).isEqualTo(2);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
         @Test
@@ -412,16 +380,14 @@ public class EmbeddingTest {
                         ~~~
                         # Heading
                         """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
-                assertThat(embedded.getCodeEnd()).isEqualTo(39);
-                assertThat(embedded.getCommentLines()).isEqualTo(2);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
+            assertThat(embedded.getCodeEnd()).isEqualTo(39);
+            assertThat(embedded.getCommentLines()).isEqualTo(2);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
         @Test
@@ -431,24 +397,21 @@ public class EmbeddingTest {
                         ```java
                         int i = 12;
                         """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
-                assertThat(embedded.getCodeEnd()).isEqualTo(35);
-                assertThat(embedded.getCommentLines()).isEqualTo(1);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
+            assertThat(embedded.getCodeEnd()).isEqualTo(35);
+            assertThat(embedded.getCommentLines()).isEqualTo(1);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
         @Test
         public void testFindNothing() {
             final String content = "This is a test";
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Markdown, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).isEmpty();
+            final Embedding.Embedded embedded = Embedding.find(Language.Markdown, data(content), 0, content.length());
+            assertThat(embedded).isNull();
         }
     }
 
@@ -460,16 +423,14 @@ public class EmbeddingTest {
                                    /// # Hello World
                                    /// This is a test
                                    """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Rust, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
-                assertThat(embedded.getCodeEnd()).isEqualTo(37);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Rust, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
+            assertThat(embedded.getCodeEnd()).isEqualTo(37);
+            assertThat(embedded.getCommentLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
         }
 
         @Test
@@ -478,16 +439,14 @@ public class EmbeddingTest {
                                    //! # Hello World
                                    //! This is a test
                                    """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Rust, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
-                assertThat(embedded.getCodeEnd()).isEqualTo(37);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Rust, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
+            assertThat(embedded.getCodeEnd()).isEqualTo(37);
+            assertThat(embedded.getCommentLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
         }
 
         @Test
@@ -497,24 +456,21 @@ public class EmbeddingTest {
                                    //!
                                    //! This is a test
                                    """;
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Rust, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
-                assertThat(embedded.getCodeEnd()).isEqualTo(41);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
-                assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n\n This is a test");
-            });
+            final Embedding.Embedded embedded = Embedding.find(Language.Rust, data(content), 0, content.length());
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
+            assertThat(embedded.getCodeEnd()).isEqualTo(41);
+            assertThat(embedded.getCommentLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n\n This is a test");
         }
 
         @Test
         public void testFindNothing() {
             final String content = "This is a test";
-            final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(Language.Rust, data(content), 0,
-                                                                            content.length());
-            assertThat(embeddedOpt).isEmpty();
+            final Embedding.Embedded embedded = Embedding.find(Language.Rust, data(content), 0, content.length());
+            assertThat(embedded).isNull();
         }
     }
 

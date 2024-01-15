@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -409,20 +408,20 @@ public class CounterTest {
         @Test
         public void testCase1() throws IOException {
             final String content = "    ";
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(),
                                                                         CounterTest.this.fileStats);
-            assertThat(embeddedOpt).isEmpty();
+            assertThat(embedded).isNull();
         }
 
         @Test
         public void testCase2() throws IOException {
             quote("*/");
             final String content = "   */";
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter().performMultiLineAnalysis(data(content), 0, content.length(),
                                                            CounterTest.this.fileStats);
-            assertThat(embeddedOpt).isEmpty();
+            assertThat(embedded).isNull();
         }
 
         @Test
@@ -432,44 +431,43 @@ public class CounterTest {
                                    var i = 0;
                                    </script>
                                    """;
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(),
                                                                         CounterTest.this.fileStats);
-            assertThat(embeddedOpt).hasValueSatisfying(embedded -> {
-                assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
-                assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
-                assertThat(embedded.getCodeEnd()).isEqualTo(20);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
-                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
-                assertThat(embedded.getCode().toString()).isEqualTo("var i = 0;");
-            });
+            assertThat(embedded).isNotNull();
+            assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
+            assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
+            assertThat(embedded.getCodeEnd()).isEqualTo(20);
+            assertThat(embedded.getCommentLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+            assertThat(embedded.getCode().toString()).isEqualTo("var i = 0;");
         }
 
         @Test
         public void testCase4A() throws IOException {
             final String content = "/*";
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter().performMultiLineAnalysis(data(content), 0, content.length(),
                                                            CounterTest.this.fileStats);
-            assertThat(embeddedOpt).isEmpty();
+            assertThat(embedded).isNull();
         }
 
         @Test
         public void testCase4B() throws IOException {
             final String content = "\"Hello";
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter().performMultiLineAnalysis(data(content), 0, content.length(),
                                                            CounterTest.this.fileStats);
-            assertThat(embeddedOpt).isEmpty();
+            assertThat(embedded).isNull();
         }
 
         @Test
         public void testCase5() throws IOException {
             final String content = "// Hello";
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter().performMultiLineAnalysis(data(content), 0, content.length(),
                                                            CounterTest.this.fileStats);
-            assertThat(embeddedOpt).isEmpty();
+            assertThat(embedded).isNull();
         }
 
         @Test
@@ -477,10 +475,10 @@ public class CounterTest {
             final String content = """
                                    <p>Hello World</p>
                                    """;
-            final Optional<Embedding.Embedded> embeddedOpt =
+            final Embedding.Embedded embedded =
                     makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(),
                                                                         CounterTest.this.fileStats);
-            assertThat(embeddedOpt).isEmpty();
+            assertThat(embedded).isNull();
         }
     }
 

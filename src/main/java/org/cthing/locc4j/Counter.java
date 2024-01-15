@@ -192,11 +192,10 @@ class Counter {
             final boolean startedInComments = !this.state.commentStack.isEmpty()
                     || (this.config.isCountDocStrings() && this.state.quote != null && this.state.quoteType == DOC);
 
-            final Optional<Embedding.Embedded> embeddedOpt = performMultiLineAnalysis(data, lineIter.getStart(),
-                                                                                      lineIter.getEnd(), fileStats);
+            final Embedding.Embedded embedded = performMultiLineAnalysis(data, lineIter.getStart(),
+                                                                         lineIter.getEnd(), fileStats);
 
-            if (embeddedOpt.isPresent()) {
-                final Embedding.Embedded embedded = embeddedOpt.get();
+            if (embedded != null) {
                 stats.commentLines += embedded.getCommentLines();
                 stats.codeLines += embedded.getAdditionalCodeLines();
 
@@ -282,10 +281,11 @@ class Counter {
      * @throws IOException If there was a problem processing the character data.
      */
     @AccessForTesting
-    Optional<Embedding.Embedded> performMultiLineAnalysis(final CharData lines, final int start,
-                                                          final int end, final FileStats fileStats)
+    @Nullable
+    Embedding.Embedded performMultiLineAnalysis(final CharData lines, final int start,
+                                                final int end, final FileStats fileStats)
             throws IOException {
-        final Optional<Embedding.Embedded> embeddedOpt = Embedding.find(this.language, lines, start, end);
+        final Embedding.Embedded embedded = Embedding.find(this.language, lines, start, end);
 
         int skip = 0;
         for (int i = start; i < end; i += skip + 1, skip = 0) {
@@ -310,13 +310,12 @@ class Counter {
             }
 
             // 3) Embedded language
-            if (embeddedOpt.isPresent() && this.state.commentStack.isEmpty()) {
-                final Embedding.Embedded embedded = embeddedOpt.get();
+            if (embedded != null && this.state.commentStack.isEmpty()) {
                 final int embeddedStart = embedded.getEmbeddedStart();
                 if (i == embeddedStart) {
                     final Counter counter = new Counter(embedded.getLanguage(), this.config);
                     counter.count(embedded.getCode(), fileStats);
-                    return embeddedOpt;
+                    return embedded;
                 }
             }
 
@@ -338,7 +337,7 @@ class Counter {
         }
 
         // 6) Nothing of interest
-        return Optional.empty();
+        return null;
     }
 
     /**

@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 
 /**
  * Provides support for languages that can contain other languages (e.g. JavaScript in HTML).
@@ -198,23 +200,28 @@ final class Embedding {
      * @return Information about the embedded content, if found. The information returned is
      *      relative to the start of the specified data.
      */
-    static Optional<Embedded> find(final Language language, final CharData lines, final int start, final int end) {
-        return language.getEmbedSyntax().flatMap(syntax -> switch (syntax) {
+    @Nullable
+    static Embedded find(final Language language, final CharData lines, final int start, final int end) {
+        if (language.getEmbedSyntax().isEmpty()) {
+            return null;
+        }
+        return switch (language.getEmbedSyntax().get()) {
             case html -> findHtml(lines, start, end);
             case markdown -> findMarkdown(lines, start, end);
             case rust -> findRust(lines, start);
-        });
+        };
 
     }
 
-    private static Optional<Embedded> findHtml(final CharData lines, final int start, final int end) {
-        final Optional<Embedded> embeddedScript = findHtmlScript(lines, start, end);
-        if (embeddedScript.isPresent()) {
+    @Nullable
+    private static Embedded findHtml(final CharData lines, final int start, final int end) {
+        final Embedded embeddedScript = findHtmlScript(lines, start, end);
+        if (embeddedScript != null) {
             return embeddedScript;
         }
 
-        final Optional<Embedded> embeddedStyle = findHtmlStyle(lines, start, end);
-        if (embeddedStyle.isPresent()) {
+        final Embedded embeddedStyle = findHtmlStyle(lines, start, end);
+        if (embeddedStyle != null) {
             return embeddedStyle;
         }
 
@@ -222,7 +229,8 @@ final class Embedding {
 
     }
 
-    private static Optional<Embedded> findHtmlScript(final CharData lines, final int start, final int end) {
+    @Nullable
+    private static Embedded findHtmlScript(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
         final Matcher scriptStartMatcher = window1.matcher(HTML_SCRIPT_START_REGEX);
         if (scriptStartMatcher.find()) {
@@ -245,14 +253,15 @@ final class Embedding {
                 final int codeEnd = codeStart + scriptEndMatcher.start();
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
-                    return Optional.of(new HtmlEmbedded(language, scriptStart, codeEnd, code));
+                    return new HtmlEmbedded(language, scriptStart, codeEnd, code);
                 }
             }
         }
-        return Optional.empty();
+        return null;
     }
 
-    private static Optional<Embedded> findHtmlStyle(final CharData lines, final int start, final int end) {
+    @Nullable
+    private static Embedded findHtmlStyle(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
         final Matcher styleStartMatcher = window1.matcher(HTML_STYLE_START_REGEX);
         if (styleStartMatcher.find()) {
@@ -278,14 +287,15 @@ final class Embedding {
                 final int codeEnd = codeStart + styleEndMatcher.start();
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
-                    return Optional.of(new HtmlEmbedded(language, styleStart, codeEnd, code));
+                    return new HtmlEmbedded(language, styleStart, codeEnd, code);
                 }
             }
         }
-        return Optional.empty();
+        return null;
     }
 
-    private static Optional<Embedded> findHtmlTemplate(final CharData lines, final int start, final int end) {
+    @Nullable
+    private static Embedded findHtmlTemplate(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
         final Matcher templateStartMatcher = window1.matcher(HTML_TEMPLATE_START_REGEX);
         if (templateStartMatcher.find()) {
@@ -308,14 +318,15 @@ final class Embedding {
                 final int codeEnd = codeStart + templateEndMatcher.start();
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
-                    return Optional.of(new HtmlEmbedded(language, templateStart, codeEnd, code));
+                    return new HtmlEmbedded(language, templateStart, codeEnd, code);
                 }
             }
         }
-        return Optional.empty();
+        return null;
     }
 
-    private static Optional<Embedded> findMarkdown(final CharData lines, final int start, final int end) {
+    @Nullable
+    private static Embedded findMarkdown(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
         final Matcher blockStartMatcher = window1.matcher(MARKDOWN_CODE_START_REGEX);
         if (blockStartMatcher.find()) {
@@ -331,7 +342,7 @@ final class Embedding {
                 }
             }
             if (languageOpt.isEmpty()) {
-                return Optional.empty();
+                return null;
             }
             final Language language = languageOpt.get();
 
@@ -348,20 +359,21 @@ final class Embedding {
                 final int blockEnd = codeStart + blockEndMatcher.end();
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimLastLine();
                 if (!code.isBlank()) {
-                    return Optional.of(new MarkdownCodeBlock(language, blockStart, blockEnd, 2, code));
+                    return new MarkdownCodeBlock(language, blockStart, blockEnd, 2, code);
                 }
             } else {
                 final int codeEnd = lines.length();
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimLastLine();
                 if (!code.isBlank()) {
-                    return Optional.of(new MarkdownCodeBlock(language, blockStart, codeEnd, 1, code));
+                    return new MarkdownCodeBlock(language, blockStart, codeEnd, 1, code);
                 }
             }
         }
-        return Optional.empty();
+        return null;
     }
 
-    private static Optional<Embedded> findRust(final CharData lines, final int start) {
+    @Nullable
+    private static Embedded findRust(final CharData lines, final int start) {
         final CharData window = lines.subSequence(start);
 
         final CharData trimmedWindow = window.trimLeading();
@@ -372,7 +384,7 @@ final class Embedding {
             commentDelim = RUST_INNER_LINE_DOC;
         }
         if (commentDelim == null) {
-            return Optional.empty();
+            return null;
         }
 
         final List<CharData> mdLines = new ArrayList<>();
@@ -395,9 +407,9 @@ final class Embedding {
         if (!mdLines.isEmpty()) {
             final int lastIndex = mdLines.size() - 1;
             mdLines.set(lastIndex, mdLines.get(lastIndex).trimTrailing());
-            return Optional.of(new RustLineDoc(Language.Markdown, start, blockEnd, mdLines));
+            return new RustLineDoc(Language.Markdown, start, blockEnd, mdLines);
         }
 
-        return Optional.empty();
+        return null;
     }
 }
