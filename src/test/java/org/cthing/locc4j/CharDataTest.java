@@ -198,6 +198,15 @@ public class CharDataTest {
     }
 
     @Test
+    public void testCountLines() {
+        assertThat(new CharData("".toCharArray()).countLines()).isZero();
+        assertThat(new CharData("hello".toCharArray()).countLines()).isEqualTo(1);
+        assertThat(new CharData("hello\n".toCharArray()).countLines()).isEqualTo(1);
+        assertThat(new CharData("hello\nworld".toCharArray()).countLines()).isEqualTo(2);
+        assertThat(new CharData("hello\nworld\n".toCharArray()).countLines()).isEqualTo(2);
+    }
+
+    @Test
     public void testLineIterator() {
         final CharData buffer1 = new CharData("This\nis a test\nof the line iterator".toCharArray());
         final CharData.LineIterator iter1 = buffer1.lineIterator();

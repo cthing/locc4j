@@ -17,9 +17,7 @@
 package org.cthing.locc4j;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
@@ -78,6 +76,19 @@ class Counter {
         final LinkedList<CharSequence> commentStack = new LinkedList<>();
     }
 
+    private static final class ObjectMapperProvider {
+        private static final class InstanceHolder {
+            private static final ObjectMapper INSTANCE = new ObjectMapper();
+        }
+
+        private ObjectMapperProvider() {
+        }
+
+        public static ObjectMapper getInstance() {
+            return InstanceHolder.INSTANCE;
+        }
+    }
+
     private static final JsonPointer JUPYTER_LANGUAGE_PTR = JsonPointer.compile("/metadata/kernelspec/language");
     private static final JsonPointer JUPYTER_EXTENSION_PTR = JsonPointer.compile("/metadata/language_info/file_extension");
 
@@ -127,8 +138,7 @@ class Counter {
         }
 
         final Matcher matcher = data.matcher(this.language.getImportantSyntax());
-        final boolean found = matcher.find();
-        if (!found) {
+        if (!matcher.find()) {
             countComplex(data, fileStats);
             return;
         }
@@ -183,7 +193,7 @@ class Counter {
                 line = line.trim();
             }
 
-            if (tryCountSingleLine(line, stats)) {
+            if (parseSingleLine(line, stats)) {
                 continue;
             }
 
@@ -210,7 +220,7 @@ class Counter {
     }
 
     private void countJupyter(final CharData data, final FileStats fileStats) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = ObjectMapperProvider.getInstance();
         final JsonNode jupyterNode = mapper.readTree(new CharSequenceReader(data));
 
         Optional<Language> languageOpt = Optional.empty();
@@ -236,21 +246,17 @@ class Counter {
                     final String cellType = cellTypeNode.asText();
                     final JsonNode sourceNode = cellNode.get("source");
                     if (sourceNode != null) {
-                        final List<String> sourceLines = new ArrayList<>();
-                        for (final JsonNode sourceLineNode : sourceNode) {
-                            final String sourceLine = sourceLineNode.asText();
-                            sourceLines.add(sourceLine);
-                        }
-                        final String source = String.join("", sourceLines);
+                        final StringBuilder source = new StringBuilder();
+                        sourceNode.forEach(node -> source.append(node.asText()));
                         switch (cellType) {
                             case "markdown": {
                                 final Counter counter = new Counter(Language.Markdown, this.config);
-                                counter.count(source.toCharArray(), fileStats);
+                                counter.count(source.toString().toCharArray(), fileStats);
                                 break;
                             }
                             case "code": {
                                 final Counter counter = new Counter(lang, this.config);
-                                counter.count(source.toCharArray(), fileStats);
+                                counter.count(source.toString().toCharArray(), fileStats);
                                 break;
                             }
                             default:
@@ -261,11 +267,10 @@ class Counter {
             }
         }
 
-        countSimple(data, fileStats);
-        final LanguageStats jupyterStats = fileStats.stats(Language.Jupyter);
         final LanguageStats markdownStats = fileStats.stats(Language.Markdown);
         final LanguageStats langStats = fileStats.stats(lang);
-        jupyterStats.codeLines -= (markdownStats.getTotalLines() + langStats.getTotalLines());
+        final LanguageStats jupyterStats = fileStats.stats(Language.Jupyter);
+        jupyterStats.codeLines = data.countLines() - (markdownStats.getTotalLines() + langStats.getTotalLines());
     }
 
     /**
@@ -339,38 +344,6 @@ class Counter {
     }
 
     /**
-     * Attempts to count the specified character data as a line. If the line contains characters that introduce
-     * multiline constructs (e.g. strings, comments), it cannot be counted yet.
-     *
-     * @param line Character data to count
-     * @param stats Line counts to update
-     * @return {@code true} if the line could be counted.
-     */
-    @AccessForTesting
-    boolean tryCountSingleLine(final CharData line, final LanguageStats stats) {
-        if (parsingMode() != CODE) {
-            return false;
-        }
-
-        if (line.isBlank()) {
-            stats.blankLines++;
-            return true;
-        }
-
-        if (line.matcher(this.language.getImportantSyntax()).find()) {
-            return false;
-        }
-
-        if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
-            stats.commentLines++;
-        } else {
-            stats.codeLines++;
-        }
-
-        return true;
-    }
-
-    /**
      * Determines whether the specified line is a comment.
      *
      * @param line Character data to test
@@ -421,6 +394,38 @@ class Counter {
     @AccessForTesting
     boolean isLineComment(final CharData window) {
         return parsingMode() == CODE && this.language.isLineComment(window::startsWith);
+    }
+
+    /**
+     * Attempts to count the specified character data as a line. If the line contains characters that introduce
+     * multiline constructs (e.g. strings, comments), it cannot be counted yet.
+     *
+     * @param line Character data to count
+     * @param stats Line counts to update
+     * @return {@code true} if the line could be counted.
+     */
+    @AccessForTesting
+    boolean parseSingleLine(final CharData line, final LanguageStats stats) {
+        if (parsingMode() != CODE) {
+            return false;
+        }
+
+        if (line.isBlank()) {
+            stats.blankLines++;
+            return true;
+        }
+
+        if (line.matcher(this.language.getImportantSyntax()).find()) {
+            return false;
+        }
+
+        if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
+            stats.commentLines++;
+        } else {
+            stats.codeLines++;
+        }
+
+        return true;
     }
 
     /**

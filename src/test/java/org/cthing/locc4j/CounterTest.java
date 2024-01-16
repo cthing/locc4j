@@ -346,14 +346,14 @@ public class CounterTest {
     }
 
     @Nested
-    @DisplayName("tryCountSingleLine method")
-    class TryCountSingleLineTest {
+    @DisplayName("parseSingleLine method")
+    class ParseSingleLineTest {
         @Test
         @DisplayName("Not in code")
         public void testNotInCode() {
             quote("/*");
             verifyStats(0, 0, 0);
-            assertThat(makeCounter().tryCountSingleLine(data("hello"), stats(Language.Java))).isFalse();
+            assertThat(makeCounter().parseSingleLine(data("hello"), stats(Language.Java))).isFalse();
             verifyStats(0, 0, 0);
         }
 
@@ -362,7 +362,7 @@ public class CounterTest {
         public void testBlankLine() {
             verifyStats(0, 0, 0);
             assertThat(stats().blankLines).isZero();
-            assertThat(makeCounter().tryCountSingleLine(data("  "), stats())).isTrue();
+            assertThat(makeCounter().parseSingleLine(data("  "), stats())).isTrue();
             verifyStats(0, 0, 1);
         }
 
@@ -370,7 +370,7 @@ public class CounterTest {
         @DisplayName("Multiline")
         public void testMultiline() {
             verifyStats(0, 0, 0);
-            assertThat(makeCounter().tryCountSingleLine(data("/*"), stats())).isFalse();
+            assertThat(makeCounter().parseSingleLine(data("/*"), stats())).isFalse();
             verifyStats(0, 0, 0);
         }
 
@@ -378,7 +378,7 @@ public class CounterTest {
         @DisplayName("Literate")
         public void testLiterate() {
             verifyStats(0, 0, 0);
-            assertThat(makeCounter(Language.Text).tryCountSingleLine(data("Hello world"), stats())).isTrue();
+            assertThat(makeCounter(Language.Text).parseSingleLine(data("Hello world"), stats())).isTrue();
             verifyStats(0, 1, 0);
         }
 
@@ -386,7 +386,7 @@ public class CounterTest {
         @DisplayName("Line comment")
         public void testLineComment() {
             verifyStats(0, 0, 0);
-            assertThat(makeCounter().tryCountSingleLine(data("// Hello world"), stats())).isTrue();
+            assertThat(makeCounter().parseSingleLine(data("// Hello world"), stats())).isTrue();
             verifyStats(0, 1, 0);
         }
 
@@ -394,7 +394,7 @@ public class CounterTest {
         @DisplayName("Code")
         public void testCode() {
             verifyStats(0, 0, 0);
-            assertThat(makeCounter().tryCountSingleLine(data("int foo = 1;"), stats())).isTrue();
+            assertThat(makeCounter().parseSingleLine(data("int foo = 1;"), stats())).isTrue();
             verifyStats(1, 0, 0);
         }
     }

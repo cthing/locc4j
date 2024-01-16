@@ -230,6 +230,27 @@ public class CharData implements CharSequence {
     }
 
     /**
+     * Counts the number of lines in the character data.
+     *
+     * @return Number of lines in the character data.
+     */
+    public int countLines() {
+        if (this.length == 0) {
+            return 0;
+        }
+
+        boolean endedNewline = false;
+        int count = 0;
+        for (int i = this.offset; i < this.length; i++) {
+            endedNewline = this.buffer[i] == '\n';
+            if (endedNewline) {
+                count++;
+            }
+        }
+        return endedNewline ? count : (count + 1);
+    }
+
+    /**
      * Obtains an iterator for traversing the character data line by line starting at the specified position
      * in the data.
      *

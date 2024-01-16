@@ -74,6 +74,29 @@ public enum Language {
         }
         </#if>
 
+        <#if entry.verbatimQuotes()?has_content>
+        public boolean isVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
+            for (int i = 0; i < this.verbatimQuotes.length; i++) {
+                if (predicate.test(this.verbatimQuotes[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        </#if>
+
+        <#if entry.nestedComments()?has_content>
+        @Override
+        public boolean isNestedComment(final Predicate<BlockDelimiter> predicate) {
+            for (int i = 0; i < this.nestedComments.length; i++) {
+                if (predicate.test(this.nestedComments[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        </#if>
+
         <#if entry.embedSyntax()?has_content>
         @Override
         @Nullable
@@ -88,12 +111,13 @@ public enum Language {
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
 
+    BlockDelimiter[] nestedComments;
+    BlockDelimiter[] verbatimQuotes;
+
     private final String name;
     private final boolean literate;
     private final boolean nestable;
-    private final BlockDelimiter[] nestedComments;
     private final BlockDelimiter[] quotes;
-    private final BlockDelimiter[] verbatimQuotes;
     private final BlockDelimiter[] docQuotes;
     private final boolean columnSignificant;
     private final Pattern importantSyntax;
@@ -144,11 +168,6 @@ public enum Language {
     }
 
     public boolean isNestedComment(final Predicate<BlockDelimiter> predicate) {
-        for (int i = 0; i < this.nestedComments.length; i++) {
-            if (predicate.test(this.nestedComments[i])) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -173,11 +192,6 @@ public enum Language {
     }
 
     public boolean isVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
-        for (int i = 0; i < this.verbatimQuotes.length; i++) {
-            if (predicate.test(this.verbatimQuotes[i])) {
-                return true;
-            }
-        }
         return false;
     }
 
