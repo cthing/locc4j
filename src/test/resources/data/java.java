@@ -12,11 +12,20 @@ public class Test
     }
 }
 
+
+/**
+ * A class.
+ */
 class Foo
 {
     public void bar()
     {
+      // Output
       System.out.println("FooBar"); //Not counted
+
+      System.out.println("""
+                         final value = 10;  // Not code
+                         """);
     }
 }
 
@@ -30,6 +39,6 @@ public class BackSlash {
       "\\"; // 1 code + 3 blanks
 
 
-
+      /* A line comment */
     }
 }
