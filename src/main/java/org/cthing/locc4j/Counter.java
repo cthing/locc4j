@@ -73,6 +73,10 @@ public class Counter {
         VERBATIM,
     }
 
+
+    /**
+     * Counting state.
+     */
     static class State {
         @Nullable
         CharSequence quote;
@@ -89,6 +93,11 @@ public class Counter {
         }
     }
 
+
+    /**
+     * Singleton provider for Jupyter JSON parsing. Construction of the Object Mapper is very expensive but it
+     * is thread safe so one can be used for all JSON parsing.
+     */
     private static final class ObjectMapperProvider {
         private static final class InstanceHolder {
             private static final ObjectMapper INSTANCE = new ObjectMapper();
@@ -109,10 +118,23 @@ public class Counter {
     private final Config config;
     private final State state;
 
+    /**
+     * Constructs a counter for the specified language.
+     *
+     * @param language Language for the file to be counted
+     * @param config Configuration for the counter
+     */
     public Counter(final Language language, final Config config) {
         this(language, config, new State());
     }
 
+    /**
+     * Constructs a counter for the specified language.
+     *
+     * @param language Language for the file to be counted
+     * @param config Configuration for the counter
+     * @param state Counting state that can be specified for testing purposes
+     */
     @AccessForTesting
     Counter(final Language language, final Config config, final State state) {
         this.language = language;
@@ -200,6 +222,13 @@ public class Counter {
         }
     }
 
+    /**
+     * Reads the specified Jupyter notebook data and counts the lines of JSON and embedded languages.
+     *
+     * @param data Jupyter notebook data
+     * @param fileStats Counting information
+     * @throws IOException if there was a problem reading the data
+     */
     private void countJupyter(final CharData data, final FileStats fileStats) throws IOException {
         final ObjectMapper mapper = ObjectMapperProvider.getInstance();
         final JsonNode jupyterNode = mapper.readTree(new CharSequenceReader(data));
@@ -272,6 +301,8 @@ public class Counter {
 
         int skip = 0;
         for (int i = start; i < end; i += skip + 1, skip = 0) {
+            // Numbering is referenced in unit test cases.
+
             // 1) The data is empty or whitespace.
             final CharData window = lines.subSequence(i);
             if (window.isBlank()) {
@@ -331,6 +362,8 @@ public class Counter {
      */
     @AccessForTesting
     boolean isComment(final CharData line, final boolean startedInComments) {
+        // Numbering is referenced in unit test cases.
+
         final CharData trimmed = line.trim();
 
         // 1) If in a doc string, count it as a comment if configured to do so
@@ -385,20 +418,24 @@ public class Counter {
      */
     @AccessForTesting
     boolean parseSingleLine(final CharData line, final LanguageStats stats) {
+        // If in a string or block comment, single line parsing cannot be used.
         if (parsingMode() != CODE) {
             return false;
         }
 
+        // If the line is blank, count it.
         if (line.isBlank()) {
             stats.blankLines++;
             return true;
         }
 
+        // If the line contains important syntax (e.g. a <script> tag), single line parsing cannot be used.
         final Pattern importantSyntax = this.language.getImportantSyntax();
         if (importantSyntax != null && line.matcher(importantSyntax).find()) {
             return false;
         }
 
+        // Count the line
         if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
             stats.commentLines++;
         } else {

@@ -211,6 +211,15 @@ final class Embedding {
         };
     }
 
+    /**
+     * Attempts to find embedded content in the specified region of HTML character data.
+     *
+     * @param lines HTML character data
+     * @param start Starting position in the character data in which to look for embedded content
+     * @param end Ending position in the character data in which to look for embedded content
+     * @return Information about the embedded content, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
     @Nullable
     private static Embedded findHtml(final CharData lines, final int start, final int end) {
         final Embedded embeddedScript = findHtmlScript(lines, start, end);
@@ -226,6 +235,15 @@ final class Embedding {
         return findHtmlTemplate(lines, start, end);
     }
 
+    /**
+     * Attempts to find an embedded script in the specified region of HTML character data.
+     *
+     * @param lines HTML character data
+     * @param start Starting position in the character data in which to look for an embedded script
+     * @param end Ending position in the character data in which to look for an embedded script
+     * @return Information about the embedded script, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
     @Nullable
     private static Embedded findHtmlScript(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
@@ -257,6 +275,15 @@ final class Embedding {
         return null;
     }
 
+    /**
+     * Attempts to find an embedded style sheet in the specified region of HTML character data.
+     *
+     * @param lines HTML character data
+     * @param start Starting position in the character data in which to look for an embedded style sheet
+     * @param end Ending position in the character data in which to look for an embedded style sheet
+     * @return Information about the embedded style sheet, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
     @Nullable
     private static Embedded findHtmlStyle(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
@@ -291,6 +318,15 @@ final class Embedding {
         return null;
     }
 
+    /**
+     * Attempts to find an embedded template in the specified region of HTML character data.
+     *
+     * @param lines HTML character data
+     * @param start Starting position in the character data in which to look for an embedded template
+     * @param end Ending position in the character data in which to look for an embedded template
+     * @return Information about the embedded template, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
     @Nullable
     private static Embedded findHtmlTemplate(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
@@ -322,6 +358,15 @@ final class Embedding {
         return null;
     }
 
+    /**
+     * Attempts to find embedded content in the specified region of Markdown character data.
+     *
+     * @param lines Markdown character data
+     * @param start Starting position in the character data in which to look for embedded content
+     * @param end Ending position in the character data in which to look for embedded content
+     * @return Information about the embedded content, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
     @Nullable
     private static Embedded findMarkdown(final CharData lines, final int start, final int end) {
         final CharData window1 = lines.subSequence(start, end);
@@ -366,6 +411,14 @@ final class Embedding {
         return null;
     }
 
+    /**
+     * Attempts to find embedded content in the specified region of Rust character data.
+     *
+     * @param lines Rust character data
+     * @param start Starting position in the character data in which to look for embedded content
+     * @return Information about the embedded content, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
     @Nullable
     private static Embedded findRust(final CharData lines, final int start) {
         final CharData window = lines.subSequence(start);
