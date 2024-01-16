@@ -330,10 +330,7 @@ final class Embedding {
             Optional<Language> languageOpt = Optional.empty();
             final String[] blockLanguages = COMMA_REGEX.split(blockStartMatcher.group(2).trim());
             for (final String blockLanguage : blockLanguages) {
-                languageOpt = Language.fromName(blockLanguage);
-                if (languageOpt.isEmpty()) {
-                    languageOpt = Language.fromId(blockLanguage);
-                }
+                languageOpt = Language.fromName(blockLanguage).or(() -> Language.fromId(blockLanguage));
                 if (languageOpt.isPresent()) {
                     break;
                 }

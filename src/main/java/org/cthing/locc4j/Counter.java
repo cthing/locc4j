@@ -19,7 +19,6 @@ package org.cthing.locc4j;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Optional;
-import java.util.regex.Matcher;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -74,6 +73,15 @@ class Counter {
         CharSequence quote;
         QuoteType quoteType = NORMAL;
         final LinkedList<CharSequence> commentStack = new LinkedList<>();
+
+        /**
+         * Resets the state to its initial setting.
+         */
+        void reset() {
+            this.quote = null;
+            this.quoteType = NORMAL;
+            this.commentStack.clear();
+        }
     }
 
     private static final class ObjectMapperProvider {
@@ -128,58 +136,13 @@ class Counter {
      * @throws IOException if there was a problem counting the lines.
      */
     void count(final CharData data, final FileStats fileStats) throws IOException {
-        this.state.quote = null;
-        this.state.quoteType = NORMAL;
-        this.state.commentStack.clear();
+        this.state.reset();
 
         if (this.language == Language.Jupyter) {
             countJupyter(data, fileStats);
             return;
         }
 
-        final Matcher matcher = data.matcher(this.language.getImportantSyntax());
-        if (!matcher.find()) {
-            countComplex(data, fileStats);
-            return;
-        }
-
-        final int syntaxStart = matcher.start();
-        final int lineStart = data.findLineStart(syntaxStart);
-        if (lineStart == 0) {
-            countComplex(data, fileStats);
-            return;
-        }
-
-        final CharData[] sections = data.splitAt(lineStart);
-        countSimple(sections[0], fileStats);
-        countComplex(sections[1], fileStats);
-    }
-
-    private void countSimple(final CharData data, final FileStats fileStats) {
-        final LanguageStats stats = fileStats.stats(this.language);
-        final CharData.LineIterator lineIter = data.lineIterator();
-
-        while (lineIter.hasNext()) {
-            CharData line = lineIter.next();
-
-            // Languages such as FORTRAN treat column positions as significant. For example, in legacy FORTRAN,
-            // a "C" in the first column signifies a comment line. Therefore, do not trim lines for languages
-            // where columns are significant.
-            if (!this.language.isColumnSignificant()) {
-                line = line.trim();
-            }
-
-            if (line.isBlank()) {
-                stats.blankLines++;
-            } else if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
-                stats.commentLines++;
-            } else {
-                stats.codeLines++;
-            }
-        }
-    }
-
-    private void countComplex(final CharData data, final FileStats fileStats) throws IOException {
         final LanguageStats stats = fileStats.stats(this.language);
         CharData.LineIterator lineIter = data.lineIterator();
 
@@ -286,13 +249,11 @@ class Counter {
     @AccessForTesting
     @Nullable
     Embedding.Embedded performMultiLineAnalysis(final CharData lines, final int start,
-                                                final int end, final FileStats fileStats)
-            throws IOException {
+                                                final int end, final FileStats fileStats) throws IOException {
         final Embedding.Embedded embedded = Embedding.find(this.language, lines, start, end);
 
         int skip = 0;
         for (int i = start; i < end; i += skip + 1, skip = 0) {
-
             // 1) The data is empty or whitespace.
             final CharData window = lines.subSequence(i);
             if (window.isBlank()) {
