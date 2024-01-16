@@ -34,6 +34,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +43,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("MethodOnlyUsedFromInnerClass")
 public class CounterTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CounterTest.class);
+
     private static long countingTime;
+    private static int totalLines;
 
     private final Config config = new Config();
     private final Counter.State state = new Counter.State();
@@ -49,7 +54,8 @@ public class CounterTest {
 
     @AfterAll
     public static void allDone() {
-        System.out.println("Counting time: " + countingTime + " ms");
+        LOGGER.info(() -> String.format("Total lines:   %d\n      Counting time: %d ms\n      Velocity:      %d lines/ms",
+                                        totalLines, countingTime, Math.round(totalLines / countingTime)));
     }
 
     @Nested
@@ -513,6 +519,7 @@ public class CounterTest {
             final Counter counter = makeCounter(primaryLanguage);
             counter.count(data, actualFileStats);
             countingTime += System.currentTimeMillis() - startMillis;
+            totalLines += actualFileStats.getStats().values().stream().mapToInt(LanguageStats::getTotalLines).sum();
         }
 
         final Map<Language, LanguageStats> actualStatsMap = actualFileStats.getStats();
