@@ -18,14 +18,13 @@ package org.cthing.locc4j;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -492,16 +491,14 @@ public class CounterTest {
         }
 
         final String filename = accessor.getString(0);
-        final char[] data =
-                IOUtils.toCharArray(Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename)),
-                                    StandardCharsets.UTF_8);
+        final InputStream ins = Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename));
 
         final FileStats actualFileStats = new FileStats(new File(filename));
         this.config.setCountDocStrings(accessor.getBoolean(1));
 
         final long startMillis = System.currentTimeMillis();
         final Counter counter = makeCounter(accessor.get(2, Language.class));
-        counter.count(data, actualFileStats);
+        counter.count(ins, actualFileStats);
         countingTime += System.currentTimeMillis() - startMillis;
 
         final Map<Language, LanguageStats> actualStatsMap = actualFileStats.getStats();

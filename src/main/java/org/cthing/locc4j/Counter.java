@@ -17,12 +17,16 @@
 package org.cthing.locc4j;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
+import javax.annotation.WillNotClose;
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CharSequenceReader;
 import org.cthing.annotations.AccessForTesting;
 
@@ -42,7 +46,7 @@ import static org.cthing.locc4j.Counter.QuoteType.VERBATIM;
  * Counts lines in the specified character data according to the specified language.
  */
 @NotThreadSafe
-class Counter {
+public class Counter {
 
     /**
      * Counter parsing modes.
@@ -104,7 +108,7 @@ class Counter {
     private final Config config;
     private final State state;
 
-    Counter(final Language language, final Config config) {
+    public Counter(final Language language, final Config config) {
         this(language, config, new State());
     }
 
@@ -116,20 +120,33 @@ class Counter {
     }
 
     /**
-     * Performs the counting of lines in the data specified in the constructor. Stats will be added to the specified
-     * stats object. Note that the counts are added to any existing counts in the specified stats object.
+     * Performs the counting of lines in the input stream. Stats will be added to the specified stats object.
+     * Note that the counts are added to any existing counts in the specified stats object.
+     *
+     * @param inputStream Stream providing the text to be counted
+     * @param fileStats Object to collect the line count stats.
+     * @throws IOException if there was a problem counting the lines.
+     */
+    @WillNotClose
+    public void count(final InputStream inputStream, final FileStats fileStats) throws IOException {
+        count(IOUtils.toCharArray(inputStream, StandardCharsets.UTF_8), fileStats);
+    }
+
+    /**
+     * Performs the counting of lines in the specified data. Stats will be added to the specified stats object.
+     * Note that the counts are added to any existing counts in the specified stats object.
      *
      * @param characters Text to be counted
      * @param fileStats Object to collect the line count stats.
      * @throws IOException if there was a problem counting the lines.
      */
-    void count(final char[] characters, final FileStats fileStats) throws IOException {
+    public void count(final char[] characters, final FileStats fileStats) throws IOException {
         count(new CharData(characters), fileStats);
     }
 
     /**
-     * Performs the counting of lines in the data specified in the constructor. Stats will be added to the specified
-     * stats object. Note that the counts are added to any existing counts in the specified stats object.
+     * Performs the counting of lines in the specified data. Stats will be added to the specified stats object.
+     * Note that the counts are added to any existing counts in the specified stats object.
      *
      * @param data Text to be counted
      * @param fileStats Object to collect the line count stats.

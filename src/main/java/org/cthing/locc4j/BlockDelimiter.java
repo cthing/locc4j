@@ -25,5 +25,5 @@ import java.io.Serializable;
  * @param start Specifies the beginning delimiter
  * @param end Specifies the ending delimiter
  */
-public record BlockDelimiter(String start, String end) implements Serializable {
+record BlockDelimiter(String start, String end) implements Serializable {
 }

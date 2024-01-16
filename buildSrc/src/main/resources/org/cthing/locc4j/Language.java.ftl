@@ -56,25 +56,44 @@ public enum Language {
 <#list languages as id, entry>
     ${id}(
         "<#if entry.name()?has_content>${entry.name()}<#else>${id}</#if>",
-        ${entry.literate()?c},
-        ${entry.nested()?c},
         new BlockDelimiter[] {<@expand_block_params params=entry.nestedComments()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.quotes()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.verbatimQuotes()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.docQuotes()/>},
-        ${entry.columnSignificant()?c},
         ${entry.importantSyntaxRegex()},
         new String[] {<@expand_params params=entry.extensions()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.allMultiLineComments()/>}
     ) {
+        <#if entry.literate()>
+        @Override
+        public boolean isLiterate() {
+            return true;
+        }
+
+        </#if>
+        <#if entry.nested()>
+        @Override
+        public boolean isNestable() {
+            return true;
+        }
+
+        </#if>
+        <#if entry.columnSignificant()>
+        @Override
+        public boolean isColumnSignificant() {
+            return true;
+        }
+
+        </#if>
         <#if entry.lineComments()?has_content>
         @Override
         public boolean isLineComment(final Predicate<CharSequence> predicate) {
             return <#list entry.lineComments() as comment>predicate.test("${comment}")<#if comment?has_next> || </#if></#list>;
         }
-        </#if>
 
+        </#if>
         <#if entry.verbatimQuotes()?has_content>
+        @Override
         public boolean isVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
             for (int i = 0; i < this.verbatimQuotes.length; i++) {
                 if (predicate.test(this.verbatimQuotes[i])) {
@@ -83,8 +102,8 @@ public enum Language {
             }
             return false;
         }
-        </#if>
 
+        </#if>
         <#if entry.nestedComments()?has_content>
         @Override
         public boolean isNestedComment(final Predicate<BlockDelimiter> predicate) {
@@ -95,11 +114,10 @@ public enum Language {
             }
             return false;
         }
-        </#if>
 
+        </#if>
         <#if entry.embedSyntax()?has_content>
         @Override
-        @Nullable
         public Embedding.Syntax getEmbedSyntax() {
             return Embedding.Syntax.${entry.embedSyntax()?lower_case};
         }
@@ -115,11 +133,8 @@ public enum Language {
     BlockDelimiter[] verbatimQuotes;
 
     private final String name;
-    private final boolean literate;
-    private final boolean nestable;
     private final BlockDelimiter[] quotes;
     private final BlockDelimiter[] docQuotes;
-    private final boolean columnSignificant;
     private final Pattern importantSyntax;
     private final String[] extensions;
     private final BlockDelimiter[] allMultiLineComments;
@@ -133,19 +148,16 @@ public enum Language {
         }
     }
 
-    Language(final String name, final boolean literate, final boolean nestable,
+    Language(final String name,
              final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
              final BlockDelimiter[] verbartimQuotes, final BlockDelimiter[] docQuotes,
-             final boolean columnSignificant, final Pattern importantSyntax,
+             final Pattern importantSyntax,
              final String[] extensions, final BlockDelimiter[] allMultiLineComments) {
         this.name = name;
-        this.literate = literate;
-        this.nestable = nestable;
         this.nestedComments = nestedComments;
         this.quotes = quotes;
         this.verbatimQuotes = verbartimQuotes;
         this.docQuotes = docQuotes;
-        this.columnSignificant = columnSignificant;
         this.importantSyntax = importantSyntax;
         this.extensions = extensions;
         this.allMultiLineComments = allMultiLineComments;
@@ -156,7 +168,7 @@ public enum Language {
     }
 
     public boolean isLiterate() {
-        return this.literate;
+        return false;
     }
 
     public boolean isLineComment(final Predicate<CharSequence> predicate) {
@@ -164,7 +176,7 @@ public enum Language {
     }
 
     public boolean isNestable() {
-        return this.nestable;
+        return false;
     }
 
     public boolean isNestedComment(final Predicate<BlockDelimiter> predicate) {
@@ -227,7 +239,7 @@ public enum Language {
     }
 
     public boolean isColumnSignificant() {
-        return this.columnSignificant;
+        return false;
     }
 
     public Pattern getImportantSyntax() {

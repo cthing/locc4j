@@ -30,14 +30,14 @@ import java.util.regex.Pattern;
  * this class to be used with classes that implement or accept that interface.
  */
 @SuppressWarnings("Convert2streamapi")
-public class CharData implements CharSequence {
+class CharData implements CharSequence {
 
     /**
      * Provides iteration over the character data by line. In addition to the line character data, the start
      * (inclusive) and end (exclusive) indices of the line are provided. The line character data includes the
      * terminating newline, if present.
      */
-    public final class LineIterator implements Iterator<CharData> {
+    final class LineIterator implements Iterator<CharData> {
 
         private int start;
         private int end;
@@ -97,11 +97,11 @@ public class CharData implements CharSequence {
     private final int offset;
     private final int length;
 
-    public CharData(final char[] buffer) {
+    CharData(final char[] buffer) {
         this(buffer, 0, buffer.length);
     }
 
-    public CharData(final List<CharData> chunks) {
+    CharData(final List<CharData> chunks) {
         int totalLength = 0;
         for (final CharData chunk : chunks) {
             totalLength += chunk.length;
@@ -145,7 +145,7 @@ public class CharData implements CharSequence {
      *
      * @return {@code true} if the data is all whitespace or empty.
      */
-    public boolean isBlank() {
+    boolean isBlank() {
         for (int i = 0, j = this.offset; i < this.length; i++, j++) {
             if (!Character.isWhitespace(this.buffer[j])) {
                 return false;
@@ -172,7 +172,7 @@ public class CharData implements CharSequence {
      * @param start Starting index for the buffer
      * @return New buffer based on this buffer at the specified stating index to the end.
      */
-    public CharData subSequence(final int start) {
+    CharData subSequence(final int start) {
         return subSequence(start, this.length);
     }
 
@@ -183,7 +183,7 @@ public class CharData implements CharSequence {
      * @return {@code true} if the character data starts with the specified prefix. {@code false} if it does not or
      *      the prefix is longer than the character data.
      */
-    public boolean startsWith(final CharSequence prefix) {
+    boolean startsWith(final CharSequence prefix) {
         final int prefixLen = prefix.length();
         if (prefixLen > this.length) {
             return false;
@@ -205,7 +205,7 @@ public class CharData implements CharSequence {
      * @return {@code true} if the character data ends with the specified suffix. {@code false} if it does not or
      *      the suffix is longer than the character data.
      */
-    public boolean endsWith(final CharSequence suffix) {
+    boolean endsWith(final CharSequence suffix) {
         final int suffixLen = suffix.length();
         if (suffixLen > this.length) {
             return false;
@@ -225,7 +225,7 @@ public class CharData implements CharSequence {
      *
      * @return Iterator for traversing the character data by lines.
      */
-    public LineIterator lineIterator() {
+    LineIterator lineIterator() {
         return new LineIterator();
     }
 
@@ -234,7 +234,7 @@ public class CharData implements CharSequence {
      *
      * @return Number of lines in the character data.
      */
-    public int countLines() {
+    int countLines() {
         if (this.length == 0) {
             return 0;
         }
@@ -257,7 +257,7 @@ public class CharData implements CharSequence {
      * @param start Starting position for the iterator
      * @return Iterator for traversing the character data by lines.
      */
-    public LineIterator lineIterator(final int start) {
+    LineIterator lineIterator(final int start) {
         return new LineIterator(start);
     }
 
@@ -268,7 +268,7 @@ public class CharData implements CharSequence {
      * @param index Index in the character data from which to look for the start of the line containing that index
      * @return Index of the start of the line containing the specified index.
      */
-    public int findLineStart(final int index) {
+    int findLineStart(final int index) {
         for (int i = this.offset + Objects.checkIndex(index, this.length) - 1; i >= this.offset; i--) {
             if (this.buffer[i] == '\n') {
                 return i - this.offset + 1;
@@ -283,7 +283,7 @@ public class CharData implements CharSequence {
      * @param ch Character to find
      * @return Index of the character if found in the data. Returns -1 if the character is not found.
      */
-    public int indexOf(final char ch) {
+    int indexOf(final char ch) {
         return indexOf(ch, 0);
     }
 
@@ -294,7 +294,7 @@ public class CharData implements CharSequence {
      * @param fromIndex Index from which to start looking for the character (inclusive)
      * @return Index of the character if found in the data. Returns -1 if the character is not found.
      */
-    public int indexOf(final char ch, final int fromIndex) {
+    int indexOf(final char ch, final int fromIndex) {
         Objects.checkIndex(fromIndex, this.length);
         for (int i = fromIndex, j = this.offset + fromIndex; i < this.length; i++, j++) {
             if (this.buffer[j] == ch) {
@@ -310,7 +310,7 @@ public class CharData implements CharSequence {
      * @param sequence Character sequence to find
      * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
      */
-    public int indexOf(final CharSequence sequence) {
+    int indexOf(final CharSequence sequence) {
         return indexOf(sequence, 0);
     }
 
@@ -322,7 +322,7 @@ public class CharData implements CharSequence {
      * @param fromIndex Index from which to start looking for the character sequence (inclusive)
      * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
      */
-    public int indexOf(final CharSequence sequence, final int fromIndex) {
+    int indexOf(final CharSequence sequence, final int fromIndex) {
         Objects.checkIndex(fromIndex, this.length);
 
         final int seqLen = sequence.length();
@@ -355,7 +355,7 @@ public class CharData implements CharSequence {
      * @param ch Character to find
      * @return Index of the character if found in the data. Returns -1 if the character is not found.
      */
-    public int lastIndexOf(final char ch) {
+    int lastIndexOf(final char ch) {
         return lastIndexOf(ch, this.length - 1);
     }
 
@@ -366,7 +366,7 @@ public class CharData implements CharSequence {
      * @param fromIndex Index from which to start looking for the character (inclusive)
      * @return Index of the character if found in the data. Returns -1 if the character is not found.
      */
-    public int lastIndexOf(final char ch, final int fromIndex) {
+    int lastIndexOf(final char ch, final int fromIndex) {
         Objects.checkIndex(fromIndex, this.length);
         for (int i = fromIndex, j = this.offset + fromIndex; i >= 0; i--, j--) {
             if (this.buffer[j] == ch) {
@@ -382,7 +382,7 @@ public class CharData implements CharSequence {
      * @param sequence Character sequence to find
      * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
      */
-    public int lastIndexOf(final CharSequence sequence) {
+    int lastIndexOf(final CharSequence sequence) {
         return lastIndexOf(sequence, this.length - 1);
     }
 
@@ -394,7 +394,7 @@ public class CharData implements CharSequence {
      * @param fromIndex Index from which to start looking for the character sequence (inclusive)
      * @return Index of the character sequence if found in the data. Returns -1 if the character is not found.
      */
-    public int lastIndexOf(final CharSequence sequence, final int fromIndex) {
+    int lastIndexOf(final CharSequence sequence, final int fromIndex) {
         Objects.checkIndex(fromIndex, this.length);
 
         final int seqLen = sequence.length();
@@ -426,7 +426,7 @@ public class CharData implements CharSequence {
      *
      * @return New character data buffer with leading and trailing whitespace removed.
      */
-    public CharData trim() {
+    CharData trim() {
         int start = this.offset;
         int end = this.offset + this.length - 1;
 
@@ -463,7 +463,7 @@ public class CharData implements CharSequence {
      *
      * @return New character data buffer with leading whitespace removed.
      */
-    public CharData trimLeading() {
+    CharData trimLeading() {
         int start = this.offset;
         final int end = this.offset + this.length - 1;
 
@@ -490,7 +490,7 @@ public class CharData implements CharSequence {
      *
      * @return New character data buffer with trailing whitespace removed.
      */
-    public CharData trimTrailing() {
+    CharData trimTrailing() {
         int end = this.offset + this.length - 1;
 
         // Trim from the end
@@ -517,7 +517,7 @@ public class CharData implements CharSequence {
      *
      * @return New character data buffer with the whitespace trimmed off the first and last lines.
      */
-    public CharData trimFirstLastLine() {
+    CharData trimFirstLastLine() {
         int start = this.offset;
         int end = this.offset + this.length - 1;
 
@@ -566,7 +566,7 @@ public class CharData implements CharSequence {
      *
      * @return New character data buffer with the whitespace trimmed off the last line.
      */
-    public CharData trimLastLine() {
+    CharData trimLastLine() {
         int end = this.offset + this.length - 1;
 
         // Trim from the end to the start of the last line
@@ -606,7 +606,7 @@ public class CharData implements CharSequence {
      * @param index Position at which to split the buffer, exclusive
      * @return Two character data buffers split at the specified index
      */
-    public CharData[] splitAt(final int index) {
+    CharData[] splitAt(final int index) {
         final int idx = Objects.checkIndex(index, this.length + 1);
 
         if (this.length == 0) {
@@ -631,7 +631,7 @@ public class CharData implements CharSequence {
      * @param sequence Character sequence to test
      * @return {@code true} if the character data is equal to the specified sequence.
      */
-    public boolean contentEquals(final CharSequence sequence) {
+    boolean contentEquals(final CharSequence sequence) {
         if (this.length != sequence.length()) {
             return false;
         }
@@ -649,7 +649,7 @@ public class CharData implements CharSequence {
      * @param regex Regular expression to match
      * @return {@code true} if the character data matches the specified regular expression.
      */
-    public boolean matches(final Pattern regex) {
+    boolean matches(final Pattern regex) {
         return matcher(regex).matches();
     }
 
@@ -659,7 +659,7 @@ public class CharData implements CharSequence {
      * @param regex Regular expression to create the matcher
      * @return Matcher for the specified regular expression against the character data.
      */
-    public Matcher matcher(final Pattern regex) {
+    Matcher matcher(final Pattern regex) {
         return regex.matcher(this);
     }
 
@@ -669,7 +669,7 @@ public class CharData implements CharSequence {
      * @param sequence Character sequence to test
      * @return {@code true} if the character data contains the specified sequence.
      */
-    public boolean contains(final CharSequence sequence) {
+    boolean contains(final CharSequence sequence) {
         final int seqLen = sequence.length();
         if (seqLen == 0) {
             return true;
