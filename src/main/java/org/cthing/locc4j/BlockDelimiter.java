@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 
 /**
- * Represents start and end delimiters (e.g. block comment delimiters).
+ * Represents a start and end delimiter pair (e.g. block comment delimiters).
  *
  * @param start Specifies the beginning delimiter
  * @param end Specifies the ending delimiter

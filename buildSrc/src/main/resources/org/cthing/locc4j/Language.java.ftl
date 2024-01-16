@@ -45,9 +45,6 @@ import org.cthing.annotations.AccessForTesting;
 
 import static java.util.regex.Pattern.compile;
 
-import static org.cthing.locc4j.RegexUtils.WHITESPACE_REGEX;
-import static org.cthing.locc4j.RegexUtils.NOTHING_REGEX;
-
 /**
  * Information about each language that can be counted.
  */
@@ -128,18 +125,21 @@ public enum Language {
     private static final Map<String, Language> NAMES = new HashMap<>();
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
+    private static final Pattern WHITESPACE_REGEX = compile("\\s+");
 
     BlockDelimiter[] nestedComments;
     BlockDelimiter[] verbatimQuotes;
+    @Nullable
+    Pattern importantSyntax;
 
     private final String name;
     private final BlockDelimiter[] quotes;
     private final BlockDelimiter[] docQuotes;
-    private final Pattern importantSyntax;
     private final String[] extensions;
     private final BlockDelimiter[] allMultiLineComments;
 
     static {
+        // Static maps must be used to avoid generating methods that exceed the JVM method byte code limit.
         for (final Language language : values()) {
             NAMES.put(language.getName().toLowerCase(Locale.ROOT), language);
             for (int i = 0; i < language.extensions.length; i++) {
@@ -148,10 +148,9 @@ public enum Language {
         }
     }
 
-    Language(final String name,
-             final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
+    Language(final String name, final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
              final BlockDelimiter[] verbartimQuotes, final BlockDelimiter[] docQuotes,
-             final Pattern importantSyntax,
+             @Nullable final Pattern importantSyntax,
              final String[] extensions, final BlockDelimiter[] allMultiLineComments) {
         this.name = name;
         this.nestedComments = nestedComments;
@@ -163,26 +162,61 @@ public enum Language {
         this.allMultiLineComments = allMultiLineComments;
     }
 
+    /**
+     * Obtains the common name for the language. This may differ from the language enum if the command
+     * name has spaces or contains characters not allowed in an enum (e.g. C++, C#, C Shell).
+     *
+     * @return Common name for the language
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Indicates whether the language is considered to be primarily documentation and is counted primarily
+     * as comments rather than procedural code.
+     *
+     * @return {@code true} if the language is considered documentation.
+     */
     public boolean isLiterate() {
         return false;
     }
 
+    /**
+     * Indicates whether the specified predicate is true for line comments.
+     *
+     * @param predicate Tests for line comments.
+     * @return {@code true} if the predicate is true for line comments.
+     */
     public boolean isLineComment(final Predicate<CharSequence> predicate) {
         return false;
     }
 
+    /**
+     * Indicates whether multiline comments can be nested.
+     *
+     * @return {@code true} if the language allows nesting of comments.
+     */
     public boolean isNestable() {
         return false;
     }
 
+    /**
+     * Indicates whether the specified predicate is true for nested comments.
+     *
+     * @param predicate Tests for nested comments.
+     * @return {@code true} if the predicate is true for nested comments.
+     */
     public boolean isNestedComment(final Predicate<BlockDelimiter> predicate) {
         return false;
     }
 
+    /**
+     * Indicates whether the specified predicate is true for normal quotes.
+     *
+     * @param predicate Tests for normal quotes.
+     * @return {@code true} if the predicate is true for normal quotes.
+     */
     public boolean isQuote(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.quotes.length; i++) {
             if (predicate.test(this.quotes[i])) {
@@ -192,6 +226,12 @@ public enum Language {
         return false;
     }
 
+    /**
+     * Provides the normal quote for which the specified predicate is true.
+     *
+     * @param predicate Tests for normal quotes.
+     * @return Normal quote for which the specified predicate is true.
+     */
     @Nullable
     public BlockDelimiter findQuote(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.quotes.length; i++) {
@@ -203,10 +243,22 @@ public enum Language {
         return null;
     }
 
+    /**
+     * Indicates whether the specified predicate is true for verbatim quotes.
+     *
+     * @param predicate Tests for verbatim quotes.
+     * @return {@code true} if the predicate is true for verbatim quotes.
+     */
     public boolean isVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
         return false;
     }
 
+    /**
+     * Provides the verbatim quote for which the specified predicate is true.
+     *
+     * @param predicate Tests for verbatim quotes.
+     * @return Verbatim quote for which the specified predicate is true.
+     */
     @Nullable
     public BlockDelimiter findVerbatimQuote(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.verbatimQuotes.length; i++) {
@@ -218,6 +270,12 @@ public enum Language {
         return null;
     }
 
+    /**
+     * Indicates whether the specified predicate is true for documentation quotes.
+     *
+     * @param predicate Tests for documentation quotes.
+     * @return {@code true} if the predicate is true for documentation quotes.
+     */
     public boolean isDocQuote(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.docQuotes.length; i++) {
             if (predicate.test(this.docQuotes[i])) {
@@ -227,6 +285,12 @@ public enum Language {
         return false;
     }
 
+    /**
+     * Provides the documentation quote for which the specified predicate is true.
+     *
+     * @param predicate Tests for documentation quotes.
+     * @return Documentation quote for which the specified predicate is true.
+     */
     @Nullable
     public BlockDelimiter findDocQuote(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.docQuotes.length; i++) {
@@ -238,19 +302,43 @@ public enum Language {
         return null;
     }
 
+    /**
+     * Indicates whether the column position of a character sequence must be preserved because it
+     * is significant to the language. For example, in legacy FORTRAN a "C" in the first column
+     * indicates a line comment.
+     *
+     * @return {@code true} if the column position of a character is significant.
+     */
     public boolean isColumnSignificant() {
         return false;
     }
 
+    /**
+     * Obtains a regular expression to match against syntax that is considered important for counting.
+     *
+     * @return Regular expression to match against important syntax.
+     */
+    @Nullable
     public Pattern getImportantSyntax() {
         return this.importantSyntax;
     }
 
+    /**
+     * Obtains the syntax for embedding other languages within this language.
+     *
+     * @return Syntax for embedding other languages.
+     */
     @Nullable
     public Embedding.Syntax getEmbedSyntax() {
         return null;
     }
 
+    /**
+     * Indicates whether the specified predicate is true for any multiline comments.
+     *
+     * @param predicate Tests for multiline comments.
+     * @return {@code true} if the predicate is true for multiline comments.
+     */
     public boolean isAnyMultiLineComment(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.allMultiLineComments.length; i++) {
             if (predicate.test(this.allMultiLineComments[i])) {
@@ -260,6 +348,12 @@ public enum Language {
         return false;
     }
 
+    /**
+     * Provides the multiline comment delimiter for which the specified predicate is true.
+     *
+     * @param predicate Tests for the multiline comment delimiter.
+     * @return Multiline comment delimiter for which the specified predicate is true.
+     */
     @Nullable
     public BlockDelimiter findAnyMultiLineComment(final Predicate<BlockDelimiter> predicate) {
         for (int i = 0; i < this.allMultiLineComments.length; i++) {

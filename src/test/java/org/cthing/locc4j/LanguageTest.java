@@ -44,6 +44,7 @@ public class LanguageTest {
         assertThat(css.isVerbatimQuote(delim -> "'".contentEquals(delim.start()))).isFalse();
         assertThat(css.isDocQuote(delim -> "'".contentEquals(delim.start()))).isFalse();
         assertThat(css.isColumnSignificant()).isFalse();
+        assertThat(css.getImportantSyntax()).isNotNull();
         assertThat(css.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
 
         assertThat(Language.Python.isDocQuote(delim -> "\"\"\"".contentEquals(delim.start()))).isTrue();
@@ -59,11 +60,10 @@ public class LanguageTest {
     @Test
     public void testImportantSyntax() {
         final Language abnf = Language.ABNF;
-        assertThat(abnf.getImportantSyntax().pattern()).isEqualTo(".^");
-        assertThat(abnf.getImportantSyntax().matcher("").find()).isFalse();
-        assertThat(abnf.getImportantSyntax().matcher("hello world").find()).isFalse();
+        assertThat(abnf.getImportantSyntax()).isNull();
 
         final Language asn1 = Language.Asn1;
+        assertThat(asn1.getImportantSyntax()).isNotNull();
         assertThat(asn1.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
         assertThat(asn1.getImportantSyntax().matcher("").find()).isFalse();
         assertThat(asn1.getImportantSyntax().matcher("hello world").find()).isFalse();

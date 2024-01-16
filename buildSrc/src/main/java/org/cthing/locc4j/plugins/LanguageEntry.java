@@ -157,7 +157,7 @@ public record LanguageEntry(
 
         final List<String> important = syntaxStream.toList();
         if (important.isEmpty()) {
-            return "NOTHING_REGEX";
+            return "null";
         }
         if (isCharacterClass(important)) {
             if (important.size() == 1) {

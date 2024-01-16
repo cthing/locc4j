@@ -97,10 +97,20 @@ class CharData implements CharSequence {
     private final int offset;
     private final int length;
 
+    /**
+     * Constructs a character buffer based on the specified character data.
+     *
+     * @param buffer Character data
+     */
     CharData(final char[] buffer) {
         this(buffer, 0, buffer.length);
     }
 
+    /**
+     * Constructs a character buffer comprised of concatenating the list of character data instances.
+     *
+     * @param chunks Character data instances to concatenate to form the data for this instance.
+     */
     CharData(final List<CharData> chunks) {
         int totalLength = 0;
         for (final CharData chunk : chunks) {
@@ -124,6 +134,14 @@ class CharData implements CharSequence {
         }
     }
 
+    /**
+     * Constructs a character buffer based on the specified character array at the specified offset for the
+     * specified length.
+     *
+     * @param buffer Character data for the instance
+     * @param offset Zero-based position in the specified array to begin reading the character data
+     * @param length Length to read the character data in the specified array
+     */
     private CharData(final char[] buffer, final int offset, final int length) {
         this.buffer = buffer;
         this.offset = offset;

@@ -19,12 +19,14 @@ package org.cthing.locc4j;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -491,15 +493,27 @@ public class CounterTest {
         }
 
         final String filename = accessor.getString(0);
-        final InputStream ins = Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename));
 
         final FileStats actualFileStats = new FileStats(new File(filename));
         this.config.setCountDocStrings(accessor.getBoolean(1));
 
-        final long startMillis = System.currentTimeMillis();
-        final Counter counter = makeCounter(accessor.get(2, Language.class));
-        counter.count(ins, actualFileStats);
-        countingTime += System.currentTimeMillis() - startMillis;
+        final Language primaryLanguage = accessor.get(2, Language.class);
+        if (primaryLanguage == Language.Jupyter) {
+            // Jupyter counting is very expensive and drowns out the performance of all other file counting.
+            // Use this an opportunity to test the input stream based API.
+            final InputStream ins = Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename));
+            final Counter counter = makeCounter(primaryLanguage);
+            counter.count(ins, actualFileStats);
+        } else {
+            final char[] data =
+                    IOUtils.toCharArray(Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename)),
+                                        StandardCharsets.UTF_8);
+
+            final long startMillis = System.currentTimeMillis();
+            final Counter counter = makeCounter(primaryLanguage);
+            counter.count(data, actualFileStats);
+            countingTime += System.currentTimeMillis() - startMillis;
+        }
 
         final Map<Language, LanguageStats> actualStatsMap = actualFileStats.getStats();
         assertThat(actualStatsMap).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);

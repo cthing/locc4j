@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
@@ -393,7 +394,8 @@ public class Counter {
             return true;
         }
 
-        if (line.matcher(this.language.getImportantSyntax()).find()) {
+        final Pattern importantSyntax = this.language.getImportantSyntax();
+        if (importantSyntax != null && line.matcher(importantSyntax).find()) {
             return false;
         }
 
