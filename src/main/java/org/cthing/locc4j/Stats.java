@@ -16,39 +16,15 @@
 
 package org.cthing.locc4j;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 
 /**
- * Counts for a specific language.
+ * Line counts.
  */
-@ThreadSafe
-@SuppressWarnings("UnusedReturnValue")
-public class LanguageStats {
+public class Stats {
 
     int blankLines;
     int codeLines;
     int commentLines;
-
-    private final Language language;
-
-    /**
-     * Constructs the counts pertaining to the specified language.
-     *
-     * @param language Language to which the counts apply.
-     */
-    public LanguageStats(final Language language) {
-        this.language = language;
-    }
-
-    /**
-     * Obtains the language to which these stats apply.
-     *
-     * @return Language for the stats.
-     */
-    public Language getLanguage() {
-        return this.language;
-    }
 
     /**
      * Obtains the number of lines containing only whitespace.
@@ -86,11 +62,19 @@ public class LanguageStats {
         return this.codeLines + this.commentLines + this.blankLines;
     }
 
+    /**
+     * Adds the counts from the specified stats to this stats object.
+     *
+     * @param other Stats to be added to this stats object.
+     */
+    void add(final Stats other) {
+        this.codeLines += other.codeLines;
+        this.commentLines += other.commentLines;
+        this.blankLines += other.blankLines;
+    }
+
     @Override
     public String toString() {
-        return this.language.getName()
-                + ": code=" + this.codeLines
-                + ", comments=" + this.commentLines
-                + ", blanks=" + this.blankLines;
+        return "[code=" + this.codeLines + ", comments=" + this.commentLines + ", blanks=" + this.blankLines + "]";
     }
 }
