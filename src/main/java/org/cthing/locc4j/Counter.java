@@ -175,7 +175,7 @@ public class Counter {
      * @param fileStats Object to collect the line count stats.
      * @throws IOException if there was a problem counting the lines.
      */
-    void count(final CharData data, final FileStats fileStats) throws IOException {
+    private void count(final CharData data, final FileStats fileStats) throws IOException {
         this.state.reset();
 
         if (this.language == Language.Jupyter) {
