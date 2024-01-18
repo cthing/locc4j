@@ -27,10 +27,11 @@ package org.cthing.locc4j;
 </#macro>
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -378,8 +379,16 @@ public enum Language {
       * @return Language corresponding to the specified file. If the file cannot be found or read, or the language
       *     cannot be determined, an empty {@link Optional} is returned.
       */
-    public static Optional<Language> fromFile(final File file) {
-        final String filename = file.getName().toLowerCase(Locale.ROOT);
+    public static Optional<Language> fromFile(final Path file) {
+        if (Files.isDirectory(file)) {
+            throw new IllegalArgumentException("Path must be a file");
+        }
+
+        final Path filenamePath = file.getFileName();
+        if (filenamePath == null) {
+            throw new IllegalArgumentException("Path is empty");
+        }
+        final String filename = filenamePath.toString().toLowerCase(Locale.ROOT);
 
         switch (filename) {
 <#list languages as id, entry><#list entry.filenames() as filename>
@@ -458,10 +467,14 @@ public enum Language {
      * @return Language corresponding to the specified file's shebang, if found.
      */
     @AccessForTesting
-    static Optional<Language> fromShebang(final File file) {
+    static Optional<Language> fromShebang(final Path file) {
+        if (Files.isDirectory(file)) {
+            throw new IllegalArgumentException("Path must be a file");
+        }
+
         final String firstLine;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
             firstLine = reader.readLine();
         } catch (final IOException ex) {
             return Optional.empty();

@@ -16,7 +16,6 @@
 
 package org.cthing.locc4j;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -76,32 +75,32 @@ public class LanguageTest {
     public void testFromShebang() throws IOException {
         final Path shFile = Files.createFile(this.tempDir.resolve("test.sh"));
         Files.writeString(shFile, "#!/bin/sh\necho 'hello'");
-        assertThat(Language.fromShebang(shFile.toFile())).contains(Language.Sh);
+        assertThat(Language.fromShebang(shFile)).contains(Language.Sh);
 
         final Path pythonFile = Files.createFile(this.tempDir.resolve("test.py"));
         Files.writeString(pythonFile, "#!/usr/bin/env python\nprint('Hello')");
-        assertThat(Language.fromShebang(pythonFile.toFile())).contains(Language.Python);
+        assertThat(Language.fromShebang(pythonFile)).contains(Language.Python);
 
         final Path unknownInterpreterFile = Files.createFile(this.tempDir.resolve("test.foo"));
         Files.writeString(unknownInterpreterFile, "#!/bin/foo\necho 'hello'");
-        assertThat(Language.fromShebang(unknownInterpreterFile.toFile())).isEmpty();
+        assertThat(Language.fromShebang(unknownInterpreterFile)).isEmpty();
 
         final Path missingInterpreterFile = Files.createFile(this.tempDir.resolve("test.junk"));
         Files.writeString(missingInterpreterFile, "#");
-        assertThat(Language.fromShebang(missingInterpreterFile.toFile())).isEmpty();
+        assertThat(Language.fromShebang(missingInterpreterFile)).isEmpty();
 
         final Path unknownEnvFile = Files.createFile(this.tempDir.resolve("test.bar"));
         Files.writeString(unknownEnvFile, "#!/usr/bin/env bar\nprint('Hello')");
-        assertThat(Language.fromShebang(unknownEnvFile.toFile())).isEmpty();
+        assertThat(Language.fromShebang(unknownEnvFile)).isEmpty();
 
         final Path missingEnvFile = Files.createFile(this.tempDir.resolve("test.xyz"));
         Files.writeString(missingEnvFile, "#!/usr/bin/env\nprint('Hello')");
-        assertThat(Language.fromShebang(missingEnvFile.toFile())).isEmpty();
+        assertThat(Language.fromShebang(missingEnvFile)).isEmpty();
 
         final Path emptyFile = Files.createFile(this.tempDir.resolve("test.lmn"));
-        assertThat(Language.fromShebang(emptyFile.toFile())).isEmpty();
+        assertThat(Language.fromShebang(emptyFile)).isEmpty();
 
-        final File missingFile = new File("/tmp/locc4j__NOT_FOUND_____");
+        final Path missingFile = Path.of("/tmp/locc4j__NOT_FOUND_____");
         assertThat(Language.fromShebang(missingFile)).isEmpty();
     }
 
@@ -134,16 +133,16 @@ public class LanguageTest {
     @Test
     public void testFromFile() throws IOException {
         final Path makefile = Files.createFile(this.tempDir.resolve("Makefile"));
-        assertThat(Language.fromFile(makefile.toFile())).contains(Language.Makefile);
+        assertThat(Language.fromFile(makefile)).contains(Language.Makefile);
 
         final Path pythonFile = Files.createFile(this.tempDir.resolve("foo.py"));
-        assertThat(Language.fromFile(pythonFile.toFile())).contains(Language.Python);
+        assertThat(Language.fromFile(pythonFile)).contains(Language.Python);
 
         final Path shFile = Files.createFile(this.tempDir.resolve("test.sh"));
         Files.writeString(shFile, "#!/bin/sh\necho 'hello'");
-        assertThat(Language.fromFile(shFile.toFile())).contains(Language.Sh);
+        assertThat(Language.fromFile(shFile)).contains(Language.Sh);
 
-        final File missingFile = new File("/tmp/locc4j__NOT_FOUND_____");
+        final Path missingFile = Path.of("/tmp/locc4j__NOT_FOUND_____");
         assertThat(Language.fromFile(missingFile)).isEmpty();
     }
 }
