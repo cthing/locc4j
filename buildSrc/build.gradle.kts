@@ -33,6 +33,12 @@ dependencies {
     spotbugsPlugins(libs.spotbugsContrib)
 }
 
+configurations.checkstyle {
+    resolutionStrategy.capabilitiesResolution.withCapability("com.google.collections:google-collections") {
+        select("com.google.guava:guava:0")
+    }
+}
+
 val checkstyleDevDir: File = file("../dev/checkstyle")
 val spotbugsDevDir: File = file("../dev/spotbugs")
 
