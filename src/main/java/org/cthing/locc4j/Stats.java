@@ -29,10 +29,10 @@ public class Stats {
     int commentLines;
     int blankLines;
 
-    public Stats() {
+    Stats() {
     }
 
-    public Stats(final int codeLines, final int commentLines, final int blankLines) {
+    Stats(final int codeLines, final int commentLines, final int blankLines) {
         this.blankLines = blankLines;
         this.codeLines = codeLines;
         this.commentLines = commentLines;
