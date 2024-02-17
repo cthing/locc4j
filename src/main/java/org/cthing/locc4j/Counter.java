@@ -116,31 +116,40 @@ public class Counter {
     private static final JsonPointer JUPYTER_EXTENSION_PTR = JsonPointer.compile("/metadata/language_info/file_extension");
 
     private final Language language;
-    private final Config config;
     private final State state;
+    private boolean countDocStrings = true;
 
     /**
      * Constructs a counter for the specified language.
      *
      * @param language Language for the file to be counted
-     * @param config Configuration for the counter
      */
-    public Counter(final Language language, final Config config) {
-        this(language, config, new State());
+    public Counter(final Language language) {
+        this(language, new State());
     }
 
     /**
      * Constructs a counter for the specified language.
      *
      * @param language Language for the file to be counted
-     * @param config Configuration for the counter
      * @param state Counting state that can be specified for testing purposes
      */
     @AccessForTesting
-    Counter(final Language language, final Config config, final State state) {
+    Counter(final Language language, final State state) {
         this.language = language;
-        this.config = config;
         this.state = state;
+    }
+
+    /**
+     * Sets whether to count documentation string as comments or ignore them.
+     *
+     * @param enable {@code true} to count documentation strings as comments or {@code false} to ignore them.
+     *      The default is to count documentation strings as comments.
+     * @return This counter.
+     */
+    public Counter countDocStrings(final boolean enable) {
+        this.countDocStrings = enable;
+        return this;
     }
 
     /**
@@ -166,6 +175,16 @@ public class Counter {
         final Map<Language, Stats> languageMap = new EnumMap<>(Language.class);
         count(new CharData(characters), languageMap);
         return Collections.unmodifiableMap(languageMap);
+    }
+
+    /**
+     * Creates a new counter with the same configuration as this counter.
+     *
+     * @param lang Language for the counter
+     * @return Newly created counter
+     */
+    private Counter newCounter(final Language lang) {
+        return new Counter(lang).countDocStrings(this.countDocStrings);
     }
 
     /**
@@ -202,7 +221,7 @@ public class Counter {
             }
 
             final boolean startedInComments = !this.state.commentStack.isEmpty()
-                    || (this.config.isCountDocStrings() && this.state.quote != null && this.state.quoteType == DOC);
+                    || (this.countDocStrings && this.state.quote != null && this.state.quoteType == DOC);
 
             final Embedding.Embedded embedded = performMultiLineAnalysis(data, lineIter.getStart(),
                                                                          lineIter.getEnd(), languageStats);
@@ -261,12 +280,12 @@ public class Counter {
                         sourceNode.forEach(node -> source.append(node.asText()));
                         switch (cellType) {
                             case "markdown": {
-                                final Counter counter = new Counter(Language.Markdown, this.config);
+                                final Counter counter = newCounter(Language.Markdown);
                                 counter.count(new CharData(source.toString().toCharArray()), languageStats);
                                 break;
                             }
                             case "code": {
-                                final Counter counter = new Counter(lang, this.config);
+                                final Counter counter = newCounter(lang);
                                 counter.count(new CharData(source.toString().toCharArray()), languageStats);
                                 break;
                             }
@@ -327,7 +346,7 @@ public class Counter {
             if (embedded != null && this.state.commentStack.isEmpty()) {
                 final int embeddedStart = embedded.getEmbeddedStart();
                 if (i == embeddedStart) {
-                    final Counter counter = new Counter(embedded.getLanguage(), this.config);
+                    final Counter counter = newCounter(embedded.getLanguage());
                     counter.count(embedded.getCode(), languageStats);
                     return embedded;
                 }
@@ -369,7 +388,7 @@ public class Counter {
 
         // 1) If in a doc string, count it as a comment if configured to do so
         if (this.state.quote != null) {
-            return this.state.quoteType == DOC && this.config.isCountDocStrings();
+            return this.state.quoteType == DOC && this.countDocStrings;
         }
 
         // 2) If in a multiline comment and the line contains the doc string end delimiter

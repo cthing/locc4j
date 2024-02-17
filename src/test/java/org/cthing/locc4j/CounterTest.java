@@ -48,7 +48,6 @@ public class CounterTest {
     private static long countingTime;
     private static int totalLines;
 
-    private final Config config = new Config();
     private final Counter.State state = new Counter.State();
 
     @AfterAll
@@ -136,7 +135,7 @@ public class CounterTest {
         @DisplayName("Found nested comment in language allowing nested comments")
         public void testFoundNestedNestable() {
             stack("*/");
-            assertThat(makeCounter(Language.Kotlin).parseMultiLineComment(data("/*"))).isEqualTo(2);
+            assertThat(makeCounter(Language.Kotlin, true).parseMultiLineComment(data("/*"))).isEqualTo(2);
             assertThat(stack()).containsExactly("*/", "*/");
         }
 
@@ -144,7 +143,7 @@ public class CounterTest {
         @DisplayName("Found nested comment using dedicated nested comment syntax")
         public void testFoundNestedSyntaxNestable() {
             stack("*/");
-            assertThat(makeCounter(Language.D).parseMultiLineComment(data("/+"))).isEqualTo(2);
+            assertThat(makeCounter(Language.D, true).parseMultiLineComment(data("/+"))).isEqualTo(2);
             assertThat(stack()).containsExactly("+/", "*/");
         }
     }
@@ -218,7 +217,7 @@ public class CounterTest {
         @Test
         @DisplayName("Found document string")
         public void testFoundDocString() {
-            assertThat(makeCounter(Language.Python).parseQuote(data("\"\"\"\nHello world"))).isEqualTo(3);
+            assertThat(makeCounter(Language.Python, true).parseQuote(data("\"\"\"\nHello world"))).isEqualTo(3);
             assertThat(quote()).isEqualTo("\"\"\"");
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.DOC);
         }
@@ -226,7 +225,7 @@ public class CounterTest {
         @Test
         @DisplayName("Found verbatim string")
         public void testFoundVerbatimString() {
-            assertThat(makeCounter(Language.Rust).parseQuote(data("r##\"\nHello world"))).isEqualTo(4);
+            assertThat(makeCounter(Language.Rust, true).parseQuote(data("r##\"\nHello world"))).isEqualTo(4);
             assertThat(quote()).isEqualTo("\"##");
             assertThat(quoteType()).isEqualTo(Counter.QuoteType.VERBATIM);
         }
@@ -282,8 +281,7 @@ public class CounterTest {
         public void testCase1A() {
             quote("*/");
             quoteType(Counter.QuoteType.DOC);
-            CounterTest.this.config.setCountDocStrings(true);
-            assertThat(makeCounter(Language.Python).isComment(data("hello"), true)).isTrue();
+            assertThat(makeCounter(Language.Python, true).isComment(data("hello"), true)).isTrue();
         }
 
         @Test
@@ -291,8 +289,7 @@ public class CounterTest {
         public void testCase1B() {
             quote("*/");
             quoteType(Counter.QuoteType.DOC);
-            CounterTest.this.config.setCountDocStrings(false);
-            assertThat(makeCounter(Language.Python).isComment(data("hello"), true)).isFalse();
+            assertThat(makeCounter(Language.Python, false).isComment(data("hello"), true)).isFalse();
         }
 
         @Test
@@ -300,14 +297,13 @@ public class CounterTest {
         public void testCase1C() {
             quote("*/");
             quoteType(Counter.QuoteType.NORMAL);
-            CounterTest.this.config.setCountDocStrings(false);
-            assertThat(makeCounter(Language.Python).isComment(data("hello"), true)).isFalse();
+            assertThat(makeCounter(Language.Python, false).isComment(data("hello"), true)).isFalse();
         }
 
         @Test
         @DisplayName("Last line of doc comments")
         public void testCase2() {
-            assertThat(makeCounter(Language.Python).isComment(data("hello\"\"\""), true)).isTrue();
+            assertThat(makeCounter(Language.Python, true).isComment(data("hello\"\"\""), true)).isTrue();
 
         }
 
@@ -384,7 +380,7 @@ public class CounterTest {
         @DisplayName("Literate")
         public void testLiterate() {
             final Stats stats = new Stats();
-            assertThat(makeCounter(Language.Text).parseSingleLine(data("Hello world"), stats)).isTrue();
+            assertThat(makeCounter(Language.Text, true).parseSingleLine(data("Hello world"), stats)).isTrue();
             verifyStats(stats, 0, 1, 0);
         }
 
@@ -415,7 +411,8 @@ public class CounterTest {
         public void testCase1() throws IOException {
             final String content = "    ";
             final Embedding.Embedded embedded =
-                    makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter(Language.Html, true).performMultiLineAnalysis(data(content), 0, content.length(),
+                                                                              statsMap());
             assertThat(embedded).isNull();
         }
 
@@ -436,7 +433,8 @@ public class CounterTest {
                                    </script>
                                    """;
             final Embedding.Embedded embedded =
-                    makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter(Language.Html, true).performMultiLineAnalysis(data(content), 0, content.length(),
+                                                                              statsMap());
             assertThat(embedded).isNotNull();
             assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
@@ -476,7 +474,8 @@ public class CounterTest {
                                    <p>Hello World</p>
                                    """;
             final Embedding.Embedded embedded =
-                    makeCounter(Language.Html).performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter(Language.Html, true).performMultiLineAnalysis(data(content), 0, content.length(),
+                                                                              statsMap());
             assertThat(embedded).isNull();
         }
     }
@@ -492,15 +491,13 @@ public class CounterTest {
 
         final String filename = accessor.getString(0);
 
-        this.config.setCountDocStrings(accessor.getBoolean(1));
-
         final Language primaryLanguage = accessor.get(2, Language.class);
         final Map<Language, Stats> actualStats;
         if (primaryLanguage == Language.Jupyter) {
             // Jupyter counting is very expensive and drowns out the performance of all other file counting.
             // Use this an opportunity to test the input stream based API.
             final InputStream ins = Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename));
-            final Counter counter = makeCounter(primaryLanguage);
+            final Counter counter = makeCounter(primaryLanguage, accessor.getBoolean(1));
             actualStats = counter.count(ins);
         } else {
             final char[] data =
@@ -508,7 +505,7 @@ public class CounterTest {
                                         StandardCharsets.UTF_8);
 
             final long startMillis = System.currentTimeMillis();
-            final Counter counter = makeCounter(primaryLanguage);
+            final Counter counter = makeCounter(primaryLanguage, accessor.getBoolean(1));
             actualStats = counter.count(data);
             countingTime += System.currentTimeMillis() - startMillis;
             totalLines += actualStats.values().stream().mapToInt(Stats::getTotalLines).sum();
@@ -530,11 +527,11 @@ public class CounterTest {
     }
 
     private Counter makeCounter() {
-        return makeCounter(Language.Java);
+        return makeCounter(Language.Java, true);
     }
 
-    private Counter makeCounter(final Language language) {
-        return new Counter(language, this.config, this.state);
+    private Counter makeCounter(final Language language, final boolean countDocStrings) {
+        return new Counter(language, this.state).countDocStrings(countDocStrings);
     }
 
     private CharData data(final String str) {

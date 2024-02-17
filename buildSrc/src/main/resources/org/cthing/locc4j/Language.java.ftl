@@ -398,7 +398,7 @@ public enum Language {
         }
 
         final String extension = FilenameUtils.getExtension(filename);
-        return extension.isEmpty() ? Optional.empty() : fromFileExtension(extension).or(() -> fromShebang(file));
+        return extension.isEmpty() ? fromShebang(file) : fromFileExtension(extension).or(() -> fromShebang(file));
     }
 
     /**
