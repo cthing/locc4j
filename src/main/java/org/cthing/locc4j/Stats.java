@@ -17,22 +17,25 @@
 package org.cthing.locc4j;
 
 
+import java.util.Objects;
+
+
 /**
  * Line counts.
  */
 public class Stats {
 
-    int blankLines;
     int codeLines;
     int commentLines;
+    int blankLines;
 
-    /**
-     * Obtains the number of lines containing only whitespace.
-     *
-     * @return Number of whitespace only lines.
-     */
-    public int getBlankLines() {
-        return this.blankLines;
+    public Stats() {
+    }
+
+    public Stats(final int codeLines, final int commentLines, final int blankLines) {
+        this.blankLines = blankLines;
+        this.codeLines = codeLines;
+        this.commentLines = commentLines;
     }
 
     /**
@@ -51,6 +54,15 @@ public class Stats {
      */
     public int getCommentLines() {
         return this.commentLines;
+    }
+
+    /**
+     * Obtains the number of lines containing only whitespace.
+     *
+     * @return Number of whitespace only lines.
+     */
+    public int getBlankLines() {
+        return this.blankLines;
     }
 
     /**
@@ -76,5 +88,25 @@ public class Stats {
     @Override
     public String toString() {
         return "[code=" + this.codeLines + ", comments=" + this.commentLines + ", blanks=" + this.blankLines + "]";
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final Stats stats = (Stats)obj;
+        return this.codeLines == stats.codeLines
+                && this.commentLines == stats.commentLines
+                && this.blankLines == stats.blankLines;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.codeLines, this.commentLines, this.blankLines);
     }
 }
