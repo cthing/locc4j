@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.cthing.filevisitor.MatchHandler;
 import org.cthing.filevisitor.MatchingTreeWalker;
@@ -33,12 +36,12 @@ import org.cthing.filevisitor.MatchingTreeWalker;
  */
 public class CountingTreeWalker {
 
-    private static class CountHandler implements MatchHandler {
+    private abstract static class AbstractCountHandler implements MatchHandler {
 
-        private final FileCounter counter;
-        private final Map<Path, Map<Language, Stats>> counts;
+        protected final FileCounter counter;
+        protected final Map<Path, Map<Language, Stats>> counts;
 
-        CountHandler() {
+        AbstractCountHandler() {
             this.counter = new FileCounter();
             this.counts = new HashMap<>();
         }
@@ -50,16 +53,36 @@ public class CountingTreeWalker {
         Map<Path, Map<Language, Stats>> getCounts() {
             return Collections.unmodifiableMap(this.counts);
         }
+    }
+
+    private static final class PlainHandler extends AbstractCountHandler {
 
         @Override
         public boolean file(final Path file, final BasicFileAttributes basicFileAttributes) throws IOException {
-            final Map<Language, Stats> count = this.counter.count(file);
-            this.counts.put(file, count);
+            this.counts.put(file, this.counter.count(file));
             return true;
         }
     }
 
-    private final CountHandler handler;
+    private static final class LanguageFilterHandler extends AbstractCountHandler {
+
+        private final Set<Language> languages;
+
+        LanguageFilterHandler(final Set<Language> languages) {
+            this.languages = languages;
+        }
+
+        @Override
+        public boolean file(final Path file, final BasicFileAttributes basicFileAttributes) throws IOException {
+            final Optional<Language> languageOpt = Language.fromFile(file);
+            if (languageOpt.isPresent() && this.languages.contains(languageOpt.get())) {
+                this.counts.put(file, this.counter.count(file));
+            }
+            return true;
+        }
+    }
+
+    private final AbstractCountHandler handler;
     private final MatchingTreeWalker walker;
 
     /**
@@ -87,8 +110,33 @@ public class CountingTreeWalker {
      *      files and directories are considered a match.
      */
     public CountingTreeWalker(final Path start, final List<String> matchPatterns) {
-        this.handler = new CountHandler();
+        this.handler = new PlainHandler();
         this.walker = new MatchingTreeWalker(start, this.handler, matchPatterns);
+    }
+
+    /**
+     * Constructs a counting file system tree walker.
+     *
+     * @param start Directory in which to start the walk
+     * @param language First language to match. Note that additional languages may be present in the counting results
+     *      *      because certain types of file (e.g. HTML) can embed additional languages.
+     * @param languages Languages to match. Note that additional languages may be present in the counting results
+     *      because certain types of file (e.g. HTML) can embed additional languages.
+     */
+    public CountingTreeWalker(final Path start, final Language language, final Language... languages) {
+        this(start, EnumSet.of(language, languages));
+    }
+
+    /**
+     * Constructs a counting file system tree walker.
+     *
+     * @param start Directory in which to start the walk
+     * @param languages Languages to match. Note that additional languages may be present in the counting results
+     *      because certain types of file (e.g. HTML) can embed additional languages.
+     */
+    public CountingTreeWalker(final Path start, final Set<Language> languages) {
+        this.handler = new LanguageFilterHandler(languages);
+        this.walker = new MatchingTreeWalker(start, this.handler);
     }
 
     /**

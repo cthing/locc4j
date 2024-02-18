@@ -86,8 +86,17 @@ public class CountingTreeWalkerTest {
     }
 
     @Test
-    public void testWalkMatch() throws IOException {
+    public void testWalkPatternMatch() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start, "*.java");
+        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        assertThat(counts).hasSize(2)
+                          .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
+                          .containsEntry(treeData.fileD1F1, treeData.countsD1F1);
+    }
+
+    @Test
+    public void testWalkLanguageMatch() throws IOException {
+        final CountingTreeWalker walker = new CountingTreeWalker(treeData.start, Language.Java);
         final Map<Path, Map<Language, Stats>> counts = walker.count();
         assertThat(counts).hasSize(2)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
