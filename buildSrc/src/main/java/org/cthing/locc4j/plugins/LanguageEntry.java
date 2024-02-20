@@ -64,9 +64,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *      is typically written with capital letters. Filename matching is case-insensitive. Filenames take precedence
  *      over extensions. For example, a file named {@code CMakeLists.txt} is detected as a CMake file, not a Text file.
  * @param embedSyntax If the language allows embedding other languages within it, this field indicates the syntax
- *      family it uses. Currently, the available syntax families are {@code html}, {@code markdown}, and {@code rust}.
- *      For example, the {@code html} syntax family uses HTML embedding tags (e.g. {@literal <script>},
- *      {@literal <style>}, and {@literal <template>}).
+ *      family it uses. Currently, the available syntax families are {@code html}, {@code liquid}, {@code markdown},
+ *      and {@code rust}. For example, the {@code html} syntax family uses HTML embedding tags
+ *      (e.g. {@literal <script>}, {@literal <style>}, and {@literal <template>}).
  */
 public record LanguageEntry(
         @JsonProperty("name") @Nullable String name,

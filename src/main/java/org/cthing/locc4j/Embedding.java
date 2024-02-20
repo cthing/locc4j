@@ -42,6 +42,15 @@ final class Embedding {
     static final Pattern HTML_SVG_START_REGEX = Pattern.compile("<svg.*>");
     static final Pattern HTML_SVG_END_REGEX = Pattern.compile("</svg>");
 
+    static final Pattern LIQUID_SCHEMA_START_REGEX = Pattern.compile("\\{%\\s*schema\\s*%}");
+    static final Pattern LIQUID_SCHEMA_END_REGEX = Pattern.compile("\\{%\\s*endschema\\s*%}");
+
+    static final Pattern LIQUID_JAVASCRIPT_START_REGEX = Pattern.compile("\\{%\\s*javascript\\s*%}");
+    static final Pattern LIQUID_JAVASCRIPT_END_REGEX = Pattern.compile("\\{%\\s*endjavascript\\s*%}");
+
+    static final Pattern LIQUID_STYLESHEET_START_REGEX = Pattern.compile("\\{%\\s*stylesheet\\s*%}");
+    static final Pattern LIQUID_STYLESHEET_END_REGEX = Pattern.compile("\\{%\\s*endstylesheet\\s*%}");
+
     static final String MARKDOWN_BLOCK_DELIM_1 = "```";
     static final String MARKDOWN_BLOCK_DELIM_2 = "~~~";
     static final Pattern MARKDOWN_CODE_START_REGEX =
@@ -60,6 +69,7 @@ final class Embedding {
      */
     enum Syntax {
         html,
+        liquid,
         markdown,
         rust
     }
@@ -176,6 +186,12 @@ final class Embedding {
         }
     }
 
+    static class LiquidSection extends AbstractEmbedded {
+        LiquidSection(final Language language, final int start, final int end, final CharData code) {
+            super(language, start, end, 0, 1, code);
+        }
+    }
+
     static class MarkdownCodeBlock extends AbstractEmbedded {
         MarkdownCodeBlock(final Language language, final int start, final int end, final int commentLines,
                           final CharData code) {
@@ -209,6 +225,7 @@ final class Embedding {
                ? null
                : switch (language.getEmbedSyntax()) {
             case html -> findHtml(lines, start, end);
+            case liquid -> findLiquid(lines, start, end);
             case markdown -> findMarkdown(lines, start, end);
             case rust -> findRust(lines, start);
         };
@@ -390,6 +407,65 @@ final class Embedding {
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
                     return new HtmlEmbedded(language, templateStart, codeEnd, code);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Attempts to find sections in the specified region of Liquid character data.
+     *
+     * @param lines Liquid character data
+     * @param start Starting position in the character data in which to look for section content
+     * @param end Ending position in the character data in which to look for section content
+     * @return Information about the section content, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
+    @Nullable
+    private static Embedded findLiquid(final CharData lines, final int start, final int end) {
+        final Embedded embeddedSchema = findLiquidSection(lines, start, end, LIQUID_SCHEMA_START_REGEX,
+                                                          LIQUID_SCHEMA_END_REGEX, Language.Json);
+        if (embeddedSchema != null) {
+            return embeddedSchema;
+        }
+
+        final Embedded embeddedJavascript = findLiquidSection(lines, start, end, LIQUID_JAVASCRIPT_START_REGEX,
+                                                              LIQUID_JAVASCRIPT_END_REGEX, Language.JavaScript);
+        if (embeddedJavascript != null) {
+            return embeddedJavascript;
+        }
+
+        return findLiquidSection(lines, start, end, LIQUID_STYLESHEET_START_REGEX, LIQUID_STYLESHEET_END_REGEX,
+                                 Language.Css);
+    }
+
+    /**
+     * Attempts to find a section in the specified region of Liquid character data.
+     *
+     * @param lines Liquid character data
+     * @param start Starting position in the character data in which to look for a section
+     * @param end Ending position in the character data in which to look for a section
+     * @return Information about the section, if found. The information returned is relative to
+     *      the start of the specified data.
+     */
+    @Nullable
+    private static Embedded findLiquidSection(final CharData lines, final int start, final int end,
+                                              final Pattern startRegex, final Pattern endRegex,
+                                              final Language embeddedLanguage) {
+        final CharData window1 = lines.subSequence(start, end);
+        final Matcher sectionStartMatcher = window1.matcher(startRegex);
+        if (sectionStartMatcher.find()) {
+            final int schemaStart = start + sectionStartMatcher.start();
+            final int codeStart = start + sectionStartMatcher.end();
+
+            final CharData window2 = lines.subSequence(codeStart);
+            final Matcher sectionEndMatcher = window2.matcher(endRegex);
+            if (sectionEndMatcher.find()) {
+                final int codeEnd = codeStart + sectionEndMatcher.start();
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
+                if (!code.isBlank()) {
+                    return new LiquidSection(embeddedLanguage, schemaStart, codeEnd, code);
                 }
             }
         }

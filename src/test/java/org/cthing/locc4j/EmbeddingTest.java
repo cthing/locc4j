@@ -353,6 +353,158 @@ public class EmbeddingTest {
     }
 
     @Nested
+    class FindLiquidTest {
+
+        @Nested
+        class FindSchemaTest {
+            @Test
+            public void testFindDefault() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% schema %}
+                                       {
+                                           "name": "foo",
+                                           "tag": "section"
+                                       }
+                                       {% endschema %}
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Json);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(79);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("""
+                                                                    {
+                                                                        "name": "foo",
+                                                                        "tag": "section"
+                                                                    }""");
+            }
+
+            @Test
+            public void testFindMissingEnd() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% schema %}
+                                       {
+                                           "name": "foo",
+                                           "tag": "section"
+                                       }
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+
+            @Test
+            public void testFindBlank() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% schema %}
+                                       {% endschema %}
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+        }
+
+        @Nested
+        class FindJavascriptTest {
+            @Test
+            public void testFindDefault() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% javascript %}
+                                       var i = 10;
+                                       {% endjavascript %}
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(51);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("var i = 10;");
+            }
+
+            @Test
+            public void testFindMissingEnd() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% javascript %}
+                                       var i = 10;
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+
+            @Test
+            public void testFindBlank() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% javascript %}
+                                       {% endjavascript %}
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+        }
+
+        @Nested
+        class FindStylesheetTest {
+            @Test
+            public void testFindDefault() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% stylesheet %}
+                                       color: red;
+                                       {% endstylesheet %}
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(51);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("color: red;");
+            }
+
+            @Test
+            public void testFindMissingEnd() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% stylesheet %}
+                                       color: red;
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+
+            @Test
+            public void testFindBlank() {
+                final String content = """
+                                       <p>This is a test</p>
+                                       {% stylesheet %}
+                                       {% endstylesheet %}
+                                       <h1>Heading</h1>
+                                       """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Liquid, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+        }
+    }
+
+    @Nested
     class FindMarkdownTest {
         @Test
         public void testNoLanguage() {

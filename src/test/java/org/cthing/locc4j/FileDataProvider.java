@@ -107,7 +107,7 @@ public class FileDataProvider implements ArgumentsProvider {
             arguments("kakoune_script.kak", true, KakouneScript, 8, 1, 3),
             arguments("ksh.ksh", true, Ksh, 11, 3, 2),
             arguments("kvlanguage.kv", true, KvLanguage, 17, 2, 2),
-            arguments("liquid.liquid", true, Liquid, 19, 1, 4),
+            arguments("liquid.liquid", true, Liquid, 21, 1, 5, JavaScript, 1, 1, 0),
             arguments("livescript.ls", true, LiveScript, 10, 11, 5),
             arguments("llvm.ll", true, LLVM, 17, 1, 3),
             arguments("logtalk.lgt", true, Logtalk, 27, 16, 20),
