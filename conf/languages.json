@@ -1847,7 +1847,7 @@
       "description": "Svelte web framework language.",
       "see": "https://svelte.dev/",
       "multi_line_comments": [["<!--", "-->"]],
-      "important_syntax": ["<script", "<style"],
+      "important_syntax": ["<script", "<style", "<template"],
       "quotes": [["\"", "\""], ["'", "'"]],
       "extensions": ["svelte"],
       "embed_syntax": "html"
