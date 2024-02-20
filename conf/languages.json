@@ -70,7 +70,7 @@
       "line_comment": ["--"],
       "quotes": [["\"", "\""], ["'", "'"]],
       "multi_line_comments": [["/*", "*/"]],
-      "extensions": ["asn1"]
+      "extensions": ["asn1", "mib"]
     },
     "Asp": {
       "name": "ASP",

@@ -159,6 +159,7 @@ public class FileDataProvider implements ArgumentsProvider {
             arguments("shaderlab.shader", true, ShaderLab, 31, 7, 4),
             arguments("slint.slint", true, Slint, 21, 2, 3),
             arguments("solidity.sol", true, Solidity, 6, 6, 1),
+            arguments("snmp.mib", true, Asn1, 229, 15, 26),
             arguments("sql.sql", true, Sql, 4, 5, 3),
             arguments("srecode.srt", true, SRecode, 23, 2, 12),
             arguments("stan.stan", true, Stan, 123, 16, 2),
