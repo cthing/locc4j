@@ -860,7 +860,7 @@
       "see": "https://en.wikipedia.org/wiki/HTML",
       "multi_line_comments": [["<!--", "-->"]],
       "quotes": [["\"", "\""], ["'", "'"]],
-      "important_syntax": ["<script", "<style"],
+      "important_syntax": ["<script", "<style", "<template", "<svg"],
       "mime": ["text/html"],
       "extensions": ["html", "htm"],
       "embed_syntax": "html"
