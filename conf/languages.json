@@ -1178,6 +1178,12 @@
       "extensions": ["md", "markdown"],
       "embed_syntax": "markdown"
     },
+    "Mermaid": {
+      "description": "Diagram markup language.",
+      "see": "https://mermaid.js.org/",
+      "line_comment": ["%% "],
+      "extensions": ["mmd", "mermaid"]
+    },
     "Meson": {
       "description": "Meson build configuration language.",
       "see": "https://mesonbuild.com/",

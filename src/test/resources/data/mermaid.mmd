@@ -1,0 +1,18 @@
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+---
+title: Node
+---
+flowchart LR
+    %% Comment 1
+    markdown["`This **is** _Markdown_`"]
+    newLines["`Line1
+    Line 2
+    Line 3`"]
+    markdown --> newLines
+
+    %% Comment 2
+    A[Start] --> B{Is it?}
+    B -->|Yes| C[OK]
+    C --> D[Rethink]
+    D --> B
+    B ---->|No| E[End]

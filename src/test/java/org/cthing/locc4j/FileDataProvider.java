@@ -114,6 +114,8 @@ public class FileDataProvider implements ArgumentsProvider {
             arguments("lolcode.lol", true, LolCode, 11, 9, 6),
             arguments("m4.m4", true, M4, 3, 3, 1),
             arguments("Makefile", true, Makefile, 11, 4, 7),
+            arguments("markdown.md", true, Markdown, 0, 8, 3, Mermaid, 12, 2, 1),
+            arguments("mermaid.mmd", true, Mermaid, 15, 2, 1),
             arguments("meson.build", true, Meson, 6, 1, 3),
             arguments("metal.metal", true, Metal, 21, 4, 6),
             arguments("mlatu.mlt", true, Mlatu, 14, 3, 5),
