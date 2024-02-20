@@ -2070,7 +2070,7 @@
       "see": "https://velocity.apache.org/",
       "line_comment": ["##"],
       "multi_line_comments": [["#*", "*#"]],
-      "extensions": ["vm"],
+      "extensions": ["vm", "vtl"],
       "quotes": [["'", "'"], ["\"", "\""]]
     },
     "Verilog": {
