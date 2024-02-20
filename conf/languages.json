@@ -1729,6 +1729,14 @@
       "quotes": [["\"", "\""]],
       "extensions": ["shader", "cginc"]
     },
+    "Slint": {
+      "description": "Declarative GUI layout.",
+      "see": "https://slint.dev/",
+      "line_comment": ["//"],
+      "multi_line_comments": [["/*", "*/"]],
+      "quotes": [["\\\"", "\\\""]],
+      "extensions": ["slint"]
+    },
     "Sml": {
       "name": "Standard ML (SML)",
       "description": "Standard Meta Language programming language.",

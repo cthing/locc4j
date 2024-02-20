@@ -154,6 +154,7 @@ public class FileDataProvider implements ArgumentsProvider {
             arguments("scheme.scm", true, Scheme, 14, 4, 8),
             arguments("SConstruct", true, Scons, 3, 2, 4),
             arguments("shaderlab.shader", true, ShaderLab, 31, 7, 4),
+            arguments("slint.slint", true, Slint, 21, 2, 3),
             arguments("solidity.sol", true, Solidity, 6, 6, 1),
             arguments("sql.sql", true, Sql, 4, 5, 3),
             arguments("srecode.srt", true, SRecode, 23, 2, 12),
