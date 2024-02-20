@@ -1355,6 +1355,14 @@
       "multi_line_comments": [["/*", "*/"]],
       "extensions": ["oz"]
     },
+    "PacmanMakepkg": {
+      "name": "Pacman's makepkg",
+      "description": "Shell script to build Arch Linux packages.",
+      "see": "https://wiki.archlinux.org/title/PKGBUILD",
+      "line_comment": ["#"],
+      "quotes": [["\\\"", "\\\""], ["'", "'"]],
+      "filenames": ["pkgbuild"]
+    },
     "Pan": {
       "description": "Pan configuration language.",
       "see": "https://github.com/quattor/pan",

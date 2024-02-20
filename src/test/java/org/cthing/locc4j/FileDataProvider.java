@@ -129,6 +129,7 @@ public class FileDataProvider implements ArgumentsProvider {
             arguments("opentype.fea", true, OpenType, 24, 23, 6),
             arguments("org_mode.org", true, Org, 7, 1, 3),
             arguments("pan.pan", true, Pan, 11, 3, 6),
+            arguments("PKGBUILD", true, PacmanMakepkg, 19, 2, 2),
             arguments("pcss.pcss", true, PostCss, 6, 5, 3),
             arguments("pest.pest", true, Pest, 4, 2, 2),
             arguments("poke.pk", true, Poke, 2, 1, 1),
