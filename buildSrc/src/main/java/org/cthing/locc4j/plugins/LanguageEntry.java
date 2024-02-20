@@ -33,6 +33,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @param name Common name for the language. This may differ from the language enum if the command name has spaces
  *      or contains characters not allowed in an enum (e.g. C++, C#, C Shell).
+ * @param description Description of the language
+ * @param see URL of the home page for the language
  * @param lineComments Character sequences that indicate a comment that spans a single line
  * @param multiLineComments Pairs of character sequences that indicate the start and end of comments that can span
  *      multiple lines
@@ -68,6 +70,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public record LanguageEntry(
         @JsonProperty("name") @Nullable String name,
+        @JsonProperty("description") @Nullable String description,
+        @JsonProperty("see") @Nullable String see,
         @JsonProperty("line_comment") @Nullable List<String> lineComments,
         @JsonProperty("multi_line_comments") @Nullable List<List<String>> multiLineComments,
         @JsonProperty("extensions") @Nullable List<String> extensions,
@@ -87,6 +91,15 @@ public record LanguageEntry(
 ) {
     private static final Pattern REGEX_ESCAPE_PATTERN = Pattern.compile("([\\^$.|?*+()\\[\\]{}])");
     private static final Pattern REGEX_CHAR_CLASS_ESCAPE_PATTERN = Pattern.compile("([\\^\\[\\]])");
+
+    @Override
+    @Nullable
+    public String description() {
+        if (this.description == null) {
+            return null;
+        }
+        return this.description.endsWith(".") ? this.description : (this.description + ".");
+    }
 
     @Override
     public List<String> lineComments() {

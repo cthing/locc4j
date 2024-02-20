@@ -41,16 +41,26 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
-import org.cthing.annotations.AccessForTesting;
 
 import static java.util.regex.Pattern.compile;
 
 /**
- * Information about each language that can be counted.
+ * Languages that can be counted. Click on a language to see the list of file extensions and/or file names
+ * used by the language.
  */
-@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "MethodDoesntCallSuperMethod", "Convert2streamapi", "ForLoopReplaceableByForEach"})
+@SuppressWarnings({
+        "OptionalUsedAsFieldOrParameterType", "MethodDoesntCallSuperMethod",
+        "Convert2streamapi", "ForLoopReplaceableByForEach", "UnnecessaryUnicodeEscape",
+        "RegExpDuplicateAlternationBranch", "RegExpRedundantEscape"
+})
 public enum Language {
 <#list languages as id, entry>
+    /**
+     * <#if entry.description()?has_content>${entry.description()}<#else>Identifier for the <#if entry.name()?has_content>${entry.name()}<#else>${id}</#if> language.</#if>
+     * <#if entry.extensions()?has_content><p>File extensions: <#list entry.extensions() as ext>{@code ${ext}}<#if ext?has_next>, </#if></#list></p></#if>
+     * <#if entry.filenames()?has_content><p>File names: <#list entry.filenames() as filename>{@code ${filename}}<#if filename?has_next>, </#if></#list></p></#if>
+     * <#if entry.see()?has_content>@see <a href="${entry.see()}">${entry.see()}</a></#if>
+     */
     ${id}(
         "<#if entry.name()?has_content>${entry.name()}<#else>${id}</#if>",
         new BlockDelimiter[] {<@expand_block_params params=entry.nestedComments()/>},
@@ -127,10 +137,10 @@ public enum Language {
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
     private static final Pattern WHITESPACE_REGEX = compile("\\s+");
 
-    BlockDelimiter[] nestedComments;
-    BlockDelimiter[] verbatimQuotes;
+    final BlockDelimiter[] nestedComments;
+    final BlockDelimiter[] verbatimQuotes;
     @Nullable
-    Pattern importantSyntax;
+    final Pattern importantSyntax;
 
     private final String name;
     private final BlockDelimiter[] quotes;
@@ -403,6 +413,14 @@ public enum Language {
 
     /**
      * Attempts to obtain the language of a file based on its MIME type.
+     * <p>
+     * The supported MIME types and their corresponding language are:
+     * </p>
+     * <ul>
+<#list languages as id, entry><#list entry.mime() as mime>
+     *   <li>{@code ${mime?right_pad(35, " .")}} <a href="#${id}">${id}</a></li>
+</#list></#list>
+     * </ul>
      *
      * @param mimeType File MIME type
      * @return Language corresponding to the specified MIME type. If the language cannot be determined, an empty
@@ -461,12 +479,27 @@ public enum Language {
      * Attempts to obtain the language of the specified file based on a shebang ("#!") on its first line.
      * The shebang is first compared against the shebang interpreters listed for each language. If an
      * interpreter is not matched, the {@code env} program argument is checked.
+     * <p>
+     * The supported interpreters and their corresponding language are:
+     * </p>
+     * <ul>
+<#list languages as id, entry><#list entry.shebangs() as shebang>
+     *   <li>{@code ${shebang?right_pad(25, " .")}} <a href="#${id}">${id}</a></li>
+</#list></#list>
+     * </ul>
+     * <p>
+     * The supported environment programs are:
+     * </p>
+     * <ul>
+<#list languages as id, entry><#list entry.env() as env>
+     *   <li>{@code ${env?right_pad(25, " .")}} <a href="#${id}">${id}</a></li>
+</#list></#list>
+     * </ul>
      *
      * @param file File whose shebang is to be matched
      * @return Language corresponding to the specified file's shebang, if found.
      */
-    @AccessForTesting
-    static Optional<Language> fromShebang(final Path file) {
+    public static Optional<Language> fromShebang(final Path file) {
         if (Files.isDirectory(file)) {
             throw new IllegalArgumentException("Path must be a file");
         }
