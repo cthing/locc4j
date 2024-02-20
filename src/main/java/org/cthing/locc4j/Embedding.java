@@ -39,6 +39,9 @@ final class Embedding {
     static final Pattern HTML_TEMPLATE_START_REGEX = Pattern.compile("<template(?:.*lang=\"(.*)\")?.*?>");
     static final Pattern HTML_TEMPLATE_END_REGEX = Pattern.compile("</template>");
 
+    static final Pattern HTML_SVG_START_REGEX = Pattern.compile("<svg.*>");
+    static final Pattern HTML_SVG_END_REGEX = Pattern.compile("</svg>");
+
     static final String MARKDOWN_BLOCK_DELIM_1 = "```";
     static final String MARKDOWN_BLOCK_DELIM_2 = "~~~";
     static final Pattern MARKDOWN_CODE_START_REGEX =
@@ -232,6 +235,11 @@ final class Embedding {
             return embeddedStyle;
         }
 
+        final Embedded embeddedSvg = findHtmlSvg(lines, start, end);
+        if (embeddedSvg != null) {
+            return embeddedSvg;
+        }
+
         return findHtmlTemplate(lines, start, end);
     }
 
@@ -312,6 +320,36 @@ final class Embedding {
                 final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
                 if (!code.isBlank()) {
                     return new HtmlEmbedded(language, styleStart, codeEnd, code);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Attempts to find embedded svg in the specified region of HTML character data.
+     *
+     * @param lines HTML character data
+     * @param start Starting position in the character data in which to look for embedded svg
+     * @param end Ending position in the character data in which to look for embedded svg
+     * @return Information about the embedded svg, if found. The information returned is
+     *      relative to the start of the specified data.
+     */
+    @Nullable
+    private static Embedded findHtmlSvg(final CharData lines, final int start, final int end) {
+        final CharData window1 = lines.subSequence(start, end);
+        final Matcher svgStartMatcher = window1.matcher(HTML_SVG_START_REGEX);
+        if (svgStartMatcher.find()) {
+            final int svgStart = start + svgStartMatcher.start();
+            final int codeStart = start + svgStartMatcher.end();
+
+            final CharData window2 = lines.subSequence(codeStart);
+            final Matcher svgEndMatcher = window2.matcher(HTML_SVG_END_REGEX);
+            if (svgEndMatcher.find()) {
+                final int codeEnd = codeStart + svgEndMatcher.start();
+                final CharData code = lines.subSequence(codeStart, codeEnd).trimFirstLastLine();
+                if (!code.isBlank()) {
+                    return new HtmlEmbedded(Language.Svg, svgStart, codeEnd, code);
                 }
             }
         }

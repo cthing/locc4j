@@ -214,6 +214,53 @@ public class EmbeddingTest {
         }
 
         @Nested
+        class FindSvgTest {
+            @Test
+            public void testFindDefault() {
+                final String content = """
+                    <p>This is a test</p>
+                    <svg width="100" height="100">
+                        <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+                        <polygon points="200,10 250,190 150,190" style="fill:lime;stroke:purple;stroke-width:3" />
+                    </svg>
+                    <h1>Heading</h1>
+                    """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNotNull();
+                assertThat(embedded.getLanguage()).isEqualTo(Language.Svg);
+                assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
+                assertThat(embedded.getCodeEnd()).isEqualTo(232);
+                assertThat(embedded.getCommentLines()).isEqualTo(0);
+                assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
+                assertThat(embedded.getCode().toString()).isEqualTo("    <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />\n"
+                                                                    + "    <polygon points=\"200,10 250,190 150,190\" style=\"fill:lime;stroke:purple;stroke-width:3\" />");
+            }
+
+            @Test
+            public void testFindMissingEnd() {
+                final String content = """
+                        <p>This is a test</p>
+                        <svg>
+                        Hello world
+                        <h1>Heading</h1>
+                        """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+
+            @Test
+            public void testFindBlank() {
+                final String content = """
+                        <p>This is a test</p>
+                        <svg>      </svg>
+                        <h1>Heading</h1>
+                        """;
+                final Embedding.Embedded embedded = Embedding.find(Language.Html, data(content), 0, content.length());
+                assertThat(embedded).isNull();
+            }
+        }
+
+        @Nested
         class FindTemplateTest {
             @Test
             public void testFindDefault() {
