@@ -190,7 +190,7 @@
       "see": "https://docs.yoctoproject.org/bitbake/",
       "line_comment": ["#"],
       "quotes": [["\"", "\""], ["'", "'"]],
-      "extensions": ["bb", "bbclass", "bbappend", "inc", "conf"]
+      "extensions": ["bb", "bbclass", "bbappend", "inc"]
     },
     "BrightScript": {
       "description": "Roku BrightScript scripting language.",
