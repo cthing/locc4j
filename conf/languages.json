@@ -145,6 +145,14 @@
       "line_comment": ["#"],
       "extensions": ["am"]
     },
+    "Avalonia": {
+      "name": "AXAML",
+      "description": "Avalonia UI XAML dialect.",
+      "see": "https://docs.avaloniaui.net/docs/basics/user-interface/introduction-to-xaml#axaml-file-extension",
+      "multi_line_comments": [["<!--", "-->"]],
+      "quotes": [["\"", "\""], ["'", "'"]],
+      "extensions": ["axaml"]
+    },
     "AWK": {
       "description": "Text processing script for AWK tool.",
       "see": "http://awklang.org/",
