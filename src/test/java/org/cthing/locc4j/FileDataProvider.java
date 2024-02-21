@@ -102,6 +102,7 @@ public class FileDataProvider implements ArgumentsProvider {
             arguments("jq.jq", true, Jq, 3, 4, 2),
             arguments("json.json", true, Json, 3167, 0, 1),
             arguments("jsonnet.jsonnet", true, Jsonnet, 7, 3, 1),
+            arguments("julia.jl", true, Julia, 21, 15, 17),
             arguments("jupyter.ipynb", true, Jupyter, 2191, 0, 0, Markdown, 0, 113, 10, Python, 528, 220, 105),
             arguments("k.k", true, K, 2, 3, 2),
             arguments("kakoune_script.kak", true, KakouneScript, 8, 1, 3),

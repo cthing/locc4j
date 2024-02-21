@@ -993,9 +993,10 @@
     "Julia": {
       "description": "Julia programming language.",
       "see": "https://julialang.org/",
-      "line_comment": ["#"],
+      "line_comment": ["#", "\""],
       "multi_line_comments": [["#=", "=#"]],
-      "quotes": [["\"", "\""], ["\"\"\"", "\"\"\""]],
+      "quotes": [["\"", "\""]],
+      "doc_quotes": [["\"\"\"", "\"\"\""]],
       "nested": true,
       "extensions": ["jl"]
     },
