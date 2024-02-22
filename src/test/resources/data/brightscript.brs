@@ -8,7 +8,7 @@
 '  * @example
 
 REM  * difference = _.difference([1,2], [2])
-REM  * ' => [1]
+Rem  * ' => [1]
 REM  *
 REM  */
 

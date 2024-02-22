@@ -1,0 +1,117 @@
+/*
+This page contains Sample css file that provides information to customize styles in the Identity Manager Service Center login page.
+You must create a new Custom.css file in the .../itim/custom/ui/css directory.
+For a trial, import this Sample.css file in the Custom.css file that you created to view the effect of the customized styles in the Identity Manager Service Center login page.
+*/
+
+.oneui .loginForm .page{
+    max-height: auto;
+}
+
+/*
+To change product logo size edit below class:
+*/
+.page .product_logo{
+    height: 40px;
+    width: 120px;
+}
+
+/*
+To change Header title properties edit below class:
+*/
+.loginColumn .headertTitle{
+    font-size:1.67em;
+    font-weight:normal;
+    font-color:#222222;
+    margin-bottom: 10px;
+}
+
+/*
+To change language field properties edit below class:
+*/
+.languageField{
+    padding:10px 0px !important;
+    float: right;
+
+}
+
+.dj_ie9 .languageField{
+    margin: 50px !important;
+}
+
+.dijitRtl .languageField {
+    float: left;
+}
+
+/*
+To change Login form properties edit below class:
+*/
+.oneui .loginForm {
+    text-align: center;
+    background: #A9A9F5;
+    background: -moz-linear-gradient(center top, #e8e8e8 0%, #b9b9b9 100%);
+    background: -webkit-linear-gradient(top, #e8e8e8 0%, #b9b9b9 100%);
+    background: -ms-linear-gradient(top, #e8e8e8 0%,#b9b9b9 100%);
+    background: linear-gradient(to bottom, #e8e8e8 0%,#b9b9b9 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e8e8e8', endColorstr='#b9b9b9',GradientType=0 );
+    box-shadow: 2px 0px 4px #000 inset;
+}
+
+/*
+To change Login Page properties edit below class:
+*/
+.loginForm .page{
+    display: inline-block;
+    text-align: left;
+    margin: auto;
+    padding: 20px;
+    /* max-height: 48em; */
+    border: medium solid #999999;
+    background: #CEECF5;
+}
+
+/*
+To change Login button properties edit below class:
+*/
+.oneui .loginBtn .idxSpecialButton .dijitButtonNode {
+    background-color: greenyellow;
+    background-image: -moz-linear-gradient(top, green, red);
+    background-image: -webkit-gradient(linear,0% 0%,0% 100%,from(#008abf),to(#085884));
+    background-image: -webkit-linear-gradient(top, red 0%, #085884 100%);
+    background-image: -o-linear-gradient(top, #008abf 0%, #085884 100%);
+    background-image: -ms-linear-gradient(top, #008abf 0%, #085884 100%);
+    background-image: linear-gradient(top, #008abf 0%, #085884 100%);
+    border: 1px solid #0a5f8e;
+    color: #ffffff;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.35);
+}
+
+.dijitRtl .page{
+    text-align: right;
+}
+
+.mainLogin{
+    margin-top: 0px;
+    white-space: nowrap;
+}
+
+.loginColumn{
+    display: inline-block;
+    padding-right: 8px;
+    min-width: 0px;
+}
+
+.dijitRtl .loginColumn{
+    display: inline-block;
+    padding-left: 8px;
+    padding-right: 0px;
+}
+
+/*
+To change Login page Footer properties edit below class:
+*/
+.loginForm .footer .footerText {
+    display: inline-block;
+    width: 100%;
+    word-wrap: break-word;
+}

@@ -38,6 +38,7 @@
     "Alex": {
       "description": "Alex lexical analyzer generator specification.",
       "see": "https://haskell-alex.readthedocs.io/en/latest/",
+      "line_comment": ["--"],
       "extensions": ["x"]
     },
     "Alloy": {
@@ -173,7 +174,7 @@
     "Batch": {
       "description": "Windows batch file.",
       "see": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands",
-      "line_comment": ["REM", "::"],
+      "line_comment": ["REM", "rem", "Rem","::"],
       "extensions": ["bat", "btm", "cmd"]
     },
     "Bazel": {
@@ -204,7 +205,7 @@
       "description": "Roku BrightScript scripting language.",
       "see": "https://developer.roku.com/docs/references/brightscript/language/brightscript-language-reference.md",
       "quotes": [["\"", "\""]],
-      "line_comment": ["'", "REM"],
+      "line_comment": ["'", "REM", "rem", "Rem"],
       "extensions": ["brs"]
     },
     "C": {
@@ -649,7 +650,6 @@
       "name": "FORTRAN Modern",
       "description": "FORTRAN programming language in its modern format.",
       "see": "https://en.wikipedia.org/wiki/Fortran",
-      "column_significant": true,
       "line_comment": ["!"],
       "quotes": [["\"", "\""]],
       "extensions": ["f03", "f08", "f90", "f95"]
@@ -1776,7 +1776,7 @@
       "see": "https://en.wikipedia.org/wiki/Smalltalk",
       "quotes": [["'", "'"]],
       "multi_line_comments": [["\"", "\""]],
-      "extensions": ["cs.st", "pck.st"]
+      "extensions": ["st"]
     },
     "Solidity": {
       "name": "Solidity",
