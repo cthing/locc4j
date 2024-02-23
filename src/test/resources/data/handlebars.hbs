@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>
+            {{model.menu.name}}
+            {{#if model.menu.favorite}}
+                {{fa-icon "star" tagName="span" class="favorite-icon"}}
+            {{/if}}
+        </h1>
+    </div>
+</div>
+{{! This comment will not show up in the output}}
+<!-- This comment will show up as HTML-comment -->
+{{!-- This comment may contain mustaches like }}
+
+and covers multiple lines
+--}}
+{{#if model.menu.description}}
+    <div class="row">
+        <div class="col-md-11">
+            <p>
+                {{linkify model.menu.description}}
+            </p>
+        </div>
+    </div>
+{{/if}}
+
+<div class="row">
+    <div class="col-md-11">
+        <h3>
+            Courses
+        </h3>
+        <ol>
+            {{#each model.menu.courses as |course|}}
+                <li>{{course.name}}</li>
+                <ul>
+                    {{#each course.recipes as |recipeId|}}
+                        <li>{{#link-to "recipes.recipe"
+                                       recipeId
+                                       target="_blank"}}{{get (get model.recipeMap recipeId) "name"}}{{/link-to}}</li>
+                    {{/each}}
+                </ul>
+            {{/each}}
+        </ol>
+    </div>
+</div>
+{{#if model.menu.notes}}
+    <div class="row">
+        <div class="col-md-11">
+            <h5>
+                Notes
+            </h5>
+            <p class="menu-notes">
+                {{linkify model.menu.notes}}
+            </p>
+        </div>
+    </div>
+{{/if}}
+{{#if model.menu.occasions}}
+    <div class="row">
+        <div class="col-md-11">
+            <h5 class="menu-occasions">
+                Occasions
+            </h5>
+            {{#each model.menu.occasions as |occasion|}}
+                <ul class="menu-occasions-list">
+                    <li>{{#link-to "menus" (query-params occasionId=occasion)}}{{get (get model.occasionMap occasion) "name"}}{{/link-to}}</li>
+                </ul>
+            {{/each}}
+        </div>
+    </div>
+{{/if}}
+
+<div class="row">
+    <div class="col-md-12 menu-dates">
+        {{#if (not-eq model.menu.updatedOn model.menu.createdOn)}}
+            <div>
+                Updated: {{moment-format model.menu.updatedOn "M/D/YYYY"}}
+            </div>
+        {{/if}}
+        <div>
+            Added: {{moment-format model.menu.createdOn "M/D/YYYY"}}
+        </div>
+    </div>
+</div>

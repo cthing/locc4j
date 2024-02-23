@@ -528,6 +528,7 @@
       "description": "Functional programming language.",
       "see": "https://elixir-lang.org/",
       "line_comment": ["#"],
+      "doc_quotes": [["@moduledoc \"\"\"", "\"\"\""], ["@doc \"\"\"", "\"\"\""]],
       "quotes": [
         ["\"\"\"", "\"\"\""],
         ["\"", "\""],
@@ -791,13 +792,10 @@
       "quotes": [["\"", "\""], ["'", "'"]],
       "extensions": ["hamlet"]
     },
-    "Happy": {
-      "extensions": ["y", "ly"]
-    },
     "Handlebars": {
       "description": "Handlebars template language.",
       "see": "https://handlebarsjs.com/",
-      "multi_line_comments": [["<!--", "-->"], ["{{!", "}}"]],
+      "multi_line_comments": [["<!--", "-->"], ["{{!--", "--}}"], ["{{!", "}}"]],
       "quotes": [["\"", "\""], ["'", "'"]],
       "extensions": ["hbs", "handlebars"]
     },
@@ -833,12 +831,6 @@
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\"", "\""]],
       "extensions": ["ha"]
-    },
-    "Hex": {
-      "name": "HEX",
-      "description": "Hex programming language.",
-      "see": "https://github.com/mazj/hex",
-      "extensions": ["hex"]
     },
     "HiCad": {
       "name": "HICAD",
@@ -899,7 +891,7 @@
       "name": "Intel HEX",
       "description": "Intel hexadecimal object file format.",
       "see": "https://en.wikipedia.org/wiki/Intel_HEX",
-      "extensions": ["ihex"]
+      "extensions": ["hex"]
     },
     "Isabelle": {
       "description": "Isabelle theorem prover language.",
@@ -1649,6 +1641,7 @@
     "ReStructuredText": {
       "description": "reStructuredText markup language for technical documentation.",
       "see": "https://docutils.sourceforge.io/rst.html",
+      "literate": true,
       "extensions": ["rst"]
     },
     "RON": {
@@ -2100,6 +2093,7 @@
     },
     "VerilogArgsFile": {
       "name": "Verilog Args File",
+      "description": "File containing command-line arguments to the Verilog irun or xrun program.",
       "extensions": ["irunargs", "xrunargs"]
     },
     "Vhdl": {
@@ -2200,7 +2194,6 @@
       "description": "Extensible Markup Language.",
       "see": "https://www.w3.org/XML/",
       "multi_line_comments": [["<!--", "-->"]],
-      "quotes": [["\"", "\""], ["'", "'"]],
       "extensions": ["xml"]
     },
     "XSL": {

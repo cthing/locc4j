@@ -1,0 +1,38 @@
+(*
+A test file
+*)
+WeatherDashboard[temperature_, relativeHumidity_, windDirection_,
+  windSpeed_] :=
+
+ With[{scale = 2, tempSize = 100, humiditySize = 100,
+   windSize = 120},
+  Framed[
+   Grid[{
+     {
+      Row[{Spacer[15 scale],
+        Show[IconData["AirTemperature", temperature],
+         ImageSize -> tempSize scale]}],
+      Show[IconData["WindDirection", windDirection],
+       ImageSize -> windSize scale]
+      },
+     {
+      Show[IconData["RelativeHumidity", relativeHumidity],
+       ImageSize -> humiditySize scale],
+      Show[IconData["WindSpeed", windSpeed],
+       ImageSize -> windSize scale]
+      }
+     }],
+   RoundingRadius -> 20 scale, FrameMargins -> 15 scale,
+   FrameStyle -> Gray, ImageMargins -> 50
+   ]
+  ]
+
+WeatherDashboard[location_] :=
+ WeatherDashboard[
+  WeatherData[location, "Temperature"],
+  WeatherData[location, "Humidity"],
+  WeatherData[location, "WindDirection"],
+  WeatherData[location, "WindSpeed"]
+  ]
+CloudDeploy[APIFunction[{}, WeatherDashboard[$GeoLocation] &, "PNG"],
+ Permissions -> "Public"]

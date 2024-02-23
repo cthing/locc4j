@@ -1,0 +1,12 @@
+-clean
+-UNBUFFERED
+-cdslib ./cds.lib
+-errormax 50
+-status
+-nowarn DLNOHV
+-nowarn DLCLAP
+-v93
+-incdir /export/home/include
+-access r
+-noparamerr
+-run
