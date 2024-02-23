@@ -235,9 +235,10 @@
     "Ceylon": {
       "description": "Object-oriented, strongly statically typed programming language.",
       "see": "https://projects.eclipse.org/projects/technology.ceylon",
-      "line_comment": ["//"],
+      "line_comment": ["//", "#!"],
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\"", "\""], ["\"\"\"", "\"\"\""]],
+      "nested": true,
       "extensions": ["ceylon"]
     },
     "CHeader": {
@@ -788,8 +789,9 @@
     "Hamlet": {
       "description": "HTML template language from the Shakespearean family of template languages.",
       "see": "https://www.yesodweb.com/book/shakespearean-templates#shakespearean-templates_hamlet_html",
+      "line_comment": ["--"],
       "multi_line_comments": [["<!--", "-->"]],
-      "quotes": [["\"", "\""], ["'", "'"]],
+      "quotes": [["\"", "\""]],
       "extensions": ["hamlet"]
     },
     "Handlebars": {
@@ -874,7 +876,7 @@
     "Idris": {
       "description": "Idris programming language.",
       "see": "https://www.idris-lang.org/",
-      "line_comment": ["--"],
+      "line_comment": ["--", "|||"],
       "multi_line_comments": [["{-", "-}"]],
       "quotes": [["\"", "\""], ["\"\"\"", "\"\"\""]],
       "extensions": ["idr", "lidr"],
@@ -984,7 +986,7 @@
     "Jsx": {
       "name": "JSX",
       "description": "JavaScript XML specification of DOM trees using XML-like syntax",
-      "see": "https://facebook.github.io/jsx/",
+      "see": "https://en.wikipedia.org/wiki/JSX_(JavaScript)",
       "line_comment": ["//"],
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\"", "\""], ["'", "'"], ["`", "`"]],
@@ -1003,7 +1005,7 @@
     "Julius": {
       "description": "JavaScript template language from the Shakespearean family of template languages.",
       "see": "https://www.yesodweb.com/book/shakespearean-templates#shakespearean-templates_julius_javascript",
-      "line_comment": ["//"],
+      "line_comment": ["//", "--"],
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\"", "\""], ["'", "'"], ["`", "`"]],
       "extensions": ["julius"]
@@ -1206,6 +1208,9 @@
     "Mint": {
       "description": "Mint programming language.",
       "see": "https://mint-lang.com/",
+      "line_comment": ["//"],
+      "multi_line_comments": [["/*", "*/"]],
+      "quotes": [["\"", "\""]],
       "extensions": ["mint"]
     },
     "Mlatu": {
@@ -1241,7 +1246,7 @@
       "description": "Logic-less template language.",
       "see": "https://mustache.github.io/",
       "multi_line_comments": [["{{!", "}}"]],
-      "quotes": [["\"", "\""], ["'", "'"]],
+      "quotes": [["\"", "\""]],
       "extensions": ["mustache"]
     },
     "Nextflow": {
@@ -1262,9 +1267,9 @@
     "Nix": {
       "description": "Nix programming language.",
       "see": "https://nix.dev/",
-      "multi_line_comments": [["/*", "*/"]],
-      "quotes": [["\"", "\""]],
       "line_comment": ["#"],
+      "multi_line_comments": [["/*", "*/"]],
+      "quotes": [["\"", "\""], ["''", "''"]],
       "extensions": ["nix"]
     },
     "NotQuitePerl": {
