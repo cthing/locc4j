@@ -48,6 +48,12 @@
       "multi_line_comments": [["/*", "*/"]],
       "extensions": ["als"]
     },
+    "Apl": {
+      "description": "A Programming Language.",
+      "see": "https://en.wikipedia.org/wiki/APL_(programming_language)",
+      "line_comment": ["\u235D"],
+      "extensions": ["apl"]
+    },
     "Arduino": {
       "name": "Arduino C++",
       "description": "Arduino C++ programming language.",
@@ -482,6 +488,21 @@
       "extensions": ["dm", "dme"],
       "quotes": [["\"", "\""], ["{\"", "\"}"], ["'", "'"]]
     },
+    "Dsssl": {
+      "name": "DSSSL",
+      "description": "Document Style Semantics and Specification Language.",
+      "see": "https://en.wikipedia.org/wiki/Document_Style_Semantics_and_Specification_Language",
+      "line_comment": [";"],
+      "multi_line_comments": [["<!--", "-->"]],
+      "extensions": ["dsl"]
+    },
+    "DTD": {
+      "name": "Document Type Definition",
+      "description": "Defines the elements, attributes and text content allowed in an XML document.",
+      "see": "https://en.wikipedia.org/wiki/Document_type_definition",
+      "multi_line_comments": [["<!--", "-->"]],
+      "extensions": ["dtd"]
+    },
     "Dust": {
       "name": "Dust.js",
       "description": "JavaScript template engine.",
@@ -564,16 +585,25 @@
     "Emojicode": {
       "description": "Programming language using emojis.",
       "see": "https://www.emojicode.org/",
-      "line_comment": ["💭"],
-      "multi_line_comments": [["💭🔜", "🔚💭"], ["📗", "📗"], ["📘", "📘"]],
-      "quotes": [["❌🔤", "❌🔤"]],
-      "extensions": ["emojic", "🍇"]
+      "line_comment": ["\uD83D\uDCAD"],
+      "multi_line_comments": [["\uD83D\uDCAD\uD83D\uDD1C", "\uD83D\uDD1A\uD83D\uDCAD"],
+                              ["\uD83D\uDCD7", "\uD83D\uDCD7"],
+                              ["\uD83D\uDCD8", "\uD83D\uDCD8"]],
+      "quotes": [["\u274C\uD83D\uDD24", "\u274C\uD83D\uDD24"]],
+      "extensions": ["emojic", "\uD83C\uDF47"]
     },
     "Erlang": {
       "description": "Erlang programming language.",
       "see": "https://www.erlang.org/",
       "line_comment": ["%"],
       "extensions": ["erl", "hrl"]
+    },
+    "Expect": {
+      "description": "Application automation.",
+      "see": "https://core.tcl-lang.org/expect/index",
+      "line_comment": ["#"],
+      "shebangs": ["#!/bin/expect"],
+      "extensions": ["exp"]
     },
     "Factor": {
       "description": "Factor programming language.",
@@ -1728,6 +1758,19 @@
       ],
       "filenames": ["sconstruct", "sconscript"]
     },
+    "Sed": {
+      "description": "Stream editor script.",
+      "see": "https://en.wikipedia.org/wiki/Sed",
+      "line_comment": ["#"],
+      "shebangs": ["#!/bin/sed -f"],
+      "extensions": ["sed"]
+    },
+    "Sgml": {
+      "description": "Standard Generalized Markup Language.",
+      "see": "https://en.wikipedia.org/wiki/Standard_Generalized_Markup_Language",
+      "multi_line_comments": [["<!--", "-->"]],
+      "extensions": ["sgml"]
+    },
     "Sh": {
       "name": "Shell",
       "description": "Bourne shell command interpreter.",
@@ -2128,6 +2171,13 @@
       "line_comment": ["#"],
       "extensions": ["sln"]
     },
+    "VoiceXml": {
+      "name": "Voice XML",
+      "description": "Voice interaction markup language.",
+      "see": "https://www.w3.org/TR/voicexml21/",
+      "multi_line_comments": [["<!--", "-->"]],
+      "extensions": ["vxml"]
+    },
     "Vue": {
       "name": "Vue",
       "description": "Vue web framework file.",
@@ -2198,6 +2248,14 @@
       "quotes": [["\"", "\""], ["'", "'"]],
       "mime": ["application/xslt+xml"],
       "extensions": ["xsl", "xslt"]
+    },
+    "XSLFO": {
+      "name": "XSL-FO",
+      "description": "XSL Formatting Objects.",
+      "see": "https://www.w3.org/TR/xsl11/",
+      "multi_line_comments": [["<!--", "-->"]],
+      "quotes": [["\"", "\""], ["'", "'"]],
+      "extensions": ["fob", "fo"]
     },
     "Xtend": {
       "description": "Xtend programming language.",

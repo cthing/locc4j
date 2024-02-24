@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version="2.1"
+  xmlns="http://www.w3.org/2001/vxml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.w3.org/2001/vxml
+  http://www.w3.org/TR/2007/REC-voicexml21-20070619/vxml.xsd">
+<catch event="connection.disconnect.transfer">
+   <!-- far-end answered -->
+   <log> Connection with the callee established: transfer executed.</log>
+</catch>
+
+<form id="consultation_xfer">
+   <block>
+     <!-- queued and played before starting the transfer -->
+     <prompt>
+        Calling Riley.
+     </prompt>
+   </block>
+   <!-- Play music while attempting to connect to far-end -->
+   <!-- Wait up to 60 seconds for the far end to answer  -->
+   <transfer name="mycall" dest="tel:+1-555-123-4567"
+      transferaudio="music.wav" connecttimeout="60s" type="consultation">
+     <!-- queued and played before starting the transfer -->
+     <prompt>
+        Please wait...
+     </prompt>
+     <filled>
+        <if cond="mycall == 'busy'">
+           <prompt>
+             Riley's line is busy. Please call again later.
+           </prompt>
+         <elseif cond="mycall == 'noanswer'"/>
+           <prompt>
+             Riley can't answer the phone now. Please call
+             again later.
+           </prompt>
+         </if>
+      </filled>
+   </transfer>
+   <!-- submit call statistics to server -->
+   <block>
+      <submit namelist="mycall" next="/cgi-bin/report"/>
+   </block>
+</form>
+</vxml>
