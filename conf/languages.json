@@ -1366,7 +1366,7 @@
       "description": "Shell script to build Arch Linux packages.",
       "see": "https://wiki.archlinux.org/title/PKGBUILD",
       "line_comment": ["#"],
-      "quotes": [["\\\"", "\\\""], ["'", "'"]],
+      "quotes": [["\"", "\""], ["'", "'"]],
       "filenames": ["pkgbuild"]
     },
     "Pan": {
