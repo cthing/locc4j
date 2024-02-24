@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -181,16 +180,6 @@ public enum Language {
      */
     public String getName() {
         return this.name;
-    }
-
-    /**
-     * Obtains the file extensions associated with the language. Note that the extension does not include the
-     * leading period.
-     *
-     * @return File extensions associated with the language.
-     */
-    public Set<String> getExtensions() {
-        return Set.of(this.extensions);
     }
 
     /**
