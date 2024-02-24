@@ -145,4 +145,17 @@ public class LanguageTest {
         final Path missingFile = Path.of("/tmp/locc4j__NOT_FOUND_____");
         assertThat(Language.fromFile(missingFile)).isEmpty();
     }
+
+    @Test
+    public void testFileExtensionRemapping() {
+        assertThat(Language.getExtensions().get("c")).isEqualTo(Language.C);
+        Language.addExtension("c", Language.Cpp);
+        assertThat(Language.getExtensions().get("c")).isEqualTo(Language.Cpp);
+        Language.addExtension("C", Language.Html);
+        assertThat(Language.getExtensions().get("c")).isEqualTo(Language.Html);
+        Language.removeExtension("c");
+        assertThat(Language.getExtensions().get("c")).isNull();
+        Language.resetExtensions();
+        assertThat(Language.getExtensions().get("c")).isEqualTo(Language.C);
+    }
 }

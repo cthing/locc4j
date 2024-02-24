@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -152,10 +153,8 @@ public enum Language {
         // Static maps must be used to avoid generating methods that exceed the JVM method byte code limit.
         for (final Language language : values()) {
             NAMES.put(language.getName().toLowerCase(Locale.ROOT), language);
-            for (int i = 0; i < language.extensions.length; i++) {
-                EXTENSIONS.put(language.extensions[i], language);
-            }
         }
+        resetExtensions();
     }
 
     Language(final String name, final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
@@ -180,6 +179,46 @@ public enum Language {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Adds the specified file extension to specified language's list of extensions. If an extension already
+     * maps to a language, it is replaced.
+     *
+     * @param extension File extension to add (without the leading period). Extensions are case-insensitive.
+     * @param language Language to map to the specified extension
+     */
+    public static void addExtension(final String extension, final Language language) {
+        EXTENSIONS.put(extension.toLowerCase(Locale.ROOT), language);
+    }
+
+    /**
+     * Removes the specified file extension. If the extension is not present, this method does nothing.
+     *
+     * @param extension File extension to remove (without the leading period). Extensions are case-insensitive.
+     */
+    public static void removeExtension(final String extension) {
+        EXTENSIONS.remove(extension);
+    }
+
+    /**
+     * Obtains a read-only map of file extensions to languages.
+     *
+     * @return Read-only map of file extensions to languages.
+     */
+    public static Map<String, Language> getExtensions() {
+        return Collections.unmodifiableMap(EXTENSIONS);
+    }
+
+    /**
+     * Restores the file extension to language mapping to its default.
+     */
+    public static void resetExtensions() {
+        for (final Language language : values()) {
+            for (int i = 0; i < language.extensions.length; i++) {
+                EXTENSIONS.put(language.extensions[i], language);
+            }
+        }
     }
 
     /**
