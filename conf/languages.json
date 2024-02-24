@@ -1417,11 +1417,6 @@
       "multi_line_comments": [["/*", "*/"]],
       "extensions": ["pk"]
     },
-    "Polly": {
-      "multi_line_comments": [["<!--", "-->"]],
-      "quotes": [["\"", "\""], ["'", "'"]],
-      "extensions": ["polly"]
-    },
     "Pony": {
       "description": "Pony programming language.",
       "see": "https://www.ponylang.io/",
@@ -1473,7 +1468,7 @@
       "name": "PSL Assertion",
       "description": "Property specification language.",
       "see": "https://en.wikipedia.org/wiki/Property_Specification_Language",
-      "line_comment": ["//"],
+      "line_comment": ["--"],
       "multi_line_comments": [["/*", "*/"]],
       "quotes": [["\"", "\""]],
       "extensions": ["psl"]
@@ -2000,6 +1995,7 @@
       "description": "Unreal Engine development markdown language.",
       "see": "https://github.com/raysjoshua/UnrealEngine/blob/master/Engine/Documentation/Source/DocumentationGuidelines/DocumentationGuidelines.INT.udn",
       "important_syntax": ["```"],
+      "literate": true,
       "extensions": ["udn"],
       "embed_syntax": "markdown"
     },
@@ -2129,15 +2125,8 @@
       "name": "Visual Studio Solution",
       "description": "Visual Studio solution file.",
       "see": "https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file",
+      "line_comment": ["#"],
       "extensions": ["sln"]
-    },
-    "VimScript": {
-      "name": "Vim Script",
-      "description": "Scipting language built into the vim editor.",
-      "see": "https://www.vim.org/scripts/script.php?script_id=2768",
-      "line_comment": ["\""],
-      "quotes": [["\"", "\""], ["'", "'"]],
-      "extensions": ["vim"]
     },
     "Vue": {
       "name": "Vue",

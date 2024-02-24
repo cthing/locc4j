@@ -1,0 +1,17 @@
+/dts-v1/;
+
+/ {
+    /*
+     Comment
+     */
+    soc {
+        // Comment
+        flash_controller: flash-controller@4001e000 {
+            reg = <0x4001e000 0x1000>;
+            flash0: flash@0 {
+                label = "SOC_FLASH";
+                erase-block = <4096>;
+            };
+        };
+    };
+};

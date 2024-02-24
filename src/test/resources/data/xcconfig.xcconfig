@@ -1,0 +1,12 @@
+//
+//  Staging_Config.xcconfig
+//  NKEnviornments
+//
+//  Created by Nishant Kumbhare on 02/12/21.
+
+#include "BaseConfig.xcconfig"
+
+APP_BUNDLE_IDENTIFIER = com.example.demo.staging
+APP_NAME = $(inherited) STG
+
+API_KEY = abcdefgh123456_stg
