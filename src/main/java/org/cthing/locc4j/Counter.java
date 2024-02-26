@@ -96,7 +96,7 @@ public class Counter {
 
 
     /**
-     * Singleton provider for Jupyter JSON parsing. Construction of the Object Mapper is very expensive but it
+     * Singleton provider for Jupyter JSON parsing. Construction of the Object Mapper is very expensive, but it
      * is thread safe so one can be used for all JSON parsing.
      */
     private static final class ObjectMapperProvider {
@@ -165,9 +165,20 @@ public class Counter {
     }
 
     /**
-     * Performs the counting of lines in the specified data.
+     * Performs the counting of lines in the specified string.
      *
-     * @param characters Text to be counted
+     * @param string String to be counted
+     * @return Map of the languages in the data and their line counts
+     * @throws IOException if there was a problem counting the lines.
+     */
+    public Map<Language, Stats> count(final String string) throws IOException {
+        return count(string.toCharArray());
+    }
+
+    /**
+     * Performs the counting of lines in the specified character array.
+     *
+     * @param characters Character data to be counted
      * @return Map of the languages in the data and their line counts
      * @throws IOException if there was a problem counting the lines.
      */
@@ -227,14 +238,13 @@ public class Counter {
                                                                          lineIter.getEnd(), languageStats);
 
             if (embedded != null) {
-                stats.commentLines += embedded.getCommentLines();
                 stats.codeLines += embedded.getAdditionalCodeLines();
 
                 lineIter = data.lineIterator(embedded.getCodeEnd());
                 continue;
             }
 
-            if (this.language.isLiterate() || isComment(line, startedInComments)) {
+            if (isComment(line, startedInComments)) {
                 stats.commentLines++;
             } else {
                 stats.codeLines++;
@@ -456,7 +466,7 @@ public class Counter {
         }
 
         // Count the line
-        if (this.language.isLiterate() || this.language.isLineComment(line::startsWith)) {
+        if (this.language.isLineComment(line::startsWith)) {
             stats.commentLines++;
         } else {
             stats.codeLines++;

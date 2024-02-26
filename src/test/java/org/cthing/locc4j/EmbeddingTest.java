@@ -43,7 +43,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(43);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("var i = 21;");
             }
@@ -62,7 +61,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Text);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(61);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -81,7 +79,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(66);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -127,7 +124,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(42);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("color: red;");
             }
@@ -146,7 +142,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Text);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(60);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -165,7 +160,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Yaml);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(54);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -184,7 +178,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(65);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -230,7 +223,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Svg);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(232);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("    <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />\n"
                                                                     + "    <polygon points=\"200,10 250,190 150,190\" style=\"fill:lime;stroke:purple;stroke-width:3\" />");
@@ -277,7 +269,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Html);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(59);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("<p>Footer</p>");
             }
@@ -296,7 +287,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Yaml);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(69);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -315,7 +305,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Html);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(61);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("Hello world");
             }
@@ -374,7 +363,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Json);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(79);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("""
                                                                     {
@@ -427,7 +415,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(51);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("var i = 10;");
             }
@@ -473,7 +460,6 @@ public class EmbeddingTest {
                 assertThat(embedded.getLanguage()).isEqualTo(Language.Css);
                 assertThat(embedded.getEmbeddedStart()).isEqualTo(22);
                 assertThat(embedded.getCodeEnd()).isEqualTo(51);
-                assertThat(embedded.getCommentLines()).isEqualTo(0);
                 assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
                 assertThat(embedded.getCode().toString()).isEqualTo("color: red;");
             }
@@ -546,8 +532,7 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
             assertThat(embedded.getCodeEnd()).isEqualTo(39);
-            assertThat(embedded.getCommentLines()).isEqualTo(2);
-            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(2);
             assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
@@ -565,8 +550,7 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
             assertThat(embedded.getCodeEnd()).isEqualTo(46);
-            assertThat(embedded.getCommentLines()).isEqualTo(2);
-            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(2);
             assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
@@ -584,8 +568,7 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
             assertThat(embedded.getCodeEnd()).isEqualTo(39);
-            assertThat(embedded.getCommentLines()).isEqualTo(2);
-            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(2);
             assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
@@ -601,8 +584,7 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Java);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(15);
             assertThat(embedded.getCodeEnd()).isEqualTo(35);
-            assertThat(embedded.getCommentLines()).isEqualTo(1);
-            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
+            assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
             assertThat(embedded.getCode().toString()).isEqualTo("int i = 12;");
         }
 
@@ -627,7 +609,6 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
             assertThat(embedded.getCodeEnd()).isEqualTo(37);
-            assertThat(embedded.getCommentLines()).isEqualTo(0);
             assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
             assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
         }
@@ -643,7 +624,6 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
             assertThat(embedded.getCodeEnd()).isEqualTo(37);
-            assertThat(embedded.getCommentLines()).isEqualTo(0);
             assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
             assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n This is a test");
         }
@@ -660,7 +640,6 @@ public class EmbeddingTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.Markdown);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
             assertThat(embedded.getCodeEnd()).isEqualTo(41);
-            assertThat(embedded.getCommentLines()).isEqualTo(0);
             assertThat(embedded.getAdditionalCodeLines()).isEqualTo(0);
             assertThat(embedded.getCode().toString()).isEqualTo(" # Hello World\n\n This is a test");
         }

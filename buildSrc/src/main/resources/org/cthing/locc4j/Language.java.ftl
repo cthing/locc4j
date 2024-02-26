@@ -72,13 +72,6 @@ public enum Language {
         new String[] {<@expand_params params=entry.extensions()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.allMultiLineComments()/>}
     ) {
-        <#if entry.literate()>
-        @Override
-        public boolean isLiterate() {
-            return true;
-        }
-
-        </#if>
         <#if entry.nested()>
         @Override
         public boolean isNestable() {
@@ -219,16 +212,6 @@ public enum Language {
                 EXTENSIONS.put(language.extensions[i], language);
             }
         }
-    }
-
-    /**
-     * Indicates whether the language is considered to be primarily documentation and is counted primarily
-     * as comments rather than procedural code.
-     *
-     * @return {@code true} if the language is considered documentation.
-     */
-    public boolean isLiterate() {
-        return false;
     }
 
     /**

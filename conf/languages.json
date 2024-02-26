@@ -1207,7 +1207,6 @@
     "Markdown": {
       "description": "Document markup language.",
       "see": "https://daringfireball.net/projects/markdown/",
-      "literate": true,
       "important_syntax": ["```"],
       "mime": ["text/markdown", "text/x-markdown"],
       "extensions": ["md", "markdown"],
@@ -1671,7 +1670,6 @@
     "ReStructuredText": {
       "description": "reStructuredText markup language for technical documentation.",
       "see": "https://docutils.sourceforge.io/rst.html",
-      "literate": true,
       "extensions": ["rst"]
     },
     "RON": {
@@ -1958,7 +1956,6 @@
     "Text": {
       "name": "Plain Text",
       "description": "Plain text file.",
-      "literate": true,
       "mime": ["text/plain"],
       "extensions": ["text", "txt"]
     },
@@ -2038,7 +2035,6 @@
       "description": "Unreal Engine development markdown language.",
       "see": "https://github.com/raysjoshua/UnrealEngine/blob/master/Engine/Documentation/Source/DocumentationGuidelines/DocumentationGuidelines.INT.udn",
       "important_syntax": ["```"],
-      "literate": true,
       "extensions": ["udn"],
       "embed_syntax": "markdown"
     },

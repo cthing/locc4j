@@ -377,14 +377,6 @@ public class CounterTest {
         }
 
         @Test
-        @DisplayName("Literate")
-        public void testLiterate() {
-            final Stats stats = new Stats();
-            assertThat(makeCounter(Language.Text, true).parseSingleLine(data("Hello world"), stats)).isTrue();
-            verifyStats(stats, 0, 1, 0);
-        }
-
-        @Test
         @DisplayName("Line comment")
         public void testLineComment() {
             final Stats stats = new Stats();
@@ -439,7 +431,6 @@ public class CounterTest {
             assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
             assertThat(embedded.getCodeEnd()).isEqualTo(20);
-            assertThat(embedded.getCommentLines()).isEqualTo(0);
             assertThat(embedded.getAdditionalCodeLines()).isEqualTo(1);
             assertThat(embedded.getCode().toString()).isEqualTo("var i = 0;");
         }
@@ -524,6 +515,18 @@ public class CounterTest {
                 assertThat(languageStats.blankLines).as(language + ": Blank lines").isEqualTo(blankLines);
             });
         }
+    }
+
+    @Test
+    public void testCountFromString() throws IOException {
+        final Counter counter = new Counter(Language.Markdown);
+        final Map<Language, Stats> statsMap = counter.count("# Title\n\nHello World");
+        assertThat(statsMap).hasSize(1);
+        final Stats stats = statsMap.get(Language.Markdown);
+        assertThat(stats).isNotNull();
+        assertThat(stats.codeLines).isEqualTo(2);
+        assertThat(stats.commentLines).isEqualTo(0);
+        assertThat(stats.blankLines).isEqualTo(1);
     }
 
     private Counter makeCounter() {

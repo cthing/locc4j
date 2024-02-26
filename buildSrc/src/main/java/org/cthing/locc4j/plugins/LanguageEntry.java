@@ -49,8 +49,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param nested Indicates whether multiline comments can be nested
  * @param env Strings that identify the language based on the parameter to the {@code #!/usr/bin/env} line at the
  *      start of a file
- * @param literate Indicates whether the language is considered to primarily be documentation and is counted primarily
- *      as comments rather than procedural code
  * @param nestedComments Pairs of character sequences that indicate the start and end of nested multiline comments
  * @param mime The MIME types associated with the languages
  * @param columnSignificant Indicates whether the column position of a character sequence must be preserved because
@@ -81,7 +79,6 @@ public record LanguageEntry(
         @JsonProperty("shebangs") @Nullable List<String> shebangs,
         @JsonProperty("nested") boolean nested,
         @JsonProperty("env") @Nullable List<String> env,
-        @JsonProperty("literate") boolean literate,
         @JsonProperty("nested_comments") @Nullable List<List<String>> nestedComments,
         @JsonProperty("mime") @Nullable List<String> mime,
         @JsonProperty("column_significant") boolean columnSignificant,

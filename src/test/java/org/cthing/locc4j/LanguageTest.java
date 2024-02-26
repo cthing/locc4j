@@ -35,7 +35,6 @@ public class LanguageTest {
     public void testProperties() {
         final Language css = Language.Css;
         assertThat(css.getName()).isEqualTo("CSS");
-        assertThat(css.isLiterate()).isFalse();
         assertThat(css.isLineComment("//"::contentEquals)).isTrue();
         assertThat(css.isNestable()).isFalse();
         assertThat(css.isNestedComment(delim -> "\"".contentEquals(delim.start()))).isFalse();
@@ -53,7 +52,6 @@ public class LanguageTest {
         assertThat(Language.D.isNestedComment(delim -> "/+".contentEquals(delim.start()))).isTrue();
         assertThat(Language.Elm.isNestable()).isTrue();
         assertThat(Language.FortranLegacy.isColumnSignificant()).isTrue();
-        assertThat(Language.Markdown.isLiterate()).isTrue();
     }
 
     @Test

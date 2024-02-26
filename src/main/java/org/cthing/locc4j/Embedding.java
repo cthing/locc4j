@@ -105,16 +105,8 @@ final class Embedding {
         int getCodeEnd();
 
         /**
-         * Obtains the number of comment lines involved in the embedding. For Markdown, this is the comment block
-         * delimiter lines.
-         *
-         * @return Number of comment lines involved in the embedding.
-         */
-        int getCommentLines();
-
-        /**
          * Obtains the number of additional code lines involved in the embedding. For HTML, this takes into account
-         * the opening embedding tag.
+         * the opening embedding tag. For Markdown, this takes into account the code fence.
          *
          * @return Additional code lines involved in the embedding.
          */
@@ -134,16 +126,14 @@ final class Embedding {
         private final Language language;
         private final int start;
         private final int end;
-        private final int commentLines;
         private final int additionalCodeLines;
         private final CharData code;
 
-        protected AbstractEmbedded(final Language language, final int start, final int end, final int commentLines,
+        protected AbstractEmbedded(final Language language, final int start, final int end,
                                    final int additionalCodeLines, final CharData code) {
             this.language = language;
             this.start = start;
             this.end = end;
-            this.commentLines = commentLines;
             this.additionalCodeLines = additionalCodeLines;
             this.code = code;
         }
@@ -164,11 +154,6 @@ final class Embedding {
         }
 
         @Override
-        public int getCommentLines() {
-            return this.commentLines;
-        }
-
-        @Override
         public int getAdditionalCodeLines() {
             return this.additionalCodeLines;
         }
@@ -182,26 +167,26 @@ final class Embedding {
 
     static class HtmlEmbedded extends AbstractEmbedded {
         HtmlEmbedded(final Language language, final int start, final int end, final CharData code) {
-            super(language, start, end, 0, 1, code);
+            super(language, start, end, 1, code);
         }
     }
 
     static class LiquidSection extends AbstractEmbedded {
         LiquidSection(final Language language, final int start, final int end, final CharData code) {
-            super(language, start, end, 0, 1, code);
+            super(language, start, end, 1, code);
         }
     }
 
     static class MarkdownCodeBlock extends AbstractEmbedded {
-        MarkdownCodeBlock(final Language language, final int start, final int end, final int commentLines,
+        MarkdownCodeBlock(final Language language, final int start, final int end, final int codeLines,
                           final CharData code) {
-            super(language, start, end, commentLines, 0, code);
+            super(language, start, end, codeLines, code);
         }
     }
 
     static class RustLineDoc extends AbstractEmbedded {
         RustLineDoc(final Language language, final int start, final int end, final List<CharData> lines) {
-            super(language, start, end, 0, 0, new CharData(lines));
+            super(language, start, end, 0, new CharData(lines));
         }
     }
 
