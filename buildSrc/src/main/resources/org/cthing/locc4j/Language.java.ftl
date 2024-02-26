@@ -207,6 +207,7 @@ public enum Language {
      * Restores the file extension to language mapping to its default.
      */
     public static void resetExtensions() {
+        EXTENSIONS.clear();
         for (final Language language : values()) {
             for (int i = 0; i < language.extensions.length; i++) {
                 EXTENSIONS.put(language.extensions[i], language);

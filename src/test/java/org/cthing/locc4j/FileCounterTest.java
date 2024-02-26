@@ -39,6 +39,12 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 public class FileCounterTest {
 
     @Test
+    public void testBlankPathname() {
+        final FileCounter counter = new FileCounter();
+        assertThatIllegalArgumentException().isThrownBy(() -> counter.count("  "));
+    }
+
+    @Test
     public void testDirectory(@TempDir final Path tempDir) {
         final FileCounter counter = new FileCounter();
         assertThatIllegalArgumentException().isThrownBy(() -> counter.count(tempDir));
@@ -83,10 +89,9 @@ public class FileCounterTest {
 
         final URL url = getClass().getResource("/data/" + accessor.getString(0));
         assert url != null;
-        final Path pathname  = Path.of(url.getPath());
 
         final FileCounter counter = new FileCounter().countDocStrings(accessor.getBoolean(1));
-        final Map<Language, Stats> actualStats = counter.count(pathname);
+        final Map<Language, Stats> actualStats = counter.count(url.getPath());
 
         assertThat(actualStats).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
 

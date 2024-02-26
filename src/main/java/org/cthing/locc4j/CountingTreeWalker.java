@@ -202,7 +202,8 @@ public class CountingTreeWalker {
     /**
      * Performs the walk of the file system tree and the counting of file lines.
      *
-     * @return The line counts for each file encountered on the walk.
+     * @return The line counts for each file encountered on the walk. If the language of a file
+     *      cannot be determined, an empty language map is returned for that file.
      * @throws IOException if a problem was encountered during the walk.
      */
     public Map<Path, Map<Language, Stats>> count() throws IOException {

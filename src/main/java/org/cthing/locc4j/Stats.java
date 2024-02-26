@@ -39,7 +39,7 @@ public class Stats {
     }
 
     /**
-     * Obtains the number of lines of code.
+     * Obtains the number of lines of code. Code is defined as source code, markup tags, and textual content.
      *
      * @return Number of lines of code.
      */
@@ -48,7 +48,8 @@ public class Stats {
     }
 
     /**
-     * Obtains the numer of line consisting solely of comments.
+     * Obtains the numer of line consisting solely of comments. Note that code with trailing comments is counted
+     * as code not comments.
      *
      * @return Number of lines containing only comments.
      */

@@ -153,7 +153,10 @@ public class LanguageTest {
         assertThat(Language.getExtensions().get("c")).isEqualTo(Language.Html);
         Language.removeExtension("c");
         assertThat(Language.getExtensions().get("c")).isNull();
+        Language.addExtension("zzz", Language.Python);
+        assertThat(Language.getExtensions().get("zzz")).isEqualTo(Language.Python);
         Language.resetExtensions();
         assertThat(Language.getExtensions().get("c")).isEqualTo(Language.C);
+        assertThat(Language.getExtensions().get("zzz")).isNull();
     }
 }

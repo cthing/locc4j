@@ -47,8 +47,25 @@ public class FileCounter {
     /**
      * Counts the number of lines in the specified file.
      *
+     * @param pathname File whose lines are to be counted
+     * @return Map of the languages found in the specified file and their counts. If the language of the file
+     *      cannot be determined, an empty map is returned.
+     * @throws IOException if there was a problem reading the file
+     * @throws IllegalArgumentException if the specified file is blank or a directory
+     */
+    public Map<Language, Stats> count(final String pathname) throws IOException {
+        if (pathname.isBlank()) {
+            throw new IllegalArgumentException("Specified pathname must not be blank.");
+        }
+        return count(Path.of(pathname));
+    }
+
+    /**
+     * Counts the number of lines in the specified file.
+     *
      * @param file File whose lines are to be counted
-     * @return Map of the languages found in the specified file and their counts.
+     * @return Map of the languages found in the specified file and their counts. If the language of the file
+     *      cannot be determined, an empty map is returned.
      * @throws IOException if there was a problem reading the file
      * @throws IllegalArgumentException if the specified file is a directory
      */
