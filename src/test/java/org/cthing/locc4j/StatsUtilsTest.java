@@ -50,6 +50,22 @@ public class StatsUtilsTest {
     }
 
     @Test
+    public void testByLanguageGroupedFile() throws IOException {
+        final CountingTreeWalker walker = new CountingTreeWalker(treeData.start).excludeHidden(false);
+        final Map<Language, Set<Path>> groups = StatsUtils.byLanguageGroupedFile(walker.count());
+        assertThat(groups).hasSize(9)
+                          .containsEntry(C, Set.of(treeData.fileD1F3))
+                          .containsEntry(Cpp, Set.of(treeData.fileD1F2, treeData.fileD2F3))
+                          .containsEntry(Css, Set.of(treeData.fileD0F2))
+                          .containsEntry(Html, Set.of(treeData.fileD0F2))
+                          .containsEntry(Java, Set.of(treeData.fileD0F1, treeData.fileD1F1))
+                          .containsEntry(JavaScript, Set.of(treeData.fileD0F2, treeData.fileD2F1))
+                          .containsEntry(TypeScript, Set.of(treeData.fileD3F1))
+                          .containsEntry(Python, Set.of(treeData.fileD3F2))
+                          .containsEntry(Ruby, Set.of(treeData.fileD2F2));
+    }
+
+    @Test
     public void testByFile() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start).excludeHidden(false);
         final Map<Path, Stats> stats = StatsUtils.byFile(walker.count());

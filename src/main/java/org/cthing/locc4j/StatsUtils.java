@@ -47,10 +47,29 @@ public final class StatsUtils {
         final Map<Language, Stats> langMap = new EnumMap<>(Language.class);
         for (final Map<Language, Stats> map : stats.values()) {
             for (final Map.Entry<Language, Stats> entry : map.entrySet()) {
-                langMap.computeIfAbsent(entry.getKey(), l -> new Stats()).add(entry.getValue());
+                langMap.computeIfAbsent(entry.getKey(), l -> new Stats())
+                       .add(entry.getValue());
             }
         }
         return Collections.unmodifiableMap(langMap);
+    }
+
+    /**
+     * Groups the file by language.
+     *
+     * @param stats Line count stats for each language in individual files
+     * @return Files grouped by language. Note that because a single file my contain multiple languages
+     *      (e.g. CSS in HTML), the same file may be associated with more than one language.
+     */
+    public static Map<Language, Set<Path>> byLanguageGroupedFile(final Map<Path, Map<Language, Stats>> stats) {
+        final Map<Language, Set<Path>> groupedMap = new EnumMap<>(Language.class);
+        for (final Map.Entry<Path, Map<Language, Stats>> pathEntry : stats.entrySet()) {
+            for (final Map.Entry<Language, Stats> langEntry : pathEntry.getValue().entrySet()) {
+                groupedMap.computeIfAbsent(langEntry.getKey(), l -> new HashSet<>())
+                          .add(pathEntry.getKey());
+            }
+        }
+        return Collections.unmodifiableMap(groupedMap);
     }
 
     /**
@@ -63,7 +82,8 @@ public final class StatsUtils {
         final Map<Path, Stats> fileMap = new HashMap<>();
         for (final Map.Entry<Path, Map<Language, Stats>> pathEntry : stats.entrySet()) {
             for (final Map.Entry<Language, Stats> langEntry : pathEntry.getValue().entrySet()) {
-                fileMap.computeIfAbsent(pathEntry.getKey(), p -> new Stats()).add(langEntry.getValue());
+                fileMap.computeIfAbsent(pathEntry.getKey(), p -> new Stats())
+                       .add(langEntry.getValue());
             }
         }
         return Collections.unmodifiableMap(fileMap);
