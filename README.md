@@ -190,7 +190,7 @@ A `buildSrc` Gradle plugin is used to generate the `Language` enum class from th
 data file and the [Language.ftl](buildSrc/src/main/resources/org/cthing/locc4j/Language.java.ftl) FreeMarker template.
 
 ## Releasing
-This project is released on the [Maven Central repository](https://central.sonatype.com/artifact/org.cthing/filevisitor).
+This project is released on the [Maven Central repository](https://central.sonatype.com/artifact/org.cthing/locc4j).
 Perform the following steps to create a release.
 
 - Commit all changes for the release
