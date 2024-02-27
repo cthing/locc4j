@@ -785,6 +785,15 @@
       "quotes": [["\"", "\""], ["'", "'"]],
       "extensions": ["gohtml"]
     },
+    "Gradle": {
+      "description": "Gradle build script.",
+      "see": "https://gradle.org/",
+      "line_comment": ["//"],
+      "multi_line_comments": [["/*", "*/"]],
+      "nested": true,
+      "quotes": [["\"", "\""], ["\"\"\"", "\"\"\""]],
+      "filenames": ["build.gradle.kts"]
+    },
     "Graphql": {
       "name": "GraphQL",
       "description": "Graph query language.",
@@ -1445,6 +1454,13 @@
       "see": "https://www.jemarch.net/poke",
       "multi_line_comments": [["/*", "*/"]],
       "extensions": ["pk"]
+    },
+    "POM": {
+      "name": "Maven POM",
+      "description": "Maven Project Object Model build file.",
+      "see": "https://maven.apache.org/pom.html",
+      "multi_line_comments": [["<!--", "-->"]],
+      "filenames": ["pom.xml"]
     },
     "Pony": {
       "description": "Pony programming language.",
