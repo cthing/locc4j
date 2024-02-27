@@ -21,8 +21,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -47,13 +50,32 @@ public class CounterTest {
 
     private static long countingTime;
     private static int totalLines;
+    private static final Set<Language> TESTED_LANGUAGES = EnumSet.noneOf(Language.class);
 
     private final Counter.State state = new Counter.State();
 
     @AfterAll
     public static void allDone() {
-        LOGGER.info(() -> String.format("Total lines:   %d\n      Counting time: %d ms\n      Velocity:      %d lines/ms",
-                                        totalLines, countingTime, Math.round(totalLines / countingTime)));
+        final Set<Language> diff = EnumSet.of(Language.values()[0], Language.values());
+        diff.removeAll(TESTED_LANGUAGES);
+        final String diffMessage = diff.isEmpty()
+                                   ? ""
+                                   : "Untested:         "
+                                           + diff.stream().map(Enum::toString).collect(Collectors.joining(", "))
+                                           + '\n';
+
+        LOGGER.info(() -> String.format("""
+
+                                        Languages tested: %d of %d
+                                        %sTotal lines:      %d
+                                        Counting time:    %d ms
+                                        Velocity:         %d lines/ms
+                                        """,
+                                        TESTED_LANGUAGES.size(), Language.values().length,
+                                        diffMessage,
+                                        totalLines,
+                                        countingTime,
+                                        Math.round(totalLines / countingTime)));
     }
 
     @Nested
@@ -501,6 +523,7 @@ public class CounterTest {
             countingTime += System.currentTimeMillis() - startMillis;
             totalLines += actualStats.values().stream().mapToInt(Stats::getTotalLines).sum();
         }
+        TESTED_LANGUAGES.addAll(actualStats.keySet());
 
         assertThat(actualStats).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
 
