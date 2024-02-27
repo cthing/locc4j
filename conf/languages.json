@@ -785,14 +785,22 @@
       "quotes": [["\"", "\""], ["'", "'"]],
       "extensions": ["gohtml"]
     },
-    "Gradle": {
-      "description": "Gradle build script.",
+    "GradleKotlin": {
+      "description": "Gradle Kotlin build file.",
       "see": "https://gradle.org/",
       "line_comment": ["//"],
       "multi_line_comments": [["/*", "*/"]],
       "nested": true,
       "quotes": [["\"", "\""], ["\"\"\"", "\"\"\""]],
-      "filenames": ["build.gradle.kts"]
+      "filenames": ["build.gradle.kts", "settings.gradle.kts"]
+    },
+    "GradleGroovy": {
+      "description": "Gradle Groovy build file.",
+      "see": "https://gradle.org/",
+      "line_comment": ["//"],
+      "multi_line_comments": [["/*", "*/"]],
+      "quotes": [["\"", "\""]],
+      "extensions": ["gradle"]
     },
     "Graphql": {
       "name": "GraphQL",
