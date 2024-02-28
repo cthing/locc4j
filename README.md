@@ -72,12 +72,19 @@ final Counter counter = new Counter(Language.Python);
 final Map<Language, Stats> stats = counter.count(ins);
 ```
 
-### Counting a File
-The following code counts lines from a file. The file's primary language is determined by first examining its
+### Counting One or More Files
+The following code counts lines from a single file. The file's primary language is determined by first examining its
 name, then extension, and finally any shebang (i.e. `#!`) that may be present at the start of the file.
 ```java
 final FileCounter counter = new FileCounter();
-final Map<Language, Stats> stats = counter.count("/tmp/program.cpp");
+final Map<Path, Map<Language, Stats>> stats = counter.count("/tmp/program.cpp");
+```
+
+The following code counts lines from multiple files. Each file's primary language is determined by first examining its
+name, then extension, and finally any shebang (i.e. `#!`) that may be present at the start of the file.
+```java
+final FileCounter counter = new FileCounter();
+final Map<Path, Map<Language, Stats>> stats = counter.count("/tmp/program1.cpp", "/tmp/program2.java");
 ```
 
 ### Counting a File System Tree

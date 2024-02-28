@@ -59,7 +59,7 @@ public class CountingTreeWalker {
 
         @Override
         public boolean file(final Path file, final BasicFileAttributes basicFileAttributes) throws IOException {
-            this.counts.put(file, this.counter.count(file));
+            this.counts.putAll(this.counter.count(file));
             return true;
         }
     }
@@ -76,7 +76,7 @@ public class CountingTreeWalker {
         public boolean file(final Path file, final BasicFileAttributes basicFileAttributes) throws IOException {
             final Optional<Language> languageOpt = Language.fromFile(file);
             if (languageOpt.isPresent() && this.languages.contains(languageOpt.get())) {
-                this.counts.put(file, this.counter.count(file));
+                this.counts.putAll(this.counter.count(file));
             }
             return true;
         }

@@ -33,16 +33,11 @@ import org.mockito.Mockito;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIOException;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.entry;
 
 
 @SuppressWarnings("MethodOnlyUsedFromInnerClass")
 public class FileCounterTest {
-
-    @Test
-    public void testBlankPathname() {
-        final FileCounter counter = new FileCounter();
-        assertThatIllegalArgumentException().isThrownBy(() -> counter.count("  "));
-    }
 
     @Test
     public void testDirectory(@TempDir final Path tempDir) {
@@ -61,7 +56,7 @@ public class FileCounterTest {
         final Path file = tempDir.resolve("_foo_");
         Files.writeString(file, "");
         final FileCounter counter = new FileCounter();
-        assertThat(counter.count(file)).isEmpty();
+        assertThat(counter.count(file)).containsExactly(entry(file, Map.of()));
     }
 
     @Test
@@ -74,7 +69,7 @@ public class FileCounterTest {
             files.when(() -> Files.isReadable(file)).thenReturn(false);
 
             final FileCounter counter = new FileCounter();
-            assertThat(counter.count(file)).isEmpty();
+            assertThat(counter.count(file)).containsExactly(entry(file, Map.of()));
         }
     }
 
@@ -91,7 +86,7 @@ public class FileCounterTest {
         assert url != null;
 
         final FileCounter counter = new FileCounter().countDocStrings(accessor.getBoolean(1));
-        final Map<Language, Stats> actualStats = counter.count(url.getPath());
+        final Map<Language, Stats> actualStats = counter.count(url.getPath()).values().iterator().next();
 
         assertThat(actualStats).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
 

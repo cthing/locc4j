@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,19 +49,59 @@ public class FileCounter {
     }
 
     /**
-     * Counts the number of lines in the specified file.
+     * Counts the number of lines in the specified files.
      *
-     * @param pathname File whose lines are to be counted
-     * @return Map of the languages found in the specified file and their counts. If the language of the file
-     *      cannot be determined, an empty map is returned.
-     * @throws IOException if there was a problem reading the file
-     * @throws IllegalArgumentException if the specified file is blank or a directory
+     * @param pathnames Files whose lines are to be counted
+     * @return The line counts for each pathname. If the language of a file cannot be determined, an empty
+     *      language map is returned for that file.
+     * @throws IOException if there was a problem reading the files
+     * @throws IllegalArgumentException if the collection is empty or a file is a directory
      */
-    public Map<Language, Stats> count(final String pathname) throws IOException {
-        if (pathname.isBlank()) {
-            throw new IllegalArgumentException("Specified pathname must not be blank.");
+    public Map<Path, Map<Language, Stats>> count(final String... pathnames) throws IOException {
+        if (pathnames.length == 1) {
+            final Path path = Path.of(pathnames[0]);
+            return Map.of(path, count(path));
         }
-        return count(Path.of(pathname));
+        return count(Arrays.stream(pathnames).map(Path::of).toList());
+    }
+
+    /**
+     * Counts the number of lines in the specified files.
+     *
+     * @param files Files whose lines are to be counted
+     * @return The line counts for each file. If the language of a file cannot be determined, an empty
+     *      language map is returned for that file.
+     * @throws IOException if there was a problem reading the files
+     * @throws IllegalArgumentException if the collection is empty or a file is a directory
+     */
+    public Map<Path, Map<Language, Stats>> count(final Path... files) throws IOException {
+        return files.length == 1 ? Map.of(files[0], count(files[0])) : count(List.of(files));
+    }
+
+    /**
+     * Counts the number of lines in the specified files.
+     *
+     * @param files Files whose lines are to be counted
+     * @return The line counts for each file. If the language of a file cannot be determined, an empty
+     *      language map is returned for that file.
+     * @throws IOException if there was a problem reading the files
+     * @throws IllegalArgumentException if the collection is empty or a file is a directory
+     */
+    public Map<Path, Map<Language, Stats>> count(final Collection<Path> files) throws IOException {
+        if (files.isEmpty()) {
+            throw new IllegalArgumentException("At least one pathname must be specified.");
+        }
+
+        if (files.size() == 1) {
+            final Path path = files.iterator().next();
+            return Map.of(path, count(path));
+        }
+
+        final Map<Path, Map<Language, Stats>> results = new HashMap<>(files.size());
+        for (final Path file : files) {
+            results.put(file, count(file));
+        }
+        return results;
     }
 
     /**
@@ -69,7 +113,7 @@ public class FileCounter {
      * @throws IOException if there was a problem reading the file
      * @throws IllegalArgumentException if the specified file is a directory
      */
-    public Map<Language, Stats> count(final Path file) throws IOException {
+    private Map<Language, Stats> count(final Path file) throws IOException {
         if (Files.isDirectory(file)) {
             throw new IllegalArgumentException("Specified path must be a file");
         }
