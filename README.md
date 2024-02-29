@@ -87,6 +87,19 @@ final FileCounter counter = new FileCounter();
 final Map<Path, Map<Language, Stats>> stats = counter.count("/tmp/program1.cpp", "/tmp/program2.java");
 ```
 
+### Counting Files in a Directory
+The following code counts all files in the specified directory. By default, hidden files are excluded.
+```java
+final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo")).maxDepth(1);
+final Map<Path, Map<Language, Stats>> counts = walker.count();
+```
+
+The following code counts only C++ source files in the specified directory using a glob pattern match.
+```java
+final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo"), "*.cpp").maxDepth(1);
+final Map<Path, Map<Language, Stats>> counts = walker.count();
+```
+
 ### Counting a File System Tree
 The following code counts all files under the specified directory tree. By default, hidden files and directories
 are excluded.
