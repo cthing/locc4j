@@ -1,3 +1,4 @@
+import com.autonomousapps.tasks.CodeSourceExploderTask
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.Confidence
 import org.cthing.locc4j.plugins.LanguagePlugin
@@ -17,6 +18,7 @@ plugins {
     jacoco
     `maven-publish`
     signing
+    alias(libs.plugins.dependencyAnalysis)
     alias(libs.plugins.spotbugs)
     alias(libs.plugins.versions)
     id("org.cthing.locc4j.language")
@@ -38,15 +40,18 @@ java {
 }
 
 dependencies {
+    api(libs.jsr305)
+
     implementation(libs.commonsIO)
     implementation(libs.cthingAnnots)
     implementation(libs.filevisitor)
+    implementation(libs.jacksonCore)
     implementation(libs.jacksonDatabind)
-    implementation(libs.jsr305)
 
     testImplementation(libs.assertJ)
     testImplementation(libs.equalsVerifier)
     testImplementation(libs.junitApi)
+    testImplementation(libs.junitCommons)
     testImplementation(libs.junitParams)
     testImplementation(libs.mockito)
 
@@ -74,6 +79,16 @@ spotbugs {
 
 jacoco {
     toolVersion = libs.versions.jacoco.get()
+}
+
+dependencyAnalysis {
+    issues {
+        all {
+            onAny {
+                severity("fail")
+            }
+        }
+    }
 }
 
 fun isNonStable(version: String): Boolean {
@@ -114,12 +129,20 @@ tasks {
         }
     }
 
+    check {
+        dependsOn(buildHealth)
+    }
+
     spotbugsMain {
         reports.create("html").required = true
     }
 
     spotbugsTest {
         isEnabled = false
+    }
+
+    withType<CodeSourceExploderTask> {
+        dependsOn(generateLanguage)
     }
 
     withType<JacocoReport> {

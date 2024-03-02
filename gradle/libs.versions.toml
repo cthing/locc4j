@@ -2,11 +2,14 @@
 java = "17"
 # Do not upgrade Checkstyle until https://github.com/checkstyle/checkstyle/issues/14123 is properly fixed
 checkstyle = "10.12.5"
+jackson = "2.16.1"
 jacoco = "0.8.11"
 junit = "5.10.2"
+junitPlatform = "1.10.2"
 spotbugs = "4.8.3"
 
 [plugins]
+dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version = "1.30.0" }
 spotbugs = { id = "com.github.spotbugs", version = "6.0.7" }
 versions = { id = "com.github.ben-manes.versions", version = "0.51.0" }
 
@@ -18,11 +21,13 @@ cthingAnnots = "org.cthing:cthing-annotations:1.0.0"
 equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:3.15.6"
 filevisitor = "org.cthing:filevisitor:0.1.0-+"
 freemarker = "org.freemarker:freemarker:2.3.32"
-jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:2.16.1"
+jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 junitApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junitEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
-junitLauncher = "org.junit.platform:junit-platform-launcher:1.10.2"
 junitParams = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+junitCommons = { module = "org.junit.platform:junit-platform-commons", version.ref = "junitPlatform" }
+junitLauncher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatform" }
 mockito = "org.mockito:mockito-core:5.10.0"
 spotbugsContrib = "com.mebigfatguy.sb-contrib:sb-contrib:7.6.4"
