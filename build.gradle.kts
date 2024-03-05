@@ -1,7 +1,6 @@
 import com.autonomousapps.tasks.CodeSourceExploderTask
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.Confidence
-import org.cthing.locc4j.plugins.LanguagePlugin
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -107,6 +106,7 @@ tasks {
     }
 
     named("clean", Delete::class).configure {
+        dependsOn(gradle.includedBuild("languagePlugin").task(":clean"))
         delete(generatedSrcDir)
     }
 
@@ -142,7 +142,7 @@ tasks {
     }
 
     withType<CodeSourceExploderTask> {
-        dependsOn(generateLanguage)
+        dependsOn("generateLanguage")
     }
 
     withType<JacocoReport> {
@@ -180,7 +180,7 @@ val javaDirSet: SourceDirectorySet = mainSourceSet.java
 javaDirSet.setSrcDirs(javaDirSet.srcDirs.plus(generatedSrcDir))
 
 val sourceJar by tasks.registering(Jar::class) {
-    dependsOn(LanguagePlugin.GENERATE_LANGUAGE_TASK)
+    dependsOn("generateLanguage")
     from(project.sourceSets["main"].allSource)
     archiveClassifier = "sources"
 }

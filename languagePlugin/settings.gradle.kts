@@ -1,3 +1,5 @@
+rootProject.name = "languagePlugin"
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
