@@ -16,6 +16,7 @@
 
 package org.cthing.locc4j.plugins;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -201,7 +202,7 @@ public record LanguageEntry(
      * @param regexes Regular expressions to test
      * @return {@code true} if the specified regular expressions can be combined into a character class.
      */
-    private static boolean isCharacterClass(final List<String> regexes) {
+    private static boolean isCharacterClass(final Collection<String> regexes) {
         return regexes.stream().allMatch(regex -> regex.length() == 1 || "\\\"".equals(regex));
     }
 
@@ -211,7 +212,7 @@ public record LanguageEntry(
      * @param stringsList List of lists of strings to escape
      * @return Escaped list of lists of strings
      */
-    private static List<List<String>> escapeJavaListList(final List<List<String>> stringsList) {
+    private static List<List<String>> escapeJavaListList(final Collection<List<String>> stringsList) {
         return stringsList.stream().map(LanguageEntry::escapeJavaList).toList();
     }
 
@@ -221,7 +222,7 @@ public record LanguageEntry(
      * @param strings List of strings to escape
      * @return Escaped list of strings
      */
-    private static List<String> escapeJavaList(final List<String> strings) {
+    private static List<String> escapeJavaList(final Collection<String> strings) {
         return strings.stream().map(StringEscapeUtils::escapeJava).toList();
     }
 
@@ -231,7 +232,7 @@ public record LanguageEntry(
      * @param regexes List of regular expressions to escape
      * @return List of escaped regular expressions.
      */
-    private static List<String> escapeRegexList(final List<String> regexes) {
+    private static List<String> escapeRegexList(final Collection<String> regexes) {
         return regexes.stream()
                       .map(regex -> REGEX_ESCAPE_PATTERN.matcher(regex).replaceAll("\\\\\\\\$1"))
                       .collect(Collectors.toList());
@@ -243,7 +244,7 @@ public record LanguageEntry(
      * @param regexes List of regular expressions to escape
      * @return List of escaped regular expressions.
      */
-    private static List<String> escapeRegexChracterClass(final List<String> regexes) {
+    private static List<String> escapeRegexChracterClass(final Collection<String> regexes) {
         return regexes.stream()
                       .map(regex -> REGEX_CHAR_CLASS_ESCAPE_PATTERN.matcher(regex).replaceAll("\\\\\\\\$1"))
                       .collect(Collectors.toList());

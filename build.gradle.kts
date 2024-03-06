@@ -106,7 +106,8 @@ tasks {
     }
 
     named("clean", Delete::class).configure {
-        dependsOn(gradle.includedBuild("languagePlugin").task(":clean"))
+        // Do not call composite build "clean" until https://github.com/gradle/gradle/issues/23585 is fixed.
+        //dependsOn(gradle.includedBuild("languagePlugin").task(":clean"))
         delete(generatedSrcDir)
     }
 
@@ -130,7 +131,7 @@ tasks {
     }
 
     check {
-        dependsOn(buildHealth)
+        dependsOn(buildHealth, gradle.includedBuild("languagePlugin").task(":check"))
     }
 
     spotbugsMain {
