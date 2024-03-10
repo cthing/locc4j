@@ -114,6 +114,23 @@ public final class StatsUtils {
     }
 
     /**
+     * Obtains the files that were not recognized and therefore produced no count stats.
+     *
+     * @param stats Line count stats for each language in the specified file
+     * @return Files that were not recognized. If the primary language of a file cannot be determined or
+     *      is not supported by this library, the entry for the file contains an empty language map.
+     */
+    public static Set<Path> unrecognized(final Map<Path, Map<Language, Stats>> stats) {
+        final Set<Path> unrecog = new HashSet<>();
+        for (final Map.Entry<Path, Map<Language, Stats>> entry : stats.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                unrecog.add(entry.getKey());
+            }
+        }
+        return Collections.unmodifiableSet(unrecog);
+    }
+
+    /**
      * Calculates the total line count based on the specified stats.
      *
      * @param stats Line count stats for each language in the specified files

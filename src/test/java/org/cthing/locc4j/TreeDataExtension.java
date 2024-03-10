@@ -35,6 +35,7 @@ public class TreeDataExtension implements BeforeAllCallback {
     Path fileD1F1;
     Path fileD1F2;
     Path fileD1F3;
+    Path fileD1F4;
     Path fileD2F1;
     Path fileD2F2;
     Path fileD2F3;
@@ -45,6 +46,7 @@ public class TreeDataExtension implements BeforeAllCallback {
     Map<Language, Stats> countsD1F1;
     Map<Language, Stats> countsD1F2;
     Map<Language, Stats> countsD1F3;
+    Map<Language, Stats> countsD1F4;
     Map<Language, Stats> countsD2F1;
     Map<Language, Stats> countsD2F2;
     Map<Language, Stats> countsD2F3;
@@ -63,6 +65,7 @@ public class TreeDataExtension implements BeforeAllCallback {
         this.fileD1F1 = this.start.resolve("dir1/file-1-1.java");
         this.fileD1F2 = this.start.resolve("dir1/file-1-2.cpp");
         this.fileD1F3 = this.start.resolve("dir1/file-1-3.c");
+        this.fileD1F4 = this.start.resolve("dir1/file-1-4.unknown");
         this.fileD2F1 = this.start.resolve(".dir2/file-2-1.js");
         this.fileD2F2 = this.start.resolve(".dir2/file-2-2.rb");
         this.fileD2F3 = this.start.resolve(".dir2/file-2-3.cpp");
@@ -74,6 +77,7 @@ public class TreeDataExtension implements BeforeAllCallback {
         this.countsD1F1 = Map.of(Java, new Stats(26, 9, 9));
         this.countsD1F2 = Map.of(Cpp, new Stats(37, 2, 6));
         this.countsD1F3 = Map.of(C, new Stats(33, 7, 8));
+        this.countsD1F4 = Map.of();
         this.countsD2F1 = Map.of(JavaScript, new Stats(14, 11, 6));
         this.countsD2F2 = Map.of(Ruby, new Stats(9, 7, 3));
         this.countsD2F3 = Map.of(Cpp, new Stats(37, 2, 6));

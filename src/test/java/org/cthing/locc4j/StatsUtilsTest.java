@@ -99,11 +99,21 @@ public class StatsUtilsTest {
                 treeData.fileD1F1,
                 treeData.fileD1F2,
                 treeData.fileD1F3,
+                treeData.fileD1F4,
                 treeData.fileD2F1,
                 treeData.fileD2F2,
                 treeData.fileD2F3,
                 treeData.fileD3F1,
                 treeData.fileD3F2
+        );
+    }
+
+    @Test
+    public void testUnrecognized() throws IOException {
+        final CountingTreeWalker walker = new CountingTreeWalker(treeData.start).excludeHidden(false);
+        final Set<Path> paths = StatsUtils.unrecognized(walker.count());
+        assertThat(paths).containsExactly(
+                treeData.fileD1F4
         );
     }
 
