@@ -39,7 +39,7 @@ public class CountingTreeWalker {
     private abstract static class AbstractCountHandler implements MatchHandler {
 
         protected final FileCounter counter;
-        protected final Map<Path, Map<Language, Stats>> counts;
+        protected final Map<Path, Map<Language, Counts>> counts;
 
         AbstractCountHandler() {
             this.counter = new FileCounter();
@@ -50,7 +50,7 @@ public class CountingTreeWalker {
             this.counter.countDocStrings(enable);
         }
 
-        Map<Path, Map<Language, Stats>> getCounts() {
+        Map<Path, Map<Language, Counts>> getCounts() {
             return Collections.unmodifiableMap(this.counts);
         }
     }
@@ -206,7 +206,7 @@ public class CountingTreeWalker {
      *      cannot be determined, an empty language map is returned for that file.
      * @throws IOException if a problem was encountered during the walk.
      */
-    public Map<Path, Map<Language, Stats>> count() throws IOException {
+    public Map<Path, Map<Language, Counts>> count() throws IOException {
         this.walker.walk();
         return this.handler.getCounts();
     }

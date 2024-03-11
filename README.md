@@ -44,13 +44,13 @@ implementation("org.cthing:locc4j:1.0.0")
 
 ### Counter Results
 
-All counting APIs return results using a map of language to line counts (i.e. `Map<Language, Stats>`).
+All counting APIs return results using a map of language to line counts (i.e. `Map<Language, Counts>`).
 A map is used to accommodate languages that can embed other languages. The library detects these embedded
 languages and counts their lines using the counter corresponding to that language. For example, while an
 HTML file contains markup, it may also contain lines of JavaScript and CSS. This means that the counter
 results for an HTML file might contain counts for three languages (HTML, JavaScript and CSS).
 
-The [Stats](src/main/java/org/cthing/locc4j/Stats.java) class provides the actual line counts. The counts
+The [Counts](src/main/java/org/cthing/locc4j/Counts.java) class provides the actual line counts. The counts
 are:
 * **Code lines** - Number of lines of source code, markup tags, or textual content
 * **Comment lines** - Number of lines consisting solely of comments. If a code line has a trailing comment,
@@ -61,7 +61,7 @@ are:
 The following code counts lines within a string or character array.
 ```java
 final Counter counter = new Counter(Language.Markdown);
-final Map<Language, Stats> stats = counter.count("# Title\n\nHello World");
+final Map<Language, Counts> counts = counter.count("# Title\n\nHello World");
 ```
 
 ### Counting an Input Stream
@@ -69,7 +69,7 @@ The following code counts lines from a character input stream.
 ```java
 final InputStream ins = getClass().getResourceAsStream("/data/program.py");
 final Counter counter = new Counter(Language.Python);
-final Map<Language, Stats> stats = counter.count(ins);
+final Map<Language, Counts> counts = counter.count(ins);
 ```
 
 ### Counting One or More Files
@@ -77,27 +77,27 @@ The following code counts lines from a single file. The file's primary language 
 name, then extension, and finally any shebang (i.e. `#!`) that may be present at the start of the file.
 ```java
 final FileCounter counter = new FileCounter();
-final Map<Path, Map<Language, Stats>> stats = counter.count("/tmp/program.cpp");
+final Map<Path, Map<Language, Counts>> counts = counter.count("/tmp/program.cpp");
 ```
 
 The following code counts lines from multiple files. Each file's primary language is determined by first examining its
 name, then extension, and finally any shebang (i.e. `#!`) that may be present at the start of the file.
 ```java
 final FileCounter counter = new FileCounter();
-final Map<Path, Map<Language, Stats>> stats = counter.count("/tmp/program1.cpp", "/tmp/program2.java");
+final Map<Path, Map<Language, Counts>> counts = counter.count("/tmp/program1.cpp", "/tmp/program2.java");
 ```
 
 ### Counting Files in a Directory
 The following code counts all files in the specified directory. By default, hidden files are excluded.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo")).maxDepth(1);
-final Map<Path, Map<Language, Stats>> counts = walker.count();
+final Map<Path, Map<Language, Counts>> counts = walker.count();
 ```
 
 The following code counts only C++ source files in the specified directory using a glob pattern match.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo"), "*.cpp").maxDepth(1);
-final Map<Path, Map<Language, Stats>> counts = walker.count();
+final Map<Path, Map<Language, Counts>> counts = walker.count();
 ```
 
 ### Counting a File System Tree
@@ -105,36 +105,36 @@ The following code counts all files under the specified directory tree. By defau
 are excluded.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo"));
-final Map<Path, Map<Language, Stats>> counts = walker.count();
+final Map<Path, Map<Language, Counts>> counts = walker.count();
 ```
 
 The following code excludes files based on any encountered Git ignore files.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo")).respectGitignore(true);
-final Map<Path, Map<Language, Stats>> counts = walker.count();
+final Map<Path, Map<Language, Counts>> counts = walker.count();
 ```
 
 The following code counts only C++ source files using a glob pattern match.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo"), "*.cpp");
-final Map<Path, Map<Language, Stats>> counts = walker.count();
+final Map<Path, Map<Language, Counts>> counts = walker.count();
 ```
 
 The following code does the same thing using a language match.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo"), Language.Java);
-final Map<Path, Map<Language, Stats>> counts = walker.count();
+final Map<Path, Map<Language, Counts>> counts = walker.count();
 ```
 
 See the Javadoc for the `CountingTreeWalker` for details on the glob syntax and other options.
 
-The `StatsUtils` class provides methods to calculate various metrics based on the results of a
+The `CountUtils` class provides methods to calculate various metrics based on the results of a
 file tree walk. For example, the following code calculates the line counts for all languages
 encountered on a tree walk.
 ```java
 final CountingTreeWalker walker = new CountingTreeWalker(Path.of("/home/myusername/foo"));
-final Map<Path, Map<Language, Stats>> fileStats = walker.count();
-final Map<Language, Stats> languageStats = StatsUtils.byLanguage(fileStats);
+final Map<Path, Map<Language, Counts>> fileCounts = walker.count();
+final Map<Language, Counts> languageCounts = CountUtils.byLanguage(fileCounts);
 ```
 
 ### Finding a Language
@@ -206,8 +206,8 @@ The Javadoc for the library can be generated by running:
 ./gradlew javadoc
 ```
 
-A `buildSrc` Gradle plugin is used to generate the `Language` enum class from the [languages.json](conf/languages.json)
-data file and the [Language.ftl](buildSrc/src/main/resources/org/cthing/locc4j/Language.java.ftl) FreeMarker template.
+A Gradle plugin in the `languagePlugin` directory is used to generate the `Language` enum class from the [languages.json](conf/languages.json)
+data file and the [Language.ftl](languagePlugin/src/main/resources/org/cthing/locc4j/Language.java.ftl) FreeMarker template.
 
 ## Releasing
 This project is released on the [Maven Central repository](https://central.sonatype.com/artifact/org.cthing/locc4j).

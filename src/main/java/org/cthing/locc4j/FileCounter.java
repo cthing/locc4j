@@ -57,7 +57,7 @@ public class FileCounter {
      * @throws IOException if there was a problem reading the files
      * @throws IllegalArgumentException if the collection is empty or a file is a directory
      */
-    public Map<Path, Map<Language, Stats>> count(final String... pathnames) throws IOException {
+    public Map<Path, Map<Language, Counts>> count(final String... pathnames) throws IOException {
         if (pathnames.length == 1) {
             final Path path = Path.of(pathnames[0]);
             return Map.of(path, count(path));
@@ -74,7 +74,7 @@ public class FileCounter {
      * @throws IOException if there was a problem reading the files
      * @throws IllegalArgumentException if the collection is empty or a file is a directory
      */
-    public Map<Path, Map<Language, Stats>> count(final Path... files) throws IOException {
+    public Map<Path, Map<Language, Counts>> count(final Path... files) throws IOException {
         return files.length == 1 ? Map.of(files[0], count(files[0])) : count(List.of(files));
     }
 
@@ -87,7 +87,7 @@ public class FileCounter {
      * @throws IOException if there was a problem reading the files
      * @throws IllegalArgumentException if the collection is empty or a file is a directory
      */
-    public Map<Path, Map<Language, Stats>> count(final Collection<Path> files) throws IOException {
+    public Map<Path, Map<Language, Counts>> count(final Collection<Path> files) throws IOException {
         if (files.isEmpty()) {
             throw new IllegalArgumentException("At least one pathname must be specified.");
         }
@@ -97,7 +97,7 @@ public class FileCounter {
             return Map.of(path, count(path));
         }
 
-        final Map<Path, Map<Language, Stats>> results = new HashMap<>(files.size());
+        final Map<Path, Map<Language, Counts>> results = new HashMap<>(files.size());
         for (final Path file : files) {
             results.put(file, count(file));
         }
@@ -113,7 +113,7 @@ public class FileCounter {
      * @throws IOException if there was a problem reading the file
      * @throws IllegalArgumentException if the specified file is a directory
      */
-    private Map<Language, Stats> count(final Path file) throws IOException {
+    private Map<Language, Counts> count(final Path file) throws IOException {
         if (Files.isDirectory(file)) {
             throw new IllegalArgumentException("Specified path must be a file");
         }

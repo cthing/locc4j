@@ -160,7 +160,7 @@ public class Counter {
      * @throws IOException if there was a problem counting the lines.
      */
     @WillNotClose
-    public Map<Language, Stats> count(final InputStream inputStream) throws IOException {
+    public Map<Language, Counts> count(final InputStream inputStream) throws IOException {
         return count(IOUtils.toCharArray(inputStream, StandardCharsets.UTF_8));
     }
 
@@ -171,7 +171,7 @@ public class Counter {
      * @return Map of the languages in the data and their line counts
      * @throws IOException if there was a problem counting the lines.
      */
-    public Map<Language, Stats> count(final String string) throws IOException {
+    public Map<Language, Counts> count(final String string) throws IOException {
         return count(string.toCharArray());
     }
 
@@ -182,8 +182,8 @@ public class Counter {
      * @return Map of the languages in the data and their line counts
      * @throws IOException if there was a problem counting the lines.
      */
-    public Map<Language, Stats> count(final char[] characters) throws IOException {
-        final Map<Language, Stats> languageMap = new EnumMap<>(Language.class);
+    public Map<Language, Counts> count(final char[] characters) throws IOException {
+        final Map<Language, Counts> languageMap = new EnumMap<>(Language.class);
         count(new CharData(characters), languageMap);
         return Collections.unmodifiableMap(languageMap);
     }
@@ -199,22 +199,22 @@ public class Counter {
     }
 
     /**
-     * Performs the counting of lines in the specified data. Stats will be added to the specified stats object.
-     * Note that the counts are added to any existing counts in the specified stats object.
+     * Performs the counting of lines in the specified data. Counts will be added to the specified counts object.
+     * Note that the counts are added to any existing counts in the specified counts object.
      *
      * @param data Text to be counted
-     * @param languageStats Map to collect the line count stats for all counted languages.
+     * @param languageCounts Map to collect the line counts for all counted languages.
      * @throws IOException if there was a problem counting the lines.
      */
-    private void count(final CharData data, final Map<Language, Stats> languageStats) throws IOException {
+    private void count(final CharData data, final Map<Language, Counts> languageCounts) throws IOException {
         this.state.reset();
 
         if (this.language == Language.Jupyter) {
-            countJupyter(data, languageStats);
+            countJupyter(data, languageCounts);
             return;
         }
 
-        final Stats stats = languageStats.computeIfAbsent(this.language, lang -> new Stats());
+        final Counts counts = languageCounts.computeIfAbsent(this.language, lang -> new Counts());
         CharData.LineIterator lineIter = data.lineIterator();
 
         while (lineIter.hasNext()) {
@@ -227,7 +227,7 @@ public class Counter {
                 line = line.trim();
             }
 
-            if (parseSingleLine(line, stats)) {
+            if (parseSingleLine(line, counts)) {
                 continue;
             }
 
@@ -235,19 +235,19 @@ public class Counter {
                     || (this.countDocStrings && this.state.quote != null && this.state.quoteType == DOC);
 
             final Embedding.Embedded embedded = performMultiLineAnalysis(data, lineIter.getStart(),
-                                                                         lineIter.getEnd(), languageStats);
+                                                                         lineIter.getEnd(), languageCounts);
 
             if (embedded != null) {
-                stats.codeLines += embedded.getAdditionalCodeLines();
+                counts.codeLines += embedded.getAdditionalCodeLines();
 
                 lineIter = data.lineIterator(embedded.getCodeEnd());
                 continue;
             }
 
             if (isComment(line, startedInComments)) {
-                stats.commentLines++;
+                counts.commentLines++;
             } else {
-                stats.codeLines++;
+                counts.codeLines++;
             }
         }
     }
@@ -256,10 +256,10 @@ public class Counter {
      * Reads the specified Jupyter notebook data and counts the lines of JSON and embedded languages.
      *
      * @param data Jupyter notebook data
-     * @param languageStats Map to collect the line count stats for all counted languages.
+     * @param languageCounts Map to collect the line counts for all counted languages.
      * @throws IOException if there was a problem reading the data
      */
-    private void countJupyter(final CharData data, final Map<Language, Stats> languageStats) throws IOException {
+    private void countJupyter(final CharData data, final Map<Language, Counts> languageCounts) throws IOException {
         final ObjectMapper mapper = ObjectMapperProvider.getInstance();
         final JsonNode jupyterNode = mapper.readTree(new CharSequenceReader(data));
 
@@ -291,12 +291,12 @@ public class Counter {
                         switch (cellType) {
                             case "markdown": {
                                 final Counter counter = newCounter(Language.Markdown);
-                                counter.count(new CharData(source.toString().toCharArray()), languageStats);
+                                counter.count(new CharData(source.toString().toCharArray()), languageCounts);
                                 break;
                             }
                             case "code": {
                                 final Counter counter = newCounter(lang);
-                                counter.count(new CharData(source.toString().toCharArray()), languageStats);
+                                counter.count(new CharData(source.toString().toCharArray()), languageCounts);
                                 break;
                             }
                             default:
@@ -307,10 +307,10 @@ public class Counter {
             }
         }
 
-        final Stats markdownStats = languageStats.getOrDefault(Language.Markdown, new Stats());
-        final Stats langStats = languageStats.getOrDefault(lang, new Stats());
-        final Stats jupyterStats = languageStats.computeIfAbsent(Language.Jupyter, l -> new Stats());
-        jupyterStats.codeLines = data.countLines() - (markdownStats.getTotalLines() + langStats.getTotalLines());
+        final Counts markdownCounts = languageCounts.getOrDefault(Language.Markdown, new Counts());
+        final Counts langCounts = languageCounts.getOrDefault(lang, new Counts());
+        final Counts jupyterCounts = languageCounts.computeIfAbsent(Language.Jupyter, l -> new Counts());
+        jupyterCounts.codeLines = data.countLines() - (markdownCounts.getTotalLines() + langCounts.getTotalLines());
     }
 
     /**
@@ -319,14 +319,14 @@ public class Counter {
      * @param lines Character data to analyze
      * @param start Location in the data to start analyzing (inclusive)
      * @param end Location in the data to end analyzing (exclusive)
-     * @param languageStats Line counts
+     * @param languageCounts Line counts
      * @return Information about an embedded language, if found
      * @throws IOException If there was a problem processing the character data.
      */
     @AccessForTesting
     @Nullable
     Embedding.Embedded performMultiLineAnalysis(final CharData lines, final int start, final int end,
-                                                final Map<Language, Stats> languageStats) throws IOException {
+                                                final Map<Language, Counts> languageCounts) throws IOException {
         final Embedding.Embedded embedded = Embedding.find(this.language, lines, start, end);
 
         int skip = 0;
@@ -357,7 +357,7 @@ public class Counter {
                 final int embeddedStart = embedded.getEmbeddedStart();
                 if (i == embeddedStart) {
                     final Counter counter = newCounter(embedded.getLanguage());
-                    counter.count(embedded.getCode(), languageStats);
+                    counter.count(embedded.getCode(), languageCounts);
                     return embedded;
                 }
             }
@@ -443,11 +443,11 @@ public class Counter {
      * multiline constructs (e.g. strings, comments), it cannot be counted yet.
      *
      * @param line Character data to count
-     * @param stats Line counts to update
+     * @param counts Line counts to update
      * @return {@code true} if the line could be counted.
      */
     @AccessForTesting
-    boolean parseSingleLine(final CharData line, final Stats stats) {
+    boolean parseSingleLine(final CharData line, final Counts counts) {
         // If in a string or block comment, single line parsing cannot be used.
         if (parsingMode() != CODE) {
             return false;
@@ -455,7 +455,7 @@ public class Counter {
 
         // If the line is blank, count it.
         if (line.isBlank()) {
-            stats.blankLines++;
+            counts.blankLines++;
             return true;
         }
 
@@ -467,9 +467,9 @@ public class Counter {
 
         // Count the line
         if (this.language.isLineComment(line::startsWith)) {
-            stats.commentLines++;
+            counts.commentLines++;
         } else {
-            stats.codeLines++;
+            counts.codeLines++;
         }
 
         return true;

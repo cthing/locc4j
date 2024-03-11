@@ -377,41 +377,41 @@ public class CounterTest {
         public void testNotInCode() {
             quote("/*");
 
-            final Stats stats = new Stats();
-            assertThat(makeCounter().parseSingleLine(data("hello"), stats)).isFalse();
-            verifyStats(stats, 0, 0, 0);
+            final Counts counts = new Counts();
+            assertThat(makeCounter().parseSingleLine(data("hello"), counts)).isFalse();
+            verifyCounts(counts, 0, 0, 0);
         }
 
         @Test
         @DisplayName("Blank line")
         public void testBlankLine() {
-            final Stats stats = new Stats();
-            assertThat(makeCounter().parseSingleLine(data("  "), stats)).isTrue();
-            verifyStats(stats, 0, 0, 1);
+            final Counts counts = new Counts();
+            assertThat(makeCounter().parseSingleLine(data("  "), counts)).isTrue();
+            verifyCounts(counts, 0, 0, 1);
         }
 
         @Test
         @DisplayName("Multiline")
         public void testMultiline() {
-            final Stats stats = new Stats();
-            assertThat(makeCounter().parseSingleLine(data("/*"), stats)).isFalse();
-            verifyStats(stats, 0, 0, 0);
+            final Counts counts = new Counts();
+            assertThat(makeCounter().parseSingleLine(data("/*"), counts)).isFalse();
+            verifyCounts(counts, 0, 0, 0);
         }
 
         @Test
         @DisplayName("Line comment")
         public void testLineComment() {
-            final Stats stats = new Stats();
-            assertThat(makeCounter().parseSingleLine(data("// Hello world"), stats)).isTrue();
-            verifyStats(stats, 0, 1, 0);
+            final Counts counts = new Counts();
+            assertThat(makeCounter().parseSingleLine(data("// Hello world"), counts)).isTrue();
+            verifyCounts(counts, 0, 1, 0);
         }
 
         @Test
         @DisplayName("Code")
         public void testCode() {
-            final Stats stats = new Stats();
-            assertThat(makeCounter().parseSingleLine(data("int foo = 1;"), stats)).isTrue();
-            verifyStats(stats, 1, 0, 0);
+            final Counts counts = new Counts();
+            assertThat(makeCounter().parseSingleLine(data("int foo = 1;"), counts)).isTrue();
+            verifyCounts(counts, 1, 0, 0);
         }
     }
 
@@ -426,7 +426,7 @@ public class CounterTest {
             final String content = "    ";
             final Embedding.Embedded embedded =
                     makeCounter(Language.Html, true).performMultiLineAnalysis(data(content), 0, content.length(),
-                                                                              statsMap());
+                                                                              countsMap());
             assertThat(embedded).isNull();
         }
 
@@ -435,7 +435,7 @@ public class CounterTest {
             quote("*/");
             final String content = "   */";
             final Embedding.Embedded embedded =
-                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), countsMap());
             assertThat(embedded).isNull();
         }
 
@@ -448,7 +448,7 @@ public class CounterTest {
                                    """;
             final Embedding.Embedded embedded =
                     makeCounter(Language.Html, true).performMultiLineAnalysis(data(content), 0, content.length(),
-                                                                              statsMap());
+                                                                              countsMap());
             assertThat(embedded).isNotNull();
             assertThat(embedded.getLanguage()).isEqualTo(Language.JavaScript);
             assertThat(embedded.getEmbeddedStart()).isEqualTo(0);
@@ -461,7 +461,7 @@ public class CounterTest {
         public void testCase4A() throws IOException {
             final String content = "/*";
             final Embedding.Embedded embedded =
-                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), countsMap());
             assertThat(embedded).isNull();
         }
 
@@ -469,7 +469,7 @@ public class CounterTest {
         public void testCase4B() throws IOException {
             final String content = "\"Hello";
             final Embedding.Embedded embedded =
-                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), countsMap());
             assertThat(embedded).isNull();
         }
 
@@ -477,7 +477,7 @@ public class CounterTest {
         public void testCase5() throws IOException {
             final String content = "// Hello";
             final Embedding.Embedded embedded =
-                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), statsMap());
+                    makeCounter().performMultiLineAnalysis(data(content), 0, content.length(), countsMap());
             assertThat(embedded).isNull();
         }
 
@@ -488,7 +488,7 @@ public class CounterTest {
                                    """;
             final Embedding.Embedded embedded =
                     makeCounter(Language.Html, true).performMultiLineAnalysis(data(content), 0, content.length(),
-                                                                              statsMap());
+                                                                              countsMap());
             assertThat(embedded).isNull();
         }
     }
@@ -505,13 +505,13 @@ public class CounterTest {
         final String filename = accessor.getString(0);
 
         final Language primaryLanguage = accessor.get(2, Language.class);
-        final Map<Language, Stats> actualStats;
+        final Map<Language, Counts> actualCounts;
         if (primaryLanguage == Language.Jupyter) {
             // Jupyter counting is very expensive and drowns out the performance of all other file counting.
             // Use this an opportunity to test the input stream based API.
             final InputStream ins = Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename));
             final Counter counter = makeCounter(primaryLanguage, accessor.getBoolean(1));
-            actualStats = counter.count(ins);
+            actualCounts = counter.count(ins);
         } else {
             final char[] data =
                     IOUtils.toCharArray(Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename)),
@@ -519,23 +519,23 @@ public class CounterTest {
 
             final long startMillis = System.currentTimeMillis();
             final Counter counter = makeCounter(primaryLanguage, accessor.getBoolean(1));
-            actualStats = counter.count(data);
+            actualCounts = counter.count(data);
             countingTime += System.currentTimeMillis() - startMillis;
-            totalLines += actualStats.values().stream().mapToInt(Stats::getTotalLines).sum();
+            totalLines += actualCounts.values().stream().mapToInt(Counts::getTotalLines).sum();
         }
-        TESTED_LANGUAGES.addAll(actualStats.keySet());
+        TESTED_LANGUAGES.addAll(actualCounts.keySet());
 
-        assertThat(actualStats).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
+        assertThat(actualCounts).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
 
         for (int i = 0; i < numLanguageParams; i += 4) {
             final Language language = accessor.get(i + 2, Language.class);
             final int codeLines = accessor.getInteger(i + 3);
             final int commentLines = accessor.getInteger(i + 4);
             final int blankLines = accessor.getInteger(i + 5);
-            assertThat(actualStats).hasEntrySatisfying(language, languageStats -> {
-                assertThat(languageStats.codeLines).as(language + ": Code lines").isEqualTo(codeLines);
-                assertThat(languageStats.commentLines).as(language + ": Comment lines").isEqualTo(commentLines);
-                assertThat(languageStats.blankLines).as(language + ": Blank lines").isEqualTo(blankLines);
+            assertThat(actualCounts).hasEntrySatisfying(language, languageCounts -> {
+                assertThat(languageCounts.codeLines).as(language + ": Code lines").isEqualTo(codeLines);
+                assertThat(languageCounts.commentLines).as(language + ": Comment lines").isEqualTo(commentLines);
+                assertThat(languageCounts.blankLines).as(language + ": Blank lines").isEqualTo(blankLines);
             });
         }
     }
@@ -543,13 +543,13 @@ public class CounterTest {
     @Test
     public void testCountFromString() throws IOException {
         final Counter counter = new Counter(Language.Markdown);
-        final Map<Language, Stats> statsMap = counter.count("# Title\n\nHello World");
-        assertThat(statsMap).hasSize(1);
-        final Stats stats = statsMap.get(Language.Markdown);
-        assertThat(stats).isNotNull();
-        assertThat(stats.codeLines).isEqualTo(2);
-        assertThat(stats.commentLines).isEqualTo(0);
-        assertThat(stats.blankLines).isEqualTo(1);
+        final Map<Language, Counts> countsMap = counter.count("# Title\n\nHello World");
+        assertThat(countsMap).hasSize(1);
+        final Counts counts = countsMap.get(Language.Markdown);
+        assertThat(counts).isNotNull();
+        assertThat(counts.codeLines).isEqualTo(2);
+        assertThat(counts.commentLines).isEqualTo(0);
+        assertThat(counts.blankLines).isEqualTo(1);
     }
 
     private Counter makeCounter() {
@@ -589,25 +589,25 @@ public class CounterTest {
         this.state.quoteType = type;
     }
 
-    private Map<Language, Stats> statsMap() {
+    private Map<Language, Counts> countsMap() {
         return new EnumMap<>(Language.class);
     }
 
-    private void verifyStats(final Map<Language, Stats> languageStats, final int codeLines, final int commentLines,
-                             final int blankLines) {
-        verifyStats(languageStats, Language.Java, codeLines, commentLines, blankLines);
+    private void verifyCounts(final Map<Language, Counts> languageCounts, final int codeLines, final int commentLines,
+                              final int blankLines) {
+        verifyCounts(languageCounts, Language.Java, codeLines, commentLines, blankLines);
     }
 
-    private void verifyStats(final Map<Language, Stats> languageStats, final Language language,
-                             final int codeLines, final int commentLines, final int blankLines) {
-        final Stats stats = languageStats.get(language);
-        assertThat(stats).isNotNull();
-        verifyStats(stats, codeLines, commentLines, blankLines);
+    private void verifyCounts(final Map<Language, Counts> languageCounts, final Language language,
+                              final int codeLines, final int commentLines, final int blankLines) {
+        final Counts counts = languageCounts.get(language);
+        assertThat(counts).isNotNull();
+        verifyCounts(counts, codeLines, commentLines, blankLines);
     }
 
-    private void verifyStats(final Stats stats, final int codeLines, final int commentLines, final int blankLines) {
-        assertThat(stats.codeLines).isEqualTo(codeLines);
-        assertThat(stats.commentLines).isEqualTo(commentLines);
-        assertThat(stats.blankLines).isEqualTo(blankLines);
+    private void verifyCounts(final Counts counts, final int codeLines, final int commentLines, final int blankLines) {
+        assertThat(counts.codeLines).isEqualTo(codeLines);
+        assertThat(counts.commentLines).isEqualTo(commentLines);
+        assertThat(counts.blankLines).isEqualTo(blankLines);
     }
 }

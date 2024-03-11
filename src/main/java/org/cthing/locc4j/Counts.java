@@ -23,16 +23,16 @@ import java.util.Objects;
 /**
  * Line counts.
  */
-public class Stats {
+public class Counts {
 
     int codeLines;
     int commentLines;
     int blankLines;
 
-    Stats() {
+    Counts() {
     }
 
-    Stats(final int codeLines, final int commentLines, final int blankLines) {
+    Counts(final int codeLines, final int commentLines, final int blankLines) {
         this.blankLines = blankLines;
         this.codeLines = codeLines;
         this.commentLines = commentLines;
@@ -76,11 +76,11 @@ public class Stats {
     }
 
     /**
-     * Adds the counts from the specified stats to this stats object.
+     * Adds the counts from the specified counts to this counts object.
      *
-     * @param other Stats to be added to this stats object.
+     * @param other Counts to be added to this counts object.
      */
-    void add(final Stats other) {
+    void add(final Counts other) {
         this.codeLines += other.codeLines;
         this.commentLines += other.commentLines;
         this.blankLines += other.blankLines;
@@ -100,10 +100,10 @@ public class Stats {
             return false;
         }
 
-        final Stats stats = (Stats)obj;
-        return this.codeLines == stats.codeLines
-                && this.commentLines == stats.commentLines
-                && this.blankLines == stats.blankLines;
+        final Counts counts = (Counts)obj;
+        return this.codeLines == counts.codeLines
+                && this.commentLines == counts.commentLines
+                && this.blankLines == counts.blankLines;
     }
 
     @Override

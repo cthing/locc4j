@@ -34,7 +34,7 @@ public class CountingTreeWalkerTest {
     @Test
     public void testWalkDefault() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start);
-        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        final Map<Path, Map<Language, Counts>> counts = walker.count();
         assertThat(counts).hasSize(8)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
                           .containsEntry(treeData.fileD0F2, treeData.countsD0F2)
@@ -49,7 +49,7 @@ public class CountingTreeWalkerTest {
     @Test
     public void testWalkCountDocStrings() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start).countDocStrings(false);
-        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        final Map<Path, Map<Language, Counts>> counts = walker.count();
         assertThat(counts).hasSize(8)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
                           .containsEntry(treeData.fileD0F2, treeData.countsD0F2)
@@ -64,7 +64,7 @@ public class CountingTreeWalkerTest {
     @Test
     public void testWalkIncludeHidden() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start).excludeHidden(false);
-        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        final Map<Path, Map<Language, Counts>> counts = walker.count();
         assertThat(counts).hasSize(11)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
                           .containsEntry(treeData.fileD0F2, treeData.countsD0F2)
@@ -82,7 +82,7 @@ public class CountingTreeWalkerTest {
     @Test
     public void testWalkMaxDepth() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start).maxDepth(1);
-        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        final Map<Path, Map<Language, Counts>> counts = walker.count();
         assertThat(counts).hasSize(2)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
                           .containsEntry(treeData.fileD0F2, treeData.countsD0F2);
@@ -91,7 +91,7 @@ public class CountingTreeWalkerTest {
     @Test
     public void testWalkPatternMatch() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start, "*.java");
-        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        final Map<Path, Map<Language, Counts>> counts = walker.count();
         assertThat(counts).hasSize(2)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
                           .containsEntry(treeData.fileD1F1, treeData.countsD1F1);
@@ -100,7 +100,7 @@ public class CountingTreeWalkerTest {
     @Test
     public void testWalkLanguageMatch() throws IOException {
         final CountingTreeWalker walker = new CountingTreeWalker(treeData.start, Language.Java);
-        final Map<Path, Map<Language, Stats>> counts = walker.count();
+        final Map<Path, Map<Language, Counts>> counts = walker.count();
         assertThat(counts).hasSize(2)
                           .containsEntry(treeData.fileD0F1, treeData.countsD0F1)
                           .containsEntry(treeData.fileD1F1, treeData.countsD1F1);

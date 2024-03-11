@@ -86,19 +86,19 @@ public class FileCounterTest {
         assert url != null;
 
         final FileCounter counter = new FileCounter().countDocStrings(accessor.getBoolean(1));
-        final Map<Language, Stats> actualStats = counter.count(url.getPath()).values().iterator().next();
+        final Map<Language, Counts> actualCounts = counter.count(url.getPath()).values().iterator().next();
 
-        assertThat(actualStats).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
+        assertThat(actualCounts).as("Incorrect number of languages counted").hasSize(numLanguageParams / 4);
 
         for (int i = 0; i < numLanguageParams; i += 4) {
             final Language language = accessor.get(i + 2, Language.class);
             final int codeLines = accessor.getInteger(i + 3);
             final int commentLines = accessor.getInteger(i + 4);
             final int blankLines = accessor.getInteger(i + 5);
-            assertThat(actualStats).hasEntrySatisfying(language, languageStats -> {
-                assertThat(languageStats.codeLines).as(language + ": Code lines").isEqualTo(codeLines);
-                assertThat(languageStats.commentLines).as(language + ": Comment lines").isEqualTo(commentLines);
-                assertThat(languageStats.blankLines).as(language + ": Blank lines").isEqualTo(blankLines);
+            assertThat(actualCounts).hasEntrySatisfying(language, languageCounts -> {
+                assertThat(languageCounts.codeLines).as(language + ": Code lines").isEqualTo(codeLines);
+                assertThat(languageCounts.commentLines).as(language + ": Comment lines").isEqualTo(commentLines);
+                assertThat(languageCounts.blankLines).as(language + ": Blank lines").isEqualTo(blankLines);
             });
         }
     }

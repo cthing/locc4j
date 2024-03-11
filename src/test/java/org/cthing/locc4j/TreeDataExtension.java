@@ -41,18 +41,18 @@ public class TreeDataExtension implements BeforeAllCallback {
     Path fileD2F3;
     Path fileD3F1;
     Path fileD3F2;
-    Map<Language, Stats> countsD0F1;
-    Map<Language, Stats> countsD0F2;
-    Map<Language, Stats> countsD1F1;
-    Map<Language, Stats> countsD1F2;
-    Map<Language, Stats> countsD1F3;
-    Map<Language, Stats> countsD1F4;
-    Map<Language, Stats> countsD2F1;
-    Map<Language, Stats> countsD2F2;
-    Map<Language, Stats> countsD2F3;
-    Map<Language, Stats> countsD3F1;
-    Map<Language, Stats> countsD3F2A;
-    Map<Language, Stats> countsD3F2B;
+    Map<Language, Counts> countsD0F1;
+    Map<Language, Counts> countsD0F2;
+    Map<Language, Counts> countsD1F1;
+    Map<Language, Counts> countsD1F2;
+    Map<Language, Counts> countsD1F3;
+    Map<Language, Counts> countsD1F4;
+    Map<Language, Counts> countsD2F1;
+    Map<Language, Counts> countsD2F2;
+    Map<Language, Counts> countsD2F3;
+    Map<Language, Counts> countsD3F1;
+    Map<Language, Counts> countsD3F2A;
+    Map<Language, Counts> countsD3F2B;
 
     @Override
     public void beforeAll(final ExtensionContext context) {
@@ -72,17 +72,17 @@ public class TreeDataExtension implements BeforeAllCallback {
         this.fileD3F1 = this.start.resolve("dir1/dir3/file-3-1.ts");
         this.fileD3F2 = this.start.resolve("dir1/dir3/file-3-2.py");
 
-        this.countsD0F1 = Map.of(Java, new Stats(26, 9, 9));
-        this.countsD0F2 = Map.of(Html, new Stats(19, 7, 4), Css, new Stats(3, 5, 0), JavaScript, new Stats(1, 6, 0));
-        this.countsD1F1 = Map.of(Java, new Stats(26, 9, 9));
-        this.countsD1F2 = Map.of(Cpp, new Stats(37, 2, 6));
-        this.countsD1F3 = Map.of(C, new Stats(33, 7, 8));
+        this.countsD0F1 = Map.of(Java, new Counts(26, 9, 9));
+        this.countsD0F2 = Map.of(Html, new Counts(19, 7, 4), Css, new Counts(3, 5, 0), JavaScript, new Counts(1, 6, 0));
+        this.countsD1F1 = Map.of(Java, new Counts(26, 9, 9));
+        this.countsD1F2 = Map.of(Cpp, new Counts(37, 2, 6));
+        this.countsD1F3 = Map.of(C, new Counts(33, 7, 8));
         this.countsD1F4 = Map.of();
-        this.countsD2F1 = Map.of(JavaScript, new Stats(14, 11, 6));
-        this.countsD2F2 = Map.of(Ruby, new Stats(9, 7, 3));
-        this.countsD2F3 = Map.of(Cpp, new Stats(37, 2, 6));
-        this.countsD3F1 = Map.of(TypeScript, new Stats(20, 9, 3));
-        this.countsD3F2A = Map.of(Python, new Stats(5, 6, 1));
-        this.countsD3F2B = Map.of(Python, new Stats(10, 1, 1));
+        this.countsD2F1 = Map.of(JavaScript, new Counts(14, 11, 6));
+        this.countsD2F2 = Map.of(Ruby, new Counts(9, 7, 3));
+        this.countsD2F3 = Map.of(Cpp, new Counts(37, 2, 6));
+        this.countsD3F1 = Map.of(TypeScript, new Counts(20, 9, 3));
+        this.countsD3F2A = Map.of(Python, new Counts(5, 6, 1));
+        this.countsD3F2B = Map.of(Python, new Counts(10, 1, 1));
     }
 }
