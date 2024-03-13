@@ -57,13 +57,13 @@ import static java.util.regex.Pattern.compile;
 public enum Language {
 <#list languages as id, entry>
     /**
-     * <#if entry.description()?has_content>${entry.description()}<#else>Identifier for the <#if entry.name()?has_content>${entry.name()}<#else>${id}</#if> language.</#if>
+     * <#if entry.description()?has_content>${entry.description()}<#else>Identifier for the <#if entry.displayName()?has_content>${entry.displayName()}<#else>${id}</#if> language.</#if>
      * <#if entry.extensions()?has_content><p>File extensions: <#list entry.extensions() as ext>{@code ${ext}}<#if ext?has_next>, </#if></#list></p></#if>
      * <#if entry.filenames()?has_content><p>File names: <#list entry.filenames() as filename>{@code ${filename}}<#if filename?has_next>, </#if></#list></p></#if>
      * <#if entry.see()?has_content>@see <a href="${entry.see()}">${entry.see()}</a></#if>
      */
     ${id}(
-        "<#if entry.name()?has_content>${entry.name()}<#else>${id}</#if>",
+        "<#if entry.displayName()?has_content>${entry.displayName()}<#else>${id}</#if>",
         new BlockDelimiter[] {<@expand_block_params params=entry.nestedComments()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.quotes()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.verbatimQuotes()/>},
@@ -126,7 +126,7 @@ public enum Language {
     }<#if id?is_last>;<#else>,</#if>
 </#list>
 
-    private static final Map<String, Language> NAMES = new HashMap<>();
+    private static final Map<String, Language> DISPLAY_NAMES = new HashMap<>();
     private static final Map<String, Language> EXTENSIONS = new HashMap<>();
     private static final String ENV_SHEBANG = "#!/usr/bin/env";
     private static final Pattern WHITESPACE_REGEX = compile("\\s+");
@@ -136,7 +136,7 @@ public enum Language {
     @Nullable
     final Pattern importantSyntax;
 
-    private final String name;
+    private final String displayName;
     private final BlockDelimiter[] quotes;
     private final BlockDelimiter[] docQuotes;
     private final String[] extensions;
@@ -145,16 +145,16 @@ public enum Language {
     static {
         // Static maps must be used to avoid generating methods that exceed the JVM method byte code limit.
         for (final Language language : values()) {
-            NAMES.put(language.getName().toLowerCase(Locale.ROOT), language);
+            DISPLAY_NAMES.put(language.getDisplayName().toLowerCase(Locale.ROOT), language);
         }
         resetExtensions();
     }
 
-    Language(final String name, final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
+    Language(final String displayName, final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
              final BlockDelimiter[] verbartimQuotes, final BlockDelimiter[] docQuotes,
              @Nullable final Pattern importantSyntax,
              final String[] extensions, final BlockDelimiter[] allMultiLineComments) {
-        this.name = name;
+        this.displayName = displayName;
         this.nestedComments = nestedComments;
         this.quotes = quotes;
         this.verbatimQuotes = verbartimQuotes;
@@ -165,13 +165,14 @@ public enum Language {
     }
 
     /**
-     * Obtains the common name for the language. This may differ from the language enum if the command
-     * name has spaces or contains characters not allowed in an enum (e.g. C++, C#, C Shell).
+     * Obtains the display name for the language. This is user interface displayable name for the language and may
+     * differ from the language enum name if it has spaces or contains characters not allowed in an enum (e.g. C++,
+     * C#, C Shell).
      *
-     * @return Common name for the language
+     * @return Display name for the language
      */
-    public String getName() {
-        return this.name;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     /**
@@ -488,14 +489,14 @@ public enum Language {
     }
 
     /**
-     * Attempts to obtain the language corresponding to the specified language name.
+     * Attempts to obtain the language corresponding to the specified language display name.
      *
-     * @param langName Name of the language to find
-     * @return Language corresponding to the specified name. Comparisons are case-insensitive. If the language
-     *      cannot be determined, an empty {@link Optional} is returned.
+     * @param langDisplayName Display name of the language to find
+     * @return Language corresponding to the specified display name. Comparisons are case-insensitive.
+      *     If the language cannot be determined, an empty {@link Optional} is returned.
      */
-    public static Optional<Language> fromName(final String langName) {
-        return Optional.ofNullable(NAMES.get(langName.toLowerCase(Locale.ROOT)));
+    public static Optional<Language> fromDisplayName(final String langDisplayName) {
+        return Optional.ofNullable(DISPLAY_NAMES.get(langDisplayName.toLowerCase(Locale.ROOT)));
     }
 
     /**

@@ -267,7 +267,7 @@ public class Counter {
         final JsonNode languageNode = jupyterNode.at(JUPYTER_LANGUAGE_PTR);
         if (!languageNode.isMissingNode()) {
             final String languageName = languageNode.asText();
-            languageOpt = Language.fromName(languageName);
+            languageOpt = Language.fromDisplayName(languageName);
         }
         if (languageOpt.isEmpty()) {
             final JsonNode extensionNode = jupyterNode.at(JUPYTER_EXTENSION_PTR);

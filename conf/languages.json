@@ -1,7 +1,7 @@
 {
   "languages": {
     "Abap": {
-      "name": "ABAP",
+      "display_name": "ABAP",
       "description": "Advanced Business Application Programming language by SAP.",
       "see": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/index.htm?file=abenabap_reference.htm",
       "line_comment": ["*", "\""],
@@ -55,7 +55,7 @@
       "extensions": ["apl"]
     },
     "Arduino": {
-      "name": "Arduino C++",
+      "display_name": "Arduino C++",
       "description": "Arduino C++ programming language.",
       "see": "https://www.arduino.cc/reference/",
       "line_comment": ["//"],
@@ -71,7 +71,7 @@
       "extensions": ["adoc", "asciidoc"]
     },
     "Asn1": {
-      "name": "ASN.1",
+      "display_name": "ASN.1",
       "description": "Abstract Syntax Notation One standard interface description language.",
       "see": "https://en.wikipedia.org/wiki/ASN.1",
       "line_comment": ["--"],
@@ -80,14 +80,14 @@
       "extensions": ["asn1", "mib"]
     },
     "Asp": {
-      "name": "ASP",
+      "display_name": "ASP",
       "description": "Microsoft Active Server Pages server-side scripting language.",
       "see": "https://en.wikipedia.org/wiki/Active_Server_Pages",
       "line_comment": ["'", "REM"],
       "extensions": ["asa", "asp"]
     },
     "AspNet": {
-      "name": "ASP.NET",
+      "display_name": "ASP.NET",
       "description": "Microsoft .NET Active Server Pages server-side scripting language.",
       "see": "https://dotnet.microsoft.com/en-us/apps/aspnet",
       "multi_line_comments": [["<!--", "-->"], ["<%--", "-->"]],
@@ -102,7 +102,7 @@
       "extensions": ["asm"]
     },
     "AssemblyGAS": {
-      "name": "GNU Style Assembly",
+      "display_name": "GNU Style Assembly",
       "description": "Assembly language styled for the GNU Assembler.",
       "see": "https://sourceware.org/binutils/docs/as/",
       "line_comment": ["//"],
@@ -118,7 +118,7 @@
       "extensions": ["astro"]
     },
     "Ats": {
-      "name": "ATS",
+      "display_name": "ATS",
       "description": "ATS programming language.",
       "see": "https://ats-lang.github.io/DOCUMENT/INT2PROGINATS/HTML/book1.html",
       "line_comment": ["//"],
@@ -153,7 +153,7 @@
       "extensions": ["am"]
     },
     "Avalonia": {
-      "name": "AXAML",
+      "display_name": "AXAML",
       "description": "Avalonia UI XAML dialect.",
       "see": "https://docs.avaloniaui.net/docs/basics/user-interface/introduction-to-xaml#axaml-file-extension",
       "multi_line_comments": [["<!--", "-->"]],
@@ -168,7 +168,7 @@
       "extensions": ["awk"]
     },
     "Bash": {
-      "name": "BASH",
+      "display_name": "BASH",
       "description": "Bourne Again SHell script.",
       "see": "https://www.gnu.org/software/bash/",
       "shebangs": ["#!/bin/bash"],
@@ -200,7 +200,7 @@
       "extensions": ["bean", "beancount"]
     },
     "Bitbake": {
-      "name": "Bitbake",
+      "display_name": "Bitbake",
       "description": "BitBake task execution script.",
       "see": "https://docs.yoctoproject.org/bitbake/",
       "line_comment": ["#"],
@@ -248,7 +248,7 @@
       "extensions": ["ceylon"]
     },
     "CHeader": {
-      "name": "C Header",
+      "display_name": "C Header",
       "description": "C programming language header file.",
       "see": "https://en.wikipedia.org/wiki/C_(programming_language)",
       "line_comment": ["//"],
@@ -286,7 +286,7 @@
       "filenames": ["cmakelists.txt"]
     },
     "Cobol": {
-      "name": "COBOL",
+      "display_name": "COBOL",
       "description": "COmmon Business-Oriented Language.",
       "see": "https://en.wikipedia.org/wiki/COBOL",
       "line_comment": ["*"],
@@ -322,7 +322,7 @@
       "extensions": ["cfm"]
     },
     "ColdFusionScript": {
-      "name": "ColdFusion CFScript",
+      "display_name": "ColdFusion CFScript",
       "description": "JavaScript-like extension of ColdFusion.",
       "see": "https://en.wikipedia.org/wiki/CFScript",
       "line_comment": ["//"],
@@ -338,7 +338,7 @@
       "extensions": ["v"]
     },
     "Cpp": {
-      "name": "C++",
+      "display_name": "C++",
       "description": "C++ programming language source file.",
       "see": "https://en.wikipedia.org/wiki/C%2B%2B",
       "line_comment": ["//"],
@@ -348,7 +348,7 @@
       "extensions": ["cc", "cpp", "cxx", "c++", "pcc", "tpp"]
     },
     "CppHeader": {
-      "name": "C++ Header",
+      "display_name": "C++ Header",
       "description": "C++ programming language header file.",
       "see": "https://en.wikipedia.org/wiki/C%2B%2B",
       "line_comment": ["//"],
@@ -366,7 +366,7 @@
       "extensions": ["cr"]
     },
     "CSharp": {
-      "name": "C#",
+      "display_name": "C#",
       "description": "C# programming language.",
       "see": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
       "line_comment": ["//"],
@@ -376,7 +376,7 @@
       "extensions": ["cs", "csx"]
     },
     "CShell": {
-      "name": "C Shell",
+      "display_name": "C Shell",
       "description": "C Shell scripting language.",
       "see": "https://en.wikipedia.org/wiki/C_shell",
       "shebangs": ["#!/bin/csh"],
@@ -386,7 +386,7 @@
       "extensions": ["csh"]
     },
     "Css": {
-      "name": "CSS",
+      "display_name": "CSS",
       "description": "Cascading Style Sheets language.",
       "see": "https://www.w3.org/Style/CSS/",
       "line_comment": ["//"],
@@ -396,7 +396,7 @@
       "extensions": ["css"]
     },
     "Cuda": {
-      "name": "CUDA",
+      "display_name": "CUDA",
       "description": "Compute Unified Device Architecture programming language.",
       "see": "https://developer.nvidia.com/cuda-zone",
       "line_comment": ["//"],
@@ -423,7 +423,7 @@
       "extensions": ["d"]
     },
     "Daml": {
-      "name": "DAML",
+      "display_name": "DAML",
       "description": "DARPA Agent Markup Language.",
       "see": "https://en.wikipedia.org/wiki/DARPA_Agent_Markup_Language",
       "nested": true,
@@ -445,7 +445,7 @@
       "extensions": ["dart"]
     },
     "DeviceTree": {
-      "name": "Device Tree",
+      "display_name": "Device Tree",
       "description": "Device Tree source format.",
       "see": "https://devicetree-specification.readthedocs.io/en/latest/",
       "line_comment": ["//"],
@@ -471,7 +471,7 @@
       "quotes": [["\"", "\""], ["'", "'"]]
     },
     "DotNetResource": {
-      "name": ".NET Resource",
+      "display_name": ".NET Resource",
       "description": ".NET resource file.",
       "see": "https://learn.microsoft.com/en-us/dotnet/core/extensions/resources",
       "multi_line_comments": [["<!--", "-->"]],
@@ -479,7 +479,7 @@
       "extensions": ["resx"]
     },
     "DreamMaker": {
-      "name": "Dream Maker",
+      "display_name": "Dream Maker",
       "description": "Scripting language for the BYOND engine.",
       "see": "https://www.byond.com/docs/guide/chap01.html",
       "line_comment": ["//"],
@@ -489,7 +489,7 @@
       "quotes": [["\"", "\""], ["{\"", "\"}"], ["'", "'"]]
     },
     "Dsssl": {
-      "name": "DSSSL",
+      "display_name": "DSSSL",
       "description": "Document Style Semantics and Specification Language.",
       "see": "https://en.wikipedia.org/wiki/Document_Style_Semantics_and_Specification_Language",
       "line_comment": [";"],
@@ -497,14 +497,14 @@
       "extensions": ["dsl"]
     },
     "DTD": {
-      "name": "Document Type Definition",
+      "display_name": "Document Type Definition",
       "description": "Defines the elements, attributes and text content allowed in an XML document.",
       "see": "https://en.wikipedia.org/wiki/Document_type_definition",
       "multi_line_comments": [["<!--", "-->"]],
       "extensions": ["dtd"]
     },
     "Dust": {
-      "name": "Dust.js",
+      "display_name": "Dust.js",
       "description": "JavaScript template engine.",
       "see": "https://akdubya.github.io/dustjs/",
       "multi_line_comments": [["{!", "!}"]],
@@ -518,7 +518,7 @@
       "extensions": ["ebuild", "eclass"]
     },
     "EdgeQL": {
-      "name": "EdgeQL",
+      "display_name": "EdgeQL",
       "description": "Database query language for EdgeDB.",
       "see": "https://www.edgedb.com/docs/edgeql/index",
       "line_comment": ["#"],
@@ -526,7 +526,7 @@
       "extensions": ["edgeql"]
     },
     "ESDL": {
-      "name": "EdgeDB Schema Definition",
+      "display_name": "EdgeDB Schema Definition",
       "description": "EdgeDB schema definition language.",
       "see": "https://www.edgedb.com/docs/reference/sdl/index",
       "line_comment": ["#"],
@@ -540,7 +540,7 @@
       "extensions": ["edn"]
     },
     "Elisp": {
-      "name": "Emacs Lisp",
+      "display_name": "Emacs Lisp",
       "description": "Lisp dialect used by the Emacs editor.",
       "see": "https://www.gnu.org/software/emacs/manual/html_node/elisp/",
       "line_comment": [";"],
@@ -576,7 +576,7 @@
       "extensions": ["elv"]
     },
     "EmacsDevEnv": {
-      "name": "Emacs Dev Env",
+      "display_name": "Emacs Dev Env",
       "description": "Emacs development environment.",
       "see": "https://www.gnu.org/software/emacs/manual/html_node/emacs/EDE.html",
       "line_comment": [";"],
@@ -613,7 +613,7 @@
       "extensions": ["factor"]
     },
     "FEN": {
-      "name": "FEN",
+      "display_name": "FEN",
       "description": "Forsyth–Edwards Notation for describing board positions of a chess game.",
       "see": "https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation",
       "extensions": ["fen"]
@@ -635,7 +635,7 @@
       "extensions": ["fish"]
     },
     "FlatBuffers": {
-      "name": "FlatBuffers Schema",
+      "display_name": "FlatBuffers Schema",
       "description": "FlatBuffers serialization library schema.",
       "see": "https://flatbuffers.dev/",
       "line_comment": ["//"],
@@ -644,7 +644,7 @@
       "extensions": ["fbs"]
     },
     "ForgeConfig": {
-      "name": "Forge Config",
+      "display_name": "Forge Config",
       "description": "Minecraft Forge configuration file.",
       "see": "https://forge.gemwire.uk/wiki/Configs",
       "line_comment": ["#", "~"],
@@ -670,7 +670,7 @@
       ]
     },
     "FortranLegacy": {
-      "name": "FORTRAN Legacy",
+      "display_name": "FORTRAN Legacy",
       "description": "FORTRAN programming language in its legacy format.",
       "see": "https://en.wikipedia.org/wiki/Fortran",
       "column_significant": true,
@@ -679,7 +679,7 @@
       "extensions": ["f", "for", "ftn", "f77", "pfo"]
     },
     "FortranModern": {
-      "name": "FORTRAN Modern",
+      "display_name": "FORTRAN Modern",
       "description": "FORTRAN programming language in its modern format.",
       "see": "https://en.wikipedia.org/wiki/Fortran",
       "line_comment": ["!"],
@@ -693,7 +693,7 @@
       "extensions": ["ftl", "ftlh", "ftlx"]
     },
     "FSharp": {
-      "name": "F#",
+      "display_name": "F#",
       "description": "F# programming language.",
       "see": "https://fsharp.org/",
       "line_comment": ["//"],
@@ -703,7 +703,7 @@
       "extensions": ["fs", "fsi", "fsx", "fsscript"]
     },
     "Fstar": {
-      "name": "F*",
+      "display_name": "F*",
       "description": "Proof-oriented programming language.",
       "see": "https://fstar-lang.org/",
       "quotes": [["\"", "\""]],
@@ -718,14 +718,14 @@
       "extensions": ["fut"]
     },
     "GDB": {
-      "name": "GDB Script",
+      "display_name": "GDB Script",
       "description": "GNU Project debugger script.",
       "see": "https://www.sourceware.org/gdb/",
       "line_comment": ["#"],
       "extensions": ["gdb"]
     },
     "GdScript": {
-      "name": "GDScript",
+      "display_name": "GDScript",
       "description": "Godot game engine scripting language.",
       "see": "https://gdscript.com/",
       "line_comment": ["#"],
@@ -737,14 +737,14 @@
       "extensions": ["gd"]
     },
     "Gherkin": {
-      "name": "Gherkin (Cucumber)",
+      "display_name": "Gherkin (Cucumber)",
       "description": "Cucumber scripting language",
       "see": "https://cucumber.io/docs/gherkin/reference/",
       "line_comment": ["#"],
       "extensions": ["feature"]
     },
     "Gleam": {
-      "name": "Gleam",
+      "display_name": "Gleam",
       "description": "Functional programming language.",
       "see": "https://gleam.run/",
       "line_comment": ["//", "///", "////"],
@@ -752,7 +752,7 @@
       "extensions": ["gleam"]
     },
     "Glsl": {
-      "name": "GLSL",
+      "display_name": "GLSL",
       "description": "OpenGL Shading Language.",
       "see": "https://en.wikipedia.org/wiki/OpenGL_Shading_Language",
       "line_comment": ["//"],
@@ -761,7 +761,7 @@
       "extensions": ["vert", "tesc", "tese", "geom", "frag", "comp", "mesh", "task", "rgen", "rint", "rahit", "rchit", "rmiss", "rcall", "glsl"]
     },
     "Gml": {
-      "name": "Gml",
+      "display_name": "Gml",
       "description": "Geography Markup Language.",
       "see": "https://www.iso.org/standard/75676.html",
       "line_comment": ["//"],
@@ -778,7 +778,7 @@
       "extensions": ["go"]
     },
     "Gohtml": {
-      "name": "Go HTML",
+      "display_name": "Go HTML",
       "description": "Go template for generating HTML.",
       "see": "https://pkg.go.dev/html/template",
       "multi_line_comments": [["<!--", "-->"], ["{{/*", "*/}}"]],
@@ -803,7 +803,7 @@
       "extensions": ["gradle"]
     },
     "Graphql": {
-      "name": "GraphQL",
+      "display_name": "GraphQL",
       "description": "Graph query language.",
       "see": "https://graphql.org/",
       "quotes": [["\"", "\""], ["\"\"\"", "\"\"\""]],
@@ -865,7 +865,7 @@
       "extensions": ["hx"]
     },
     "Hcl": {
-      "name": "HCL",
+      "display_name": "HCL",
       "description": "Hashicorp configuration language.",
       "see": "https://github.com/hashicorp/hcl",
       "line_comment": ["#", "//"],
@@ -882,12 +882,12 @@
       "extensions": ["ha"]
     },
     "HiCad": {
-      "name": "HICAD",
+      "display_name": "HICAD",
       "line_comment": ["REM", "rem"],
       "extensions": ["mac"]
     },
     "Hlsl": {
-      "name": "HLSL",
+      "display_name": "HLSL",
       "description": "High Level Shader Language.",
       "see": "https://en.wikipedia.org/wiki/High-Level_Shader_Language",
       "line_comment": ["//"],
@@ -904,7 +904,7 @@
       "extensions": ["hc", "zc"]
     },
     "Html": {
-      "name": "HTML",
+      "display_name": "HTML",
       "description": "HyperText Markup Language",
       "see": "https://en.wikipedia.org/wiki/HTML",
       "multi_line_comments": [["<!--", "-->"]],
@@ -930,14 +930,14 @@
       "nested": true
     },
     "Ini": {
-      "name": "INI",
+      "display_name": "INI",
       "description": "INI configuration file.",
       "see": "https://en.wikipedia.org/wiki/INI_file",
       "line_comment": [";", "#"],
       "extensions": ["ini"]
     },
     "IntelHex": {
-      "name": "Intel HEX",
+      "display_name": "Intel HEX",
       "description": "Intel hexadecimal object file format.",
       "see": "https://en.wikipedia.org/wiki/Intel_HEX",
       "extensions": ["hex"]
@@ -956,7 +956,7 @@
       "extensions": ["thy"]
     },
     "Jai": {
-      "name": "JAI",
+      "display_name": "JAI",
       "description": "Jai programming language.",
       "see": "https://inductive.no/jai/",
       "line_comment": ["//"],
@@ -1001,14 +1001,14 @@
       "extensions": ["cjs", "js", "mjs"]
     },
     "Jinja2": {
-      "name": "Jinja2",
+      "display_name": "Jinja2",
       "description": "Jinja template language.",
       "see": "https://palletsprojects.com/p/jinja/",
       "extensions": ["j2"],
       "multi_line_comments": [["{#", "#}"]]
     },
     "Jq": {
-      "name": "jq",
+      "display_name": "jq",
       "description": "JSON processing language.",
       "see": "https://jqlang.github.io/jq/",
       "line_comment": ["#"],
@@ -1016,7 +1016,7 @@
       "extensions": ["jq"]
     },
     "Json": {
-      "name": "JSON",
+      "display_name": "JSON",
       "description": "JavaScript Object Notation.",
       "see": "https://www.json.org/json-en.html",
       "mime": ["application/json", "application/manifest+json"],
@@ -1031,7 +1031,7 @@
       "extensions": ["jsonnet", "libsonnet"]
     },
     "Jsx": {
-      "name": "JSX",
+      "display_name": "JSX",
       "description": "JavaScript XML specification of DOM trees using XML-like syntax",
       "see": "https://en.wikipedia.org/wiki/JSX_(JavaScript)",
       "line_comment": ["//"],
@@ -1058,13 +1058,13 @@
       "extensions": ["julius"]
     },
     "Jupyter": {
-      "name": "Jupyter Notebooks",
+      "display_name": "Jupyter Notebooks",
       "description": "Jupyter Notebook content.",
       "see": "https://jupyter.org/",
       "extensions": ["ipynb"]
     },
     "K": {
-      "name": "K",
+      "display_name": "K",
       "description": "Array processing programming language.",
       "see": "https://kx.com/",
       "nested": true,
@@ -1073,7 +1073,7 @@
       "extensions": ["k"]
     },
     "KakouneScript": {
-      "name": "Kakoune script",
+      "display_name": "Kakoune script",
       "description": "Kakuone editor command script",
       "see": "https://kakoune.org/",
       "line_comment": ["#"],
@@ -1090,7 +1090,7 @@
       "extensions": ["kt", "kts"]
     },
     "Ksh": {
-      "name": "Korn shell",
+      "display_name": "Korn shell",
       "description": "Korn shell script.",
       "see": "http://kornshell.com/",
       "shebangs": ["#!/bin/ksh"],
@@ -1100,7 +1100,7 @@
       "extensions": ["ksh"]
     },
     "KvLanguage": {
-      "name":"KV Language",
+      "display_name":"KV Language",
       "description": "KV programming language.",
       "see": "https://kivy.org/",
       "line_comment": ["# "],
@@ -1117,7 +1117,7 @@
       "extensions": ["lean", "hlean"]
     },
     "Less": {
-      "name": "LESS",
+      "display_name": "LESS",
       "description": "LEaner Style Sheet language.",
       "see": "https://lesscss.org/",
       "line_comment": ["//"],
@@ -1126,7 +1126,7 @@
       "quotes": [["\"", "\""], ["'", "'"]]
     },
     "Liquid": {
-      "name": "Liquid",
+      "display_name": "Liquid",
       "description": "Liquid template language.",
       "see": "https://shopify.github.io/liquid/",
       "quotes": [["\"", "\""], ["'", "'"]],
@@ -1136,7 +1136,7 @@
       "embed_syntax": "liquid"
     },
     "LinkerScript": {
-      "name": "LD Script",
+      "display_name": "LD Script",
       "description": "Linker command script.",
       "see": "https://sourceware.org/binutils/docs/ld/Scripts.html",
       "multi_line_comments": [["/*", "*/"]],
@@ -1144,7 +1144,7 @@
       "extensions": ["ld", "lds"]
     },
     "Lisp": {
-      "name": "Common Lisp",
+      "display_name": "Common Lisp",
       "description": "List processing language.",
       "see": "https://en.wikipedia.org/wiki/Lisp_(programming_language)",
       "line_comment": [";"],
@@ -1176,7 +1176,7 @@
       "extensions": ["lgt", "logtalk"]
     },
     "LolCode": {
-      "name": "LOLCODE",
+      "display_name": "LOLCODE",
       "description": "LOLCODE esoteric programming language.",
       "see": "http://www.lolcode.org/",
       "line_comment": ["BTW"],
@@ -1243,7 +1243,7 @@
       "filenames": ["meson.build", "meson_options.txt"]
     },
     "Metal": {
-      "name": "Metal Shading Language",
+      "display_name": "Metal Shading Language",
       "description": "Metal shader API by Apple.",
       "see": "https://developer.apple.com/metal/",
       "line_comment": ["//"],
@@ -1267,7 +1267,7 @@
       "extensions": ["mlt"]
     },
     "ModuleDef": {
-      "name": "Module-Definition",
+      "display_name": "Module-Definition",
       "description": "Linker information file.",
       "see": "https://learn.microsoft.com/en-us/cpp/build/reference/module-definition-dot-def-files?view=msvc-170",
       "extensions": ["def"],
@@ -1281,7 +1281,7 @@
       "extensions": ["moon"]
     },
     "MsBuild": {
-      "name": "MSBuild",
+      "display_name": "MSBuild",
       "description": "Visual Studio project files.",
       "see": "https://github.com/dotnet/msbuild",
       "multi_line_comments": [["<!--", "-->"]],
@@ -1319,7 +1319,7 @@
       "extensions": ["nix"]
     },
     "NotQuitePerl": {
-      "name": "Not Quite Perl",
+      "display_name": "Not Quite Perl",
       "description": "Subset of the Perl programming language.",
       "see": "https://en.wikibooks.org/wiki/Parrot_Virtual_Machine/Not_Quite_Perl",
       "line_comment": ["#"],
@@ -1328,7 +1328,7 @@
       "extensions": ["nqp"]
     },
     "NuGetConfig": {
-      "name": "NuGet Config",
+      "display_name": "NuGet Config",
       "description": "NuGet configuration file.",
       "see": "https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file",
       "multi_line_comments": [["<!--", "-->"]],
@@ -1346,7 +1346,7 @@
       "extensions": ["nu"]
     },
     "ObjectiveC": {
-      "name": "Objective-C",
+      "display_name": "Objective-C",
       "description": "Objective-C programming language.",
       "see": "https://en.wikipedia.org/wiki/Objective-C",
       "line_comment": ["//"],
@@ -1355,7 +1355,7 @@
       "extensions": ["m"]
     },
     "ObjectiveCpp": {
-      "name": "Objective-C++",
+      "display_name": "Objective-C++",
       "description": "Objective-C variant allowing C++ constructs.",
       "see": "https://stackoverflow.com/questions/3684112/what-is-objective-c",
       "line_comment": ["//"],
@@ -1379,7 +1379,7 @@
       "quotes": [["\"", "\""], ["'", "'"]]
     },
     "OpenPolicyAgent": {
-      "name": "Open Policy Agent",
+      "display_name": "Open Policy Agent",
       "description": "Open Policy Agent language.",
       "see": "https://www.openpolicyagent.org/docs/latest/",
       "line_comment": ["#"],
@@ -1387,7 +1387,7 @@
       "extensions": ["rego"]
     },
     "OpenType": {
-      "name": "OpenType Feature File",
+      "display_name": "OpenType Feature File",
       "description": "OpenType feature typographic layout file.",
       "see": "https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html",
       "line_comment": ["#"],
@@ -1408,7 +1408,7 @@
       "extensions": ["oz"]
     },
     "PacmanMakepkg": {
-      "name": "Pacman's makepkg",
+      "display_name": "Pacman's makepkg",
       "description": "Shell script to build Arch Linux packages.",
       "see": "https://wiki.archlinux.org/title/PKGBUILD",
       "line_comment": ["#"],
@@ -1449,7 +1449,7 @@
       "extensions": ["pest"]
     },
     "Php": {
-      "name": "PHP",
+      "display_name": "PHP",
       "description": "PHP scripting language.",
       "see": "https://www.php.net/",
       "line_comment": ["#", "//"],
@@ -1464,7 +1464,7 @@
       "extensions": ["pk"]
     },
     "POM": {
-      "name": "Maven POM",
+      "display_name": "Maven POM",
       "description": "Maven Project Object Model build file.",
       "see": "https://maven.apache.org/pom.html",
       "multi_line_comments": [["<!--", "-->"]],
@@ -1480,7 +1480,7 @@
       "extensions": ["pony"]
     },
     "PostCss": {
-      "name": "PostCSS",
+      "display_name": "PostCSS",
       "description": "CSS processing language.",
       "see": "https://postcss.org/",
       "line_comment": ["//"],
@@ -1518,7 +1518,7 @@
       "extensions": ["p", "pro"]
     },
     "PSL": {
-      "name": "PSL Assertion",
+      "display_name": "PSL Assertion",
       "description": "Property specification language.",
       "see": "https://en.wikipedia.org/wiki/Property_Specification_Language",
       "line_comment": ["--"],
@@ -1527,7 +1527,7 @@
       "extensions": ["psl"]
     },
     "Protobuf": {
-      "name": "Protocol Buffers",
+      "display_name": "Protocol Buffers",
       "description": "Protocol Buffers interface definition language.",
       "see": "https://protobuf.dev/",
       "line_comment": ["//"],
@@ -1570,7 +1570,7 @@
       "extensions": ["py", "pyw"]
     },
     "Q": {
-      "name": "Q",
+      "display_name": "Q",
       "description": "Q array processing language.",
       "see": "https://kx.com/",
       "nested": true,
@@ -1579,7 +1579,7 @@
       "extensions": ["q"]
     },
     "Qcl": {
-      "name": "QCL",
+      "display_name": "QCL",
       "description": "Quantum Computing Language.",
       "see": "https://github.com/aviggiano/qcl",
       "line_comment": ["//"],
@@ -1588,7 +1588,7 @@
       "extensions": ["qcl"]
     },
     "Qml": {
-      "name": "QML",
+      "display_name": "QML",
       "description": "Qt Modeling Language.",
       "see": "https://doc.qt.io/qt-5/qmlreference.html",
       "line_comment": ["//"],
@@ -1666,7 +1666,7 @@
       "extensions": ["cshtml"]
     },
     "Redscript": {
-      "name": "Redscript",
+      "display_name": "Redscript",
       "description": "Redscript programming language.",
       "see": "https://wiki.redmodding.org/redscript/",
       "line_comment": ["//", "///"],
@@ -1676,7 +1676,7 @@
       "extensions": ["reds"]
     },
     "Renpy": {
-      "name": "Ren'Py",
+      "display_name": "Ren'Py",
       "description": "Visual novel engine file.",
       "see": "https://www.renpy.org/",
       "line_comment": ["#"],
@@ -1697,7 +1697,7 @@
       "extensions": ["rst"]
     },
     "RON": {
-      "name": "Rusty Object Notation",
+      "display_name": "Rusty Object Notation",
       "description": "RON data serialization format.",
       "see": "https://github.com/ron-rs/ron",
       "line_comment": ["//"],
@@ -1707,7 +1707,7 @@
       "extensions": ["ron"]
     },
     "RPMSpecfile": {
-      "name": "RPM Specfile",
+      "display_name": "RPM Specfile",
       "description": "RedHat Package Manager configuration file.",
       "see": "https://rpm-software-management.github.io/rpm/manual/spec.html",
       "line_comment": ["#"],
@@ -1723,7 +1723,7 @@
       "extensions": ["rb"]
     },
     "RubyHtml": {
-      "name": "Ruby HTML",
+      "display_name": "Ruby HTML",
       "description": "Ruby template language.",
       "see": "https://www.rubyguides.com/2018/11/ruby-erb-haml-slim/",
       "multi_line_comments": [["<!--", "-->"]],
@@ -1794,7 +1794,7 @@
       "extensions": ["sgml"]
     },
     "Sh": {
-      "name": "Shell",
+      "display_name": "Shell",
       "description": "Bourne shell command interpreter.",
       "see": "https://en.wikipedia.org/wiki/Bourne_shell",
       "shebangs": ["#!/bin/sh"],
@@ -1804,7 +1804,7 @@
       "extensions": ["sh"]
     },
     "ShaderLab": {
-      "name": "ShaderLab",
+      "display_name": "ShaderLab",
       "description": "ShaderLab declarative language.",
       "see": "https://docs.unity3d.com/Manual/SL-Reference.html",
       "line_comment": ["//"],
@@ -1821,7 +1821,7 @@
       "extensions": ["slint"]
     },
     "Sml": {
-      "name": "Standard ML (SML)",
+      "display_name": "Standard ML (SML)",
       "description": "Standard Meta Language programming language.",
       "see": "https://en.wikipedia.org/wiki/Standard_ML",
       "quotes": [["\"", "\""]],
@@ -1829,7 +1829,7 @@
       "extensions": ["sml"]
     },
     "Smalltalk": {
-      "name": "Smalltalk",
+      "display_name": "Smalltalk",
       "description": "Smalltalk programming language.",
       "see": "https://en.wikipedia.org/wiki/Smalltalk",
       "quotes": [["'", "'"]],
@@ -1837,7 +1837,7 @@
       "extensions": ["st"]
     },
     "Solidity": {
-      "name": "Solidity",
+      "display_name": "Solidity",
       "description": "Solidity programming language.",
       "see": "https://soliditylang.org/",
       "line_comment": ["//"],
@@ -1846,7 +1846,7 @@
       "extensions": ["sol"]
     },
     "SpecmanE": {
-      "name": "Specman e",
+      "display_name": "Specman e",
       "description": "Specman e hardware verification language.",
       "see": "https://en.wikipedia.org/wiki/E_(verification_language)",
       "line_comment": ["--", "//"],
@@ -1854,14 +1854,14 @@
       "extensions": ["e"]
     },
     "Spice": {
-      "name": "Spice Netlist",
+      "display_name": "Spice Netlist",
       "description": "Simulation Program with Integrated Circuit Emphasis analog electronic circuit simulation language.",
       "see": "https://en.wikipedia.org/wiki/SPICE",
       "line_comment": ["*"],
       "extensions": ["ckt"]
     },
     "Sql": {
-      "name": "SQL",
+      "display_name": "SQL",
       "description": "Structured Query Language.",
       "see": "https://en.wikipedia.org/wiki/SQL",
       "line_comment": ["--"],
@@ -1870,7 +1870,7 @@
       "extensions": ["sql"]
     },
     "Sqf": {
-      "name": "SQF",
+      "display_name": "SQF",
       "description": "Status Quo Function programming language.",
       "see": "https://community.bistudio.com/wiki/SQF_Syntax",
       "line_comment": ["//"],
@@ -1879,7 +1879,7 @@
       "extensions": ["sqf"]
     },
     "SRecode": {
-      "name": "SRecode Template",
+      "display_name": "SRecode Template",
       "description": "Semantic Recoder template file.",
       "see": "https://www.gnu.org/software/emacs/manual/html_mono/srecode.html",
       "line_comment": [";;"],
@@ -1894,7 +1894,7 @@
       "extensions": ["stan"]
     },
     "Stratego": {
-      "name": "Stratego/XT",
+      "display_name": "Stratego/XT",
       "description": "Program manipulation language.",
       "see": "https://strategoxt.org/",
       "line_comment": ["//"],
@@ -1920,7 +1920,7 @@
       "embed_syntax": "html"
     },
     "Svg": {
-      "name": "SVG",
+      "display_name": "SVG",
       "description": "Scalable Vector Graphics.",
       "see": "https://www.w3.org/Graphics/SVG/",
       "multi_line_comments": [["<!--", "-->"]],
@@ -1938,7 +1938,7 @@
       "extensions": ["swift"]
     },
     "Swig": {
-      "name": "SWIG",
+      "display_name": "SWIG",
       "description": "Simplified Wrapper and Interface Generator.",
       "see": "https://en.wikipedia.org/wiki/SWIG",
       "line_comment": ["//"],
@@ -1956,7 +1956,7 @@
       "extensions": ["sv", "svh"]
     },
     "Tcl": {
-      "name": "TCL",
+      "display_name": "TCL",
       "description": "Tcl programming language.",
       "see": "https://www.tcl.tk/",
       "line_comment": ["#"],
@@ -1971,14 +1971,14 @@
       "extensions": ["tera"]
     },
     "Tex": {
-      "name": "TeX",
+      "display_name": "TeX",
       "description": "TeX typesetting file.",
       "see": "https://en.wikipedia.org/wiki/TeX",
       "line_comment": ["%"],
       "extensions": ["tex", "sty"]
     },
     "Text": {
-      "name": "Plain Text",
+      "display_name": "Plain Text",
       "description": "Plain text file.",
       "mime": ["text/plain"],
       "extensions": ["text", "txt"]
@@ -1992,7 +1992,7 @@
       "extensions": ["thrift"]
     },
     "Toml": {
-      "name": "TOML",
+      "display_name": "TOML",
       "description": "Tom's Obvious Minimal Language",
       "see": "https://toml.io/en/",
       "line_comment": ["#"],
@@ -2005,7 +2005,7 @@
       "extensions": ["toml"]
     },
     "Tsx": {
-      "name": "TSX",
+      "display_name": "TSX",
       "description": "Declarative, XML-like user interface definition language.",
       "see": "https://electricui.com/docs/interface/ui-language#tsx",
       "line_comment": ["//"],
@@ -2014,7 +2014,7 @@
       "extensions": ["tsx"]
     },
     "Ttcn": {
-      "name": "TTCN-3",
+      "display_name": "TTCN-3",
       "description": "TTCN programming language.",
       "see": "http://www.ttcn-3.org/",
       "line_comment": ["//"],
@@ -2023,7 +2023,7 @@
       "extensions": ["ttcn", "ttcn3", "ttcnpp"]
     },
     "Twig": {
-      "name": "Twig",
+      "display_name": "Twig",
       "description": "PHP template language.",
       "see": "https://twig.symfony.com/",
       "quotes": [["\"", "\""], ["'", "'"]],
@@ -2055,7 +2055,7 @@
       "extensions": ["u"]
     },
     "UnrealDeveloperMarkdown": {
-      "name": "Unreal Markdown",
+      "display_name": "Unreal Markdown",
       "description": "Unreal Engine development markdown language.",
       "see": "https://github.com/raysjoshua/UnrealEngine/blob/master/Engine/Documentation/Source/DocumentationGuidelines/DocumentationGuidelines.INT.udn",
       "important_syntax": ["```"],
@@ -2063,19 +2063,19 @@
       "embed_syntax": "markdown"
     },
     "UnrealPlugin": {
-      "name": "Unreal Plugin",
+      "display_name": "Unreal Plugin",
       "description": "Unreal Engine plugin descriptor.",
       "see": "https://docs.unrealengine.com/5.0/en-US/plugins-in-unreal-engine/",
       "extensions": ["uplugin"]
     },
     "UnrealProject": {
-      "name": "Unreal Project",
+      "display_name": "Unreal Project",
       "description": "Unreal Engine project file.",
       "see": "https://docs.unrealengine.com/4.26/en-US/Basics/Projects/",
       "extensions": ["uproject"]
     },
     "UnrealScript": {
-      "name": "Unreal Script",
+      "display_name": "Unreal Script",
       "description": "Unreal Engine script.",
       "see": "https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/",
       "line_comment": ["//"],
@@ -2084,7 +2084,7 @@
       "extensions": ["uc", "uci", "upkg"]
     },
     "UnrealShader": {
-      "name": "Unreal Shader",
+      "display_name": "Unreal Shader",
       "description": "Unreal Engine shader source file.",
       "see": "https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/Rendering/ShaderDevelopment/",
       "line_comment": ["//"],
@@ -2093,7 +2093,7 @@
       "extensions": ["usf"]
     },
     "UnrealShaderHeader": {
-      "name": "Unreal Shader Header",
+      "display_name": "Unreal Shader Header",
       "description": "Unreal Engine shader header file.",
       "see": "https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/Rendering/ShaderDevelopment/",
       "line_comment": ["//"],
@@ -2102,7 +2102,7 @@
       "extensions": ["ush"]
     },
     "UrWeb": {
-      "name": "Ur/Web",
+      "display_name": "Ur/Web",
       "description": "Ur/Web functional programming language.",
       "see": "http://impredicative.com/ur/",
       "quotes": [["\"", "\""]],
@@ -2110,7 +2110,7 @@
       "extensions": ["ur", "urs"]
     },
     "UrWebProject": {
-      "name": "Ur/Web Project",
+      "display_name": "Ur/Web Project",
       "description": "Ur/Web project file.",
       "see": "https://github.com/urweb/urweb",
       "line_comment": ["#"],
@@ -2125,21 +2125,21 @@
       "extensions": ["vala"]
     },
     "VB6": {
-      "name": "VB6",
+      "display_name": "VB6",
       "description": "Visual Basic 6",
       "see": "https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-basic-6/visual-basic-6.0-documentation",
       "line_comment": ["'"],
       "extensions": ["frm", "bas", "cls"]
     },
     "VBScript": {
-      "name": "VBScript",
+      "display_name": "VBScript",
       "description": "Visual Basic Script",
       "see": "https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/d1wf56tt(v=vs.84)",
       "line_comment": ["'", "REM"],
       "extensions": ["vbs"]
     },
     "Velocity": {
-      "name": "Apache Velocity",
+      "display_name": "Apache Velocity",
       "description": "Java-based template language.",
       "see": "https://velocity.apache.org/",
       "line_comment": ["##"],
@@ -2156,12 +2156,12 @@
       "extensions": ["vg", "vh"]
     },
     "VerilogArgsFile": {
-      "name": "Verilog Args File",
+      "display_name": "Verilog Args File",
       "description": "File containing command-line arguments to the Verilog irun or xrun program.",
       "extensions": ["irunargs", "xrunargs"]
     },
     "Vhdl": {
-      "name": "VHDL",
+      "display_name": "VHDL",
       "description": "VHSIC Hardware Description Language hardware description language.",
       "see": "https://www.vhdl.org/",
       "line_comment": ["--"],
@@ -2169,7 +2169,7 @@
       "extensions": ["vhd", "vhdl"]
     },
     "VisualBasic": {
-      "name": "Visual Basic",
+      "display_name": "Visual Basic",
       "description": "Visual Basic programming language.",
       "see": "https://en.wikipedia.org/wiki/Visual_Basic_(classic)",
       "quotes": [["\"", "\""]],
@@ -2177,7 +2177,7 @@
       "extensions": ["vb"]
     },
     "VisualStudioProject": {
-      "name": "Visual Studio Project",
+      "display_name": "Visual Studio Project",
       "description": "Visual Studio project file.",
       "see": "https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/projects",
       "multi_line_comments": [["<!--", "-->"]],
@@ -2185,21 +2185,21 @@
       "extensions": ["vcproj", "vcxproj"]
     },
     "VisualStudioSolution": {
-      "name": "Visual Studio Solution",
+      "display_name": "Visual Studio Solution",
       "description": "Visual Studio solution file.",
       "see": "https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file",
       "line_comment": ["#"],
       "extensions": ["sln"]
     },
     "VoiceXml": {
-      "name": "Voice XML",
+      "display_name": "Voice XML",
       "description": "Voice interaction markup language.",
       "see": "https://www.w3.org/TR/voicexml21/",
       "multi_line_comments": [["<!--", "-->"]],
       "extensions": ["vxml"]
     },
     "Vue": {
-      "name": "Vue",
+      "display_name": "Vue",
       "description": "Vue web framework file.",
       "see": "https://vuejs.org/",
       "line_comment": ["//"],
@@ -2217,14 +2217,14 @@
       "extensions": ["wat", "wast"]
     },
     "WenYan":{
-      "name":"The WenYan Programming Language",
+      "display_name":"The WenYan Programming Language",
       "description": "Esoteric programming language closely following the grammar and tone of classical Chinese literature.",
       "see": "https://wy-lang.org/",
       "multi_line_comments":[["批曰。","。"],["疏曰。","。"]],
       "extensions":["wy"]
     },
     "WGSL": {
-      "name": "WebGPU Shader Language",
+      "display_name": "WebGPU Shader Language",
       "description": "WebGPU Shading Language.",
       "see": "https://www.w3.org/TR/WGSL/",
       "line_comment": ["//"],
@@ -2238,7 +2238,7 @@
       "extensions": ["nb", "wl"]
     },
     "Xaml": {
-      "name": "XAML",
+      "display_name": "XAML",
       "description": "Extensible Application Markup Language.",
       "see": "https://learn.microsoft.com/en-us/dotnet/desktop/xaml-services/?redirectedfrom=MSDN",
       "multi_line_comments": [["<!--", "-->"]],
@@ -2246,7 +2246,7 @@
       "extensions": ["xaml"]
     },
     "XcodeConfig": {
-      "name": "Xcode Config",
+      "display_name": "Xcode Config",
       "description": "Xcode IDE configuration file.",
       "see": "https://developer.apple.com/xcode/",
       "line_comment": ["//"],
@@ -2254,14 +2254,14 @@
       "extensions": ["xcconfig"]
     },
     "Xml": {
-      "name": "XML",
+      "display_name": "XML",
       "description": "Extensible Markup Language.",
       "see": "https://www.w3.org/XML/",
       "multi_line_comments": [["<!--", "-->"]],
       "extensions": ["xml"]
     },
     "XSL": {
-      "name": "XSL",
+      "display_name": "XSL",
       "description": "Extensible Stylesheet Language.",
       "see": "https://www.w3.org/Style/XSL/",
       "multi_line_comments": [["<!--", "-->"]],
@@ -2270,7 +2270,7 @@
       "extensions": ["xsl", "xslt"]
     },
     "XSLFO": {
-      "name": "XSL-FO",
+      "display_name": "XSL-FO",
       "description": "XSL Formatting Objects.",
       "see": "https://www.w3.org/TR/xsl11/",
       "multi_line_comments": [["<!--", "-->"]],
@@ -2286,7 +2286,7 @@
       "extensions": ["xtend"]
     },
     "Yaml": {
-      "name": "YAML",
+      "display_name": "YAML",
       "description": "YAML Ain't Markup Language(TM)",
       "see": "https://yaml.org/",
       "line_comment": ["#"],

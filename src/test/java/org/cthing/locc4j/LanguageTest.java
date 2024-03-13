@@ -34,7 +34,7 @@ public class LanguageTest {
     @Test
     public void testProperties() {
         final Language css = Language.Css;
-        assertThat(css.getName()).isEqualTo("CSS");
+        assertThat(css.getDisplayName()).isEqualTo("CSS");
         assertThat(css.isLineComment("//"::contentEquals)).isTrue();
         assertThat(css.isNestable()).isFalse();
         assertThat(css.isNestedComment(delim -> "\"".contentEquals(delim.start()))).isFalse();
@@ -109,9 +109,9 @@ public class LanguageTest {
     }
 
     @Test
-    public void testFromName() {
-        assertThat(Language.fromName("Visual Studio Solution")).contains(Language.VisualStudioSolution);
-        assertThat(Language.fromName("__XXYYZZ")).isEmpty();
+    public void testFromDisplayName() {
+        assertThat(Language.fromDisplayName("Visual Studio Solution")).contains(Language.VisualStudioSolution);
+        assertThat(Language.fromDisplayName("__XXYYZZ")).isEmpty();
     }
 
     @Test

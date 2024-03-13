@@ -309,7 +309,7 @@ final class Embedding {
                 if (!styleType.isEmpty()) {
                     languageOpt = Language.fromMime(styleType);
                     if (languageOpt.isEmpty()) {
-                        languageOpt = Language.fromName(styleType);
+                        languageOpt = Language.fromDisplayName(styleType);
                     }
                 }
             }
@@ -380,7 +380,7 @@ final class Embedding {
             if (templateType != null) {
                 templateType = templateType.trim();
                 if (!templateType.isEmpty()) {
-                    languageOpt = Language.fromName(templateType);
+                    languageOpt = Language.fromDisplayName(templateType);
                 }
             }
             final Language language = languageOpt.orElse(Language.Html);
@@ -474,7 +474,7 @@ final class Embedding {
             Optional<Language> languageOpt = Optional.empty();
             final String[] blockLanguages = COMMA_REGEX.split(blockStartMatcher.group(2).trim());
             for (final String blockLanguage : blockLanguages) {
-                languageOpt = Language.fromName(blockLanguage).or(() -> Language.fromId(blockLanguage));
+                languageOpt = Language.fromDisplayName(blockLanguage).or(() -> Language.fromId(blockLanguage));
                 if (languageOpt.isPresent()) {
                     break;
                 }

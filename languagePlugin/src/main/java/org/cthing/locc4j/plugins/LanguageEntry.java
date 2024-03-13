@@ -32,8 +32,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Represents an entry for a language in the languages.json file.
  *
- * @param name Common name for the language. This may differ from the language enum if the command name has spaces
- *      or contains characters not allowed in an enum (e.g. C++, C#, C Shell).
+ * @param displayName Display name for the language. If this is not specified, the enum name is used as the display
+ *      name.
  * @param description Description of the language
  * @param see URL of the home page for the language
  * @param lineComments Character sequences that indicate a comment that spans a single line
@@ -68,7 +68,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *      (e.g. {@literal <script>}, {@literal <style>}, and {@literal <template>}).
  */
 public record LanguageEntry(
-        @JsonProperty("name") @Nullable String name,
+        @JsonProperty("display_name") @Nullable String displayName,
         @JsonProperty("description") @Nullable String description,
         @JsonProperty("see") @Nullable String see,
         @JsonProperty("line_comment") @Nullable List<String> lineComments,
