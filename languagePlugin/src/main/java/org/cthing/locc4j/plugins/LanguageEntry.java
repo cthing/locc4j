@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param displayName Display name for the language. If this is not specified, the enum name is used as the display
  *      name.
  * @param description Description of the language
- * @param see URL of the home page for the language
+ * @param website URL of a website providing details about the language
  * @param lineComments Character sequences that indicate a comment that spans a single line
  * @param multiLineComments Pairs of character sequences that indicate the start and end of comments that can span
  *      multiple lines
@@ -70,7 +70,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record LanguageEntry(
         @JsonProperty("display_name") @Nullable String displayName,
         @JsonProperty("description") @Nullable String description,
-        @JsonProperty("see") @Nullable String see,
+        @JsonProperty("website") @Nullable String website,
         @JsonProperty("line_comment") @Nullable List<String> lineComments,
         @JsonProperty("multi_line_comments") @Nullable List<List<String>> multiLineComments,
         @JsonProperty("extensions") @Nullable List<String> extensions,
