@@ -64,6 +64,8 @@ public enum Language {
      */
     ${id}(
         "<#if entry.displayName()?has_content>${entry.displayName()}<#else>${id}</#if>",
+        <#if entry.description()?has_content>"${entry.description()}"<#else>null</#if>,
+        <#if entry.website()?has_content>"${entry.website()}"<#else>null</#if>,
         new BlockDelimiter[] {<@expand_block_params params=entry.nestedComments()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.quotes()/>},
         new BlockDelimiter[] {<@expand_block_params params=entry.verbatimQuotes()/>},
@@ -137,6 +139,10 @@ public enum Language {
     final Pattern importantSyntax;
 
     private final String displayName;
+    @Nullable
+    private final String description;
+    @Nullable
+    private final String website;
     private final BlockDelimiter[] quotes;
     private final BlockDelimiter[] docQuotes;
     private final String[] extensions;
@@ -150,11 +156,14 @@ public enum Language {
         resetExtensions();
     }
 
-    Language(final String displayName, final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
+    Language(final String displayName, @Nullable final String description, @Nullable final String website,
+             final BlockDelimiter[] nestedComments, final BlockDelimiter[] quotes,
              final BlockDelimiter[] verbartimQuotes, final BlockDelimiter[] docQuotes,
              @Nullable final Pattern importantSyntax,
              final String[] extensions, final BlockDelimiter[] allMultiLineComments) {
         this.displayName = displayName;
+        this.description = description;
+        this.website = website;
         this.nestedComments = nestedComments;
         this.quotes = quotes;
         this.verbatimQuotes = verbartimQuotes;
@@ -173,6 +182,28 @@ public enum Language {
      */
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    /**
+     * Obtains the description of the language.
+     *
+     * @return Description of the language.
+     */
+    @Nullable
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * Obtains the URL of a website that provides detailed information about the language. Typically, this is the
+     * official site for the language. If there is no official site, an alternate source of information may be
+     * provided (e.g. Wikipedia).
+     *
+     * @return URL of a website providing detailed information about the language.
+     */
+    @Nullable
+    public String getWebsite() {
+        return this.website;
     }
 
     /**
