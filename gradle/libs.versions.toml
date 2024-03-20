@@ -1,7 +1,6 @@
 [versions]
 java = "17"
-# Do not upgrade Checkstyle until https://github.com/checkstyle/checkstyle/issues/14123 is properly fixed
-checkstyle = "10.12.5"
+checkstyle = "10.14.2"
 jackson = "2.16.1"
 jacoco = "0.8.11"
 junit = "5.10.2"
