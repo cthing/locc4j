@@ -35,7 +35,7 @@ public class LanguageTest {
     public void testProperties() {
         final Language css = Language.Css;
         assertThat(css.getDisplayName()).isEqualTo("CSS");
-        assertThat(css.getDescription()).isEqualTo("Cascading Style Sheets language.");
+        assertThat(css.getDescription()).isEqualTo("Cascading Style Sheets language");
         assertThat(css.getWebsite()).isEqualTo("https://www.w3.org/Style/CSS/");
         assertThat(css.isLineComment("//"::contentEquals)).isTrue();
         assertThat(css.isNestable()).isFalse();
