@@ -91,15 +91,6 @@ public record LanguageEntry(
     private static final Pattern REGEX_CHAR_CLASS_ESCAPE_PATTERN = Pattern.compile("([\\^\\[\\]])");
 
     @Override
-    @Nullable
-    public String description() {
-        if (this.description == null) {
-            return null;
-        }
-        return this.description.endsWith(".") ? this.description : (this.description + ".");
-    }
-
-    @Override
     public List<String> lineComments() {
         return this.lineComments == null ? List.of() : escapeJavaList(this.lineComments);
     }

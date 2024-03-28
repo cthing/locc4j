@@ -57,7 +57,7 @@ import static java.util.regex.Pattern.compile;
 public enum Language {
 <#list languages as id, entry>
     /**
-     * <#if entry.description()?has_content>${entry.description()}<#else>Identifier for the <#if entry.displayName()?has_content>${entry.displayName()}<#else>${id}</#if> language.</#if>
+     * <#if entry.description()?has_content>${entry.description()}.<#else>Identifier for the <#if entry.displayName()?has_content>${entry.displayName()}<#else>${id}</#if> language.</#if>
      * <#if entry.extensions()?has_content><p>File extensions: <#list entry.extensions() as ext>{@code ${ext}}<#if ext?has_next>, </#if></#list></p></#if>
      * <#if entry.filenames()?has_content><p>File names: <#list entry.filenames() as filename>{@code ${filename}}<#if filename?has_next>, </#if></#list></p></#if>
      * <#if entry.website()?has_content>@see <a href="${entry.website()}">${entry.website()}</a></#if>
