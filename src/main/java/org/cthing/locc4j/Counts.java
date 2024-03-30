@@ -25,6 +25,9 @@ import java.util.Objects;
  */
 public class Counts {
 
+    /** A count object containing all zeros. */
+    public static final Counts ZERO = new Counts(0, 0, 0);
+
     int codeLines;
     int commentLines;
     int blankLines;

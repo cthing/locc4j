@@ -34,6 +34,14 @@ public class CountsTest {
     }
 
     @Test
+    public void testZero() {
+        assertThat(Counts.ZERO.getBlankLines()).isZero();
+        assertThat(Counts.ZERO.getCodeLines()).isZero();
+        assertThat(Counts.ZERO.getCommentLines()).isZero();
+        assertThat(Counts.ZERO.getTotalLines()).isZero();
+    }
+
+    @Test
     public void testAdd() {
         this.counts.codeLines = 2;
         this.counts.commentLines = 5;
