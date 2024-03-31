@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * Line counts.
  */
-public final class Counts {
+public class Counts {
 
     /** A count object containing all zeros. */
     public static final Counts ZERO = new Counts(0, 0, 0);
@@ -35,20 +35,7 @@ public final class Counts {
     Counts() {
     }
 
-    /**
-     * Constructs a counts object with the specified line counts.
-     *
-     * @param codeLines Number of lines of code
-     * @param commentLines Number of lines of comments. Note that a code line with a trailing comment is counted
-     *      as a code line not a comment line.
-     * @param blankLines Number of lines consisting solely of zero or more whitespace
-     * @throws IllegalArgumentException if any specified line count is negative.
-     */
-    public Counts(final int codeLines, final int commentLines, final int blankLines) {
-        if (codeLines < 0 || commentLines < 0 || blankLines < 0) {
-            throw new IllegalArgumentException("Line counts cannot be negative");
-        }
-
+    Counts(final int codeLines, final int commentLines, final int blankLines) {
         this.blankLines = blankLines;
         this.codeLines = codeLines;
         this.commentLines = commentLines;

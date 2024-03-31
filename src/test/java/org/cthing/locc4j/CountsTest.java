@@ -19,7 +19,6 @@ package org.cthing.locc4j;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 
 public class CountsTest {
@@ -27,24 +26,11 @@ public class CountsTest {
     private final Counts counts = new Counts();
 
     @Test
-    public void testDefaultConstructor() {
+    public void testConstruct() {
         assertThat(this.counts.getBlankLines()).isZero();
         assertThat(this.counts.getCodeLines()).isZero();
         assertThat(this.counts.getCommentLines()).isZero();
         assertThat(this.counts.getTotalLines()).isZero();
-    }
-
-    @Test
-    public void testConstructor() {
-        final Counts c = new Counts(10, 20, 30);
-        assertThat(c.getTotalLines()).isEqualTo(60);
-        assertThat(c.getCodeLines()).isEqualTo(10);
-        assertThat(c.getCommentLines()).isEqualTo(20);
-        assertThat(c.getBlankLines()).isEqualTo(30);
-
-        assertThatIllegalArgumentException().isThrownBy(() -> new Counts(-1, 20, 30));
-        assertThatIllegalArgumentException().isThrownBy(() -> new Counts(10, -1, 30));
-        assertThatIllegalArgumentException().isThrownBy(() -> new Counts(10, 20, -1));
     }
 
     @Test
