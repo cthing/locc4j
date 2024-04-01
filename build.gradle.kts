@@ -41,7 +41,6 @@ java {
 dependencies {
     api(libs.jsr305)
 
-    implementation(libs.commonsIO)
     implementation(libs.cthingAnnots)
     implementation(libs.filevisitor)
     implementation(libs.jacksonCore)

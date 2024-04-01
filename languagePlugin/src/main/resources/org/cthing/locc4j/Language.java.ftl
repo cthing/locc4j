@@ -41,8 +41,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.io.FilenameUtils;
-
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -462,8 +460,10 @@ public enum Language {
             default: break;
         }
 
-        final String extension = FilenameUtils.getExtension(filename);
-        return extension.isEmpty() ? fromShebang(file) : fromFileExtension(extension).or(() -> fromShebang(file));
+        final int extIdx = filename.lastIndexOf('.');
+        return (extIdx == -1 || filename.length() < 2)
+                ? fromShebang(file)
+                : fromFileExtension(filename.substring(extIdx + 1)).or(() -> fromShebang(file));
     }
 
     /**

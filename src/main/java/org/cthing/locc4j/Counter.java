@@ -16,8 +16,10 @@
 
 package org.cthing.locc4j;
 
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -29,8 +31,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CharSequenceReader;
 import org.cthing.annotations.AccessForTesting;
 
 import com.fasterxml.jackson.core.JsonPointer;
@@ -115,6 +115,8 @@ public class Counter {
     private static final JsonPointer JUPYTER_LANGUAGE_PTR = JsonPointer.compile("/metadata/kernelspec/language");
     private static final JsonPointer JUPYTER_EXTENSION_PTR = JsonPointer.compile("/metadata/language_info/file_extension");
 
+    private static final int COPY_BUFSIZE = 8192;
+
     private final Language language;
     private final State state;
     private boolean countDocStrings = true;
@@ -160,8 +162,9 @@ public class Counter {
      * @throws IOException if there was a problem counting the lines.
      */
     @WillNotClose
+    @SuppressWarnings({ "NestedAssignment", "IOResourceOpenedButNotSafelyClosed" })
     public Map<Language, Counts> count(final InputStream inputStream) throws IOException {
-        return count(IOUtils.toCharArray(inputStream, StandardCharsets.UTF_8));
+        return count(toCharArray(inputStream));
     }
 
     /**
@@ -261,7 +264,7 @@ public class Counter {
      */
     private void countJupyter(final CharData data, final Map<Language, Counts> languageCounts) throws IOException {
         final ObjectMapper mapper = ObjectMapperProvider.getInstance();
-        final JsonNode jupyterNode = mapper.readTree(new CharSequenceReader(data));
+        final JsonNode jupyterNode = mapper.readTree(data.createReader());
 
         Optional<Language> languageOpt = Optional.empty();
         final JsonNode languageNode = jupyterNode.at(JUPYTER_LANGUAGE_PTR);
@@ -603,5 +606,28 @@ public class Counter {
             return STRING;
         }
         return COMMENT;
+    }
+
+    /**
+     * Creates a character array from the contents of the specified input stream.
+     *
+     * @param inputStream Input stream whose contents will be read into a character array
+     * @return Character array containing the contents of the specified input stream
+     * @throws IOException if there is a problem reading the specified input stream.
+     */
+    @AccessForTesting
+    @SuppressWarnings({ "NestedAssignment", "IOResourceOpenedButNotSafelyClosed" })
+    @WillNotClose
+    static char[] toCharArray(final InputStream inputStream) throws IOException {
+        final char[] buffer = new char[COPY_BUFSIZE];
+        final InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        final CharArrayWriter writer = new CharArrayWriter();
+
+        int amount;
+        while ((amount = reader.read(buffer)) != -1) {
+            writer.write(buffer, 0, amount);
+        }
+
+        return writer.toCharArray();
     }
 }

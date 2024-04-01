@@ -18,7 +18,6 @@ package org.cthing.locc4j;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -514,8 +512,7 @@ public class CounterTest {
             actualCounts = counter.count(ins);
         } else {
             final char[] data =
-                    IOUtils.toCharArray(Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename)),
-                                        StandardCharsets.UTF_8);
+                    Counter.toCharArray(Objects.requireNonNull(getClass().getResourceAsStream("/data/" + filename)));
 
             final long startMillis = System.currentTimeMillis();
             final Counter counter = makeCounter(primaryLanguage, accessor.getBoolean(1));

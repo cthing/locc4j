@@ -16,6 +16,8 @@
 
 package org.cthing.locc4j;
 
+import java.io.CharArrayReader;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -710,6 +712,15 @@ class CharData implements CharSequence {
         }
 
         return false;
+    }
+
+    /**
+     * Creates a {@link Reader} providing the character data.
+     *
+     * @return Newly created Reader to read the character data.
+     */
+    public Reader createReader() {
+        return new CharArrayReader(this.buffer, this.offset, this.length);
     }
 
     @Override
