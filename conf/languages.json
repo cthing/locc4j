@@ -974,6 +974,13 @@
       "mime": ["text/x-java-source"],
       "extensions": ["java"]
     },
+    "JavaProperties": {
+      "display_name": "Java Properties",
+      "description": "Java properties file",
+      "website": "https://en.wikipedia.org/wiki/.properties",
+      "line_comment": ["#", "!"],
+      "extensions": ["properties"]
+    },
     "JavaScript": {
       "description": "JavaScript programming language",
       "website": "https://en.wikipedia.org/wiki/JavaScript",

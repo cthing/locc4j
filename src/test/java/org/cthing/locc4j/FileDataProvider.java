@@ -223,6 +223,7 @@ public class FileDataProvider implements ArgumentsProvider {
                 arguments("powershell.ps1", true, PowerShell, 9, 4, 4),
                 arguments("processing.pde", true, Processing, 17, 9, 3),
                 arguments("prolog.p", true, Prolog, 78, 55, 26),
+                arguments("properties.properties", true, JavaProperties, 20, 31, 1),
                 arguments("protobuf.proto", true, Protobuf, 27, 18, 11),
                 arguments("psl.psl", true, PSL, 14, 15, 14),
                 arguments("pug.pug", true, Pug, 8, 2, 1),
