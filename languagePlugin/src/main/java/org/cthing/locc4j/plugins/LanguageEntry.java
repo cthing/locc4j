@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.text.StringEscapeUtils;
+import org.cthing.escapers.JavaEscaper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -214,7 +214,7 @@ public record LanguageEntry(
      * @return Escaped list of strings
      */
     private static List<String> escapeJavaList(final Collection<String> strings) {
-        return strings.stream().map(StringEscapeUtils::escapeJava).toList();
+        return strings.stream().map(str -> JavaEscaper.escape(str, JavaEscaper.Option.ESCAPE_NON_ASCII)).toList();
     }
 
     /**

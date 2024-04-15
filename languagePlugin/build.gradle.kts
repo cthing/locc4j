@@ -25,8 +25,8 @@ gradlePlugin {
 }
 
 dependencies {
-    implementation(libs.commonsText)
     implementation(libs.cthingAnnots)
+    implementation(libs.escapers)
     implementation(libs.jsr305)
     implementation(libs.freemarker)
     implementation(libs.jacksonDatabind)

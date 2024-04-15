@@ -14,10 +14,10 @@ versions = { id = "com.github.ben-manes.versions", version = "0.51.0" }
 
 [libraries]
 assertJ = "org.assertj:assertj-core:3.25.3"
-commonsText = "org.apache.commons:commons-text:1.11.0"
 cthingAnnots = "org.cthing:cthing-annotations:1.0.0"
 equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:3.15.6"
-filevisitor = "org.cthing:filevisitor:0.1.0-+"
+escapers = "org.cthing:escapers:1.0.0"
+filevisitor = "org.cthing:filevisitor:1.0.0"
 freemarker = "org.freemarker:freemarker:2.3.32"
 jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }

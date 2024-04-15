@@ -7,8 +7,6 @@ import java.util.Locale
 
 repositories {
     mavenCentral()
-    // TODO: Remove when filevisitor is published to Central
-    maven("https://dist-4.lan/repository/public/")
 }
 
 plugins {
