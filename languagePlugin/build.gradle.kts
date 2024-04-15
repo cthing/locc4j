@@ -24,6 +24,12 @@ gradlePlugin {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
 dependencies {
     implementation(libs.cthingAnnots)
     implementation(libs.escapers)
