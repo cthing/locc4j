@@ -1,6 +1,8 @@
 import com.autonomousapps.tasks.CodeSourceExploderTask
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.Confidence
+import org.cthing.projectversion.BuildType
+import org.cthing.projectversion.ProjectVersion
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -21,12 +23,16 @@ plugins {
     id("org.cthing.locc4j.language")
 }
 
-val baseVersion = "1.0.1"
-val isSnapshot = true
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.cthingProjectVersion)
+    }
+}
 
-val isCIServer = System.getenv("CTHING_CI") != null
-val buildNumber = if (isCIServer) System.currentTimeMillis().toString() else "0"
-version = if (isSnapshot) "$baseVersion-$buildNumber" else baseVersion
+version = ProjectVersion("1.0.1", BuildType.snapshot)
 group = "org.cthing"
 description = "A Java library for counting lines of source code."
 
@@ -228,7 +234,8 @@ publishing {
         }
     }
 
-    val repoUrl = if (isSnapshot) findProperty("cthing.nexus.snapshotsUrl") else findProperty("cthing.nexus.candidatesUrl")
+    val repoUrl = if ((version as ProjectVersion).isSnapshotBuild)
+        findProperty("cthing.nexus.snapshotsUrl") else findProperty("cthing.nexus.candidatesUrl")
     if (repoUrl != null) {
         repositories {
             maven {
