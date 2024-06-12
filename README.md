@@ -61,9 +61,12 @@ are:
     that line is considered a code line not a comment line.
 * **Blank lines** - Number of lines consisting entirely of whitespace
 
-The [gradle-locc](https://github.com/cthing/gradle-locc) Gradle plugin uses the locc4j library and provides a
+Note that this library does not provide any support for serializing the line count results. The
+[gradle-locc](https://github.com/cthing/gradle-locc) Gradle plugin uses the locc4j library and provides a
 [good example](https://github.com/cthing/gradle-locc/tree/master/src/main/java/org/cthing/gradle/plugins/locc/reports)
-of how the counts map can be serialized to various file formats (e.g. JSON, XML).
+of how the counts map can be serialized to various file formats (e.g. JSON, XML). The plugin uses the
+[xmlwriter](https://github.com/cthing/xmlwriter) and [jsonwriter](https://github.com/cthing/jsonwriter)
+libraries to serialize the results to those formats.
 
 ### Counting a String or Character Array
 The following code counts lines within a string or character array.
