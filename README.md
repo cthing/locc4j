@@ -61,12 +61,26 @@ are:
     that line is considered a code line not a comment line.
 * **Blank lines** - Number of lines consisting entirely of whitespace
 
+The [gradle-locc](https://github.com/cthing/gradle-locc) Gradle plugin uses the locc4j library and provides a
+[good example](https://github.com/cthing/gradle-locc/tree/master/src/main/java/org/cthing/gradle/plugins/locc/reports)
+of how the counts map can be serialized to various file formats (e.g. JSON, XML).
+
 ### Counting a String or Character Array
 The following code counts lines within a string or character array.
 ```java
 final Counter counter = new Counter(Language.Markdown);
 final Map<Language, Counts> counts = counter.count("# Title\n\nHello World");
 ```
+The returned `counts` map contains an entry for each detect language. In the above example, one language
+is detected (i.e. the language specified and no embedded languages), so the resulting map contains:
+```
+Language.Markdown:
+    codeLines == 2
+    commentLines == 0
+    blankLines == 1
+```
+If the Markdown content contained embedded [Mermaid diagram markup](https://mermaid.js.org/), the returned
+map would contain two keys, `Language.Markdown` and `Language.Mermaid`, each with their respective line counts.
 
 ### Counting an Input Stream
 The following code counts lines from a character input stream.
