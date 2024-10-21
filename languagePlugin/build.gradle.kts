@@ -12,6 +12,7 @@ plugins {
     java
     checkstyle
     `java-gradle-plugin`
+    alias(libs.plugins.dependencyAnalysis)
     alias(libs.plugins.spotbugs)
 }
 

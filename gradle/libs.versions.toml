@@ -1,25 +1,25 @@
 [versions]
 java = "17"
-checkstyle = "10.17.0"
-jackson = "2.17.1"
+checkstyle = "10.18.2"
+jackson = "2.18.0"
 jacoco = "0.8.12"
-junit = "5.10.2"
-junitPlatform = "1.10.2"
-spotbugs = "4.8.5"
+junit = "5.11.2"
+junitPlatform = "1.11.2"
+spotbugs = "4.8.6"
 
 [plugins]
 cthingVersioning = { id = "org.cthing.cthing-versioning", version = "1.0.1" }
-dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version = "1.32.0" }
-spotbugs = { id = "com.github.spotbugs", version = "6.0.15" }
+dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version = "2.2.0" }
+spotbugs = { id = "com.github.spotbugs", version = "6.0.25" }
 versions = { id = "com.github.ben-manes.versions", version = "0.51.0" }
 
 [libraries]
-assertJ = "org.assertj:assertj-core:3.26.0"
+assertJ = "org.assertj:assertj-core:3.26.3"
 cthingAnnots = "org.cthing:cthing-annotations:1.0.0"
-equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:3.16.1"
+equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:3.17.1"
 escapers = "org.cthing:escapers:1.0.0"
 filevisitor = "org.cthing:filevisitor:1.0.0"
-freemarker = "org.freemarker:freemarker:2.3.32"
+freemarker = "org.freemarker:freemarker:2.3.33"
 jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
@@ -28,5 +28,5 @@ junitEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref =
 junitParams = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 junitCommons = { module = "org.junit.platform:junit-platform-commons", version.ref = "junitPlatform" }
 junitLauncher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatform" }
-mockito = "org.mockito:mockito-core:5.12.0"
-spotbugsContrib = "com.mebigfatguy.sb-contrib:sb-contrib:7.6.4"
+mockito = "org.mockito:mockito-core:5.14.2"
+spotbugsContrib = "com.mebigfatguy.sb-contrib:sb-contrib:7.6.5"
