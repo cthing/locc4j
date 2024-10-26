@@ -6,7 +6,7 @@
 /**
  * Classes for counting lines of source code.
  */
-@PackageNonnullByDefault
+@NullMarked
 package org.cthing.locc4j;
 
-import org.cthing.annotations.PackageNonnullByDefault;
+import org.jspecify.annotations.NullMarked;

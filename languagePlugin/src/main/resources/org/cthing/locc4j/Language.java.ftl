@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.regex.Pattern.compile;
 
@@ -380,8 +380,7 @@ public enum Language {
      *
      * @return Syntax for embedding other languages.
      */
-    @Nullable
-    public Embedding.Syntax getEmbedSyntax() {
+    public Embedding.@Nullable Syntax getEmbedSyntax() {
         return null;
     }
 

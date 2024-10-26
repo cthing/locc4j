@@ -17,10 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nullable;
-import javax.annotation.WillNotClose;
-
 import org.cthing.annotations.AccessForTesting;
+import org.jspecify.annotations.Nullable;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -146,11 +144,10 @@ public class Counter {
     /**
      * Performs the counting of lines in the input stream.
      *
-     * @param inputStream Stream providing the text to be counted
+     * @param inputStream Stream providing the text to be counted. The stream will not be closed.
      * @return Map of the languages in the data and their line counts
      * @throws IOException if there was a problem counting the lines.
      */
-    @WillNotClose
     @SuppressWarnings("NestedAssignment")
     public Map<Language, Counts> count(final InputStream inputStream) throws IOException {
         return count(toCharArray(inputStream));
@@ -316,9 +313,9 @@ public class Counter {
      * @throws IOException If there was a problem processing the character data.
      */
     @AccessForTesting
-    @Nullable
-    Embedding.Embedded performMultiLineAnalysis(final CharData lines, final int start, final int end,
-                                                final Map<Language, Counts> languageCounts) throws IOException {
+    Embedding.@Nullable Embedded performMultiLineAnalysis(final CharData lines, final int start, final int end,
+                                                          final Map<Language, Counts> languageCounts)
+            throws IOException {
         final Embedding.Embedded embedded = Embedding.find(this.language, lines, start, end);
 
         int skip = 0;
@@ -600,13 +597,13 @@ public class Counter {
     /**
      * Creates a character array from the contents of the specified input stream.
      *
-     * @param inputStream Input stream whose contents will be read into a character array
+     * @param inputStream Input stream whose contents will be read into a character array.
+     *      The stream will not be closed.
      * @return Character array containing the contents of the specified input stream
      * @throws IOException if there is a problem reading the specified input stream.
      */
     @AccessForTesting
     @SuppressWarnings({ "NestedAssignment", "IOResourceOpenedButNotSafelyClosed" })
-    @WillNotClose
     static char[] toCharArray(final InputStream inputStream) throws IOException {
         final char[] buffer = new char[COPY_BUFSIZE];
         final InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);

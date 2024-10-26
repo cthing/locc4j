@@ -11,9 +11,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
-
 import org.cthing.escapers.JavaEscaper;
+import org.jspecify.annotations.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -202,7 +201,7 @@ public record LanguageEntry(
      * @param strings List of strings to escape
      * @return Escaped list of strings
      */
-    private static List<String> escapeJavaList(final Collection<String> strings) {
+    private static List<@Nullable String> escapeJavaList(final Collection<String> strings) {
         return strings.stream().map(str -> JavaEscaper.escape(str, JavaEscaper.Option.ESCAPE_NON_ASCII)).toList();
     }
 

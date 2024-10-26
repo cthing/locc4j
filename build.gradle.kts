@@ -30,7 +30,7 @@ plugins {
     id("org.cthing.locc4j.language")
 }
 
-version = ProjectVersion("1.0.1", BuildType.snapshot)
+version = ProjectVersion("2.0.0", BuildType.snapshot)
 group = "org.cthing"
 description = "A Java library for counting lines of source code."
 
@@ -41,12 +41,13 @@ java {
 }
 
 dependencies {
-    api(libs.jsr305)
+    api(libs.jspecify)
 
-    implementation(libs.cthingAnnots)
     implementation(libs.filevisitor)
     implementation(libs.jacksonCore)
     implementation(libs.jacksonDatabind)
+
+    compileOnly(libs.cthingAnnots)
 
     testImplementation(libs.assertJ)
     testImplementation(libs.equalsVerifier)

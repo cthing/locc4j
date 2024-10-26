@@ -15,14 +15,14 @@ versions = { id = "com.github.ben-manes.versions", version = "0.51.0" }
 
 [libraries]
 assertJ = "org.assertj:assertj-core:3.26.3"
-cthingAnnots = "org.cthing:cthing-annotations:1.0.0"
+cthingAnnots = "org.cthing:cthing-annotations:2.0.0"
 equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:3.17.1"
-escapers = "org.cthing:escapers:1.0.0"
-filevisitor = "org.cthing:filevisitor:1.0.0"
+escapers = "org.cthing:escapers:2.0.0"
+filevisitor = "org.cthing:filevisitor:2.0.0"
 freemarker = "org.freemarker:freemarker:2.3.33"
 jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
-jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
+jspecify = "org.jspecify:jspecify:1.0.0"
 junitApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junitEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junitParams = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }

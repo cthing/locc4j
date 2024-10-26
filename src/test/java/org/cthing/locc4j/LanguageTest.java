@@ -8,7 +8,10 @@ package org.cthing.locc4j;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
+import org.assertj.core.api.Assertions;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -33,7 +36,7 @@ public class LanguageTest {
         assertThat(css.isVerbatimQuote(delim -> "'".contentEquals(delim.start()))).isFalse();
         assertThat(css.isDocQuote(delim -> "'".contentEquals(delim.start()))).isFalse();
         assertThat(css.isColumnSignificant()).isFalse();
-        assertThat(css.getImportantSyntax()).isNotNull();
+        Assertions.<@Nullable Pattern>assertThat(css.getImportantSyntax()).isNotNull();
         assertThat(css.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
 
         assertThat(Language.Python.isDocQuote(delim -> "\"\"\"".contentEquals(delim.start()))).isTrue();
@@ -48,10 +51,10 @@ public class LanguageTest {
     @Test
     public void testImportantSyntax() {
         final Language abnf = Language.ABNF;
-        assertThat(abnf.getImportantSyntax()).isNull();
+        Assertions.<@Nullable Pattern>assertThat(abnf.getImportantSyntax()).isNull();
 
         final Language asn1 = Language.Asn1;
-        assertThat(asn1.getImportantSyntax()).isNotNull();
+        Assertions.<@Nullable Pattern>assertThat(asn1.getImportantSyntax()).isNotNull();
         assertThat(asn1.getImportantSyntax().pattern()).isEqualTo("\"|'|/\\*");
         assertThat(asn1.getImportantSyntax().matcher("").find()).isFalse();
         assertThat(asn1.getImportantSyntax().matcher("hello world").find()).isFalse();
@@ -143,11 +146,11 @@ public class LanguageTest {
         Language.addExtension("C", Language.Html);
         assertThat(Language.getExtensions().get("c")).isEqualTo(Language.Html);
         Language.removeExtension("c");
-        assertThat(Language.getExtensions().get("c")).isNull();
+        Assertions.<@Nullable Language>assertThat(Language.getExtensions().get("c")).isNull();
         Language.addExtension("zzz", Language.Python);
         assertThat(Language.getExtensions().get("zzz")).isEqualTo(Language.Python);
         Language.resetExtensions();
         assertThat(Language.getExtensions().get("c")).isEqualTo(Language.C);
-        assertThat(Language.getExtensions().get("zzz")).isNull();
+        Assertions.<@Nullable Language>assertThat(Language.getExtensions().get("zzz")).isNull();
     }
 }

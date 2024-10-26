@@ -32,11 +32,12 @@ java {
 }
 
 dependencies {
-    implementation(libs.cthingAnnots)
     implementation(libs.escapers)
-    implementation(libs.jsr305)
+    implementation(libs.jspecify)
     implementation(libs.freemarker)
     implementation(libs.jacksonDatabind)
+
+    compileOnly(libs.cthingAnnots)
 
     spotbugsPlugins(libs.spotbugsContrib)
 }
