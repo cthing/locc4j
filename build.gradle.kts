@@ -30,7 +30,7 @@ plugins {
     id("org.cthing.locc4j.language")
 }
 
-version = ProjectVersion("2.0.0", BuildType.release)
+version = ProjectVersion("2.0.1", BuildType.snapshot)
 group = "org.cthing"
 description = "A Java library for counting lines of source code."
 

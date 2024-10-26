@@ -38,12 +38,12 @@ the following Maven dependency:
 <dependency>
   <groupId>org.cthing</groupId>
   <artifactId>locc4j</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 or the following Gradle dependency:
 ```kotlin
-implementation("org.cthing:locc4j:1.0.0")
+implementation("org.cthing:locc4j:2.0.0")
 ```
 
 ### Counter Results
