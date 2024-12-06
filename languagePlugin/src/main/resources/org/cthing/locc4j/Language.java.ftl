@@ -45,8 +45,10 @@ public enum Language {
 <#list languages as id, entry>
     /**
      * <#if entry.description()?has_content>${entry.description()}.<#else>Identifier for the <#if entry.displayName()?has_content>${entry.displayName()}<#else>${id}</#if> language.</#if>
-     * <#if entry.extensions()?has_content><p>File extensions: <#list entry.extensions() as ext>{@code ${ext}}<#if ext?has_next>, </#if></#list></p></#if>
-     * <#if entry.filenames()?has_content><p>File names: <#list entry.filenames() as filename>{@code ${filename}}<#if filename?has_next>, </#if></#list></p></#if>
+     * <#if entry.extensions()?has_content>
+     * <p>File extensions: <#list entry.extensions() as ext>{@code ${ext}}<#if ext?has_next>, </#if></#list></p></#if>
+     * <#if entry.filenames()?has_content>
+     * <p>File names: <#list entry.filenames() as filename>{@code ${filename}}<#if filename?has_next>, </#if></#list></p></#if>
      * <#if entry.website()?has_content>@see <a href="${entry.website()}">${entry.website()}</a></#if>
      */
     ${id}(
@@ -456,6 +458,7 @@ public enum Language {
 
     /**
      * Attempts to obtain the language of a file based on its MIME type.
+     *
      * <p>
      * The supported MIME types and their corresponding language are:
      * </p>
@@ -522,6 +525,7 @@ public enum Language {
      * Attempts to obtain the language of the specified file based on a shebang ("#!") on its first line.
      * The shebang is first compared against the shebang interpreters listed for each language. If an
      * interpreter is not matched, the {@code env} program argument is checked.
+     *
      * <p>
      * The supported interpreters and their corresponding language are:
      * </p>
@@ -530,6 +534,7 @@ public enum Language {
      *   <li>{@code ${shebang?right_pad(25, " .")}} <a href="#${id}">${id}</a></li>
 </#list></#list>
      * </ul>
+     *
      * <p>
      * The supported environment programs are:
      * </p>

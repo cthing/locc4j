@@ -604,6 +604,7 @@ class CharData implements CharSequence {
     /**
      * Splits the data buffer into two data buffers at the specified index. The first buffer contains the data
      * from {@code [0, index)} and the second buffer contains the data from {@code [index, length)}.
+     *
      * <p>
      * For example:
      * </p>
