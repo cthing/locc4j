@@ -1,7 +1,7 @@
 # ![C Thing Software](https://www.cthing.com/branding/CThingSoftware-57x60.png "C Thing Software") locc4j
 
 [![CI](https://github.com/cthing/locc4j/actions/workflows/ci.yml/badge.svg)](https://github.com/cthing/locc4j/actions/workflows/ci.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cthing/locc4j/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cthing/locc4j)
+[![Maven Central Version](https://img.shields.io/maven-central/v/org.cthing/locc4j)](https://central.sonatype.com/artifact/org.cthing/locc4j)
 [![javadoc](https://javadoc.io/badge2/org.cthing/locc4j/javadoc.svg)](https://javadoc.io/doc/org.cthing/locc4j)
 
 A Java library for counting lines of source code. Supports over 250 languages using a high performance
