@@ -1,23 +1,23 @@
 [versions]
 java = "17"
-checkstyle = "10.26.0"
-jackson = "2.19.1"
+checkstyle = "11.0.1"
+jackson = "2.20.0"
 jacoco = "0.8.13"
-junit = "5.13.2"
-junitPlatform = "1.13.2"
-spotbugs = "4.9.3"
+junit = "5.13.4"
+junitPlatform = "1.13.4"
+spotbugs = "4.9.6"
 
 [plugins]
-cthingPublishing = { id = "org.cthing.cthing-publishing", version = "2.0.0" }
+cthingPublishing = { id = "org.cthing.cthing-publishing", version = "3.0.0" }
 cthingVersioning = { id = "org.cthing.cthing-versioning", version = "3.0.0" }
-dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version = "2.19.0" }
-spotbugs = { id = "com.github.spotbugs", version = "6.2.1" }
-versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
+dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version = "3.0.4" }
+spotbugs = { id = "com.github.spotbugs", version = "6.4.2" }
+versions = { id = "com.github.ben-manes.versions", version = "0.53.0" }
 
 [libraries]
-assertJ = "org.assertj:assertj-core:3.27.3"
+assertJ = "org.assertj:assertj-core:3.27.6"
 cthingAnnots = "org.cthing:cthing-annotations:2.0.0"
-equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:4.0.3"
+equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:4.1.1"
 escapers = "org.cthing:escapers:2.0.0"
 filevisitor = "org.cthing:filevisitor:2.0.0"
 freemarker = "org.freemarker:freemarker:2.3.34"
@@ -29,5 +29,5 @@ junitEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref =
 junitParams = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 junitCommons = { module = "org.junit.platform:junit-platform-commons", version.ref = "junitPlatform" }
 junitLauncher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatform" }
-mockito = "org.mockito:mockito-core:5.18.0"
-spotbugsContrib = "com.mebigfatguy.sb-contrib:sb-contrib:7.6.11"
+mockito = "org.mockito:mockito-core:5.20.0"
+spotbugsContrib = "com.mebigfatguy.sb-contrib:sb-contrib:7.6.14"
