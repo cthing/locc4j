@@ -19,7 +19,7 @@ versions = { id = "com.github.ben-manes.versions", version = "0.53.0" }
 assertJ = "org.assertj:assertj-core:3.27.6"
 cthingAnnots = "org.cthing:cthing-annotations:2.0.0"
 equalsVerifier = "nl.jqno.equalsverifier:equalsverifier:4.1.1"
-escapers = "org.cthing:escapers:2.0.0"
+escapers = "org.cthing:escapers:2.1.0"
 filevisitor = "org.cthing:filevisitor:2.0.0"
 freemarker = "org.freemarker:freemarker:2.3.34"
 jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
